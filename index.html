@@ -22,7 +22,9 @@
       --red: #bd4e55;
       --shadow: 0 16px 45px rgba(29, 35, 48, .06);
     }
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    :focus { outline: none; }
+    :focus-visible { outline: 2px solid rgba(117,87,232,.62); outline-offset: 2px; }
     body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
     button, input, select { font: inherit; }
     button { cursor: pointer; }
@@ -45,22 +47,60 @@
     .layout.library-mode { width:min(1100px, calc(100% - 56px)); }
     .library-view { display:none; }
     .library-mode .library-view { display:block; }
-    .library-toolbar { display:flex;gap:12px;align-items:center;margin:20px 0 15px; }
-    .library-toolbar select {width:auto;min-width:132px;height:41px;}
+    .base-category-tabs {display:flex;gap:8px;margin:18px 0 0;padding:5px;background:#eceef2;border-radius:11px;overflow-x:auto;}
+    .base-category-tab {flex:1;min-width:105px;border:0;border-radius:8px;background:transparent;color:#747a86;padding:9px 12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;white-space:nowrap;}
+    .base-category-tab:hover {color:var(--accent-dark);}
+    .base-category-tab.active {background:#fff;color:var(--accent-dark);box-shadow:0 2px 6px #252a3510;}
+    .base-category-tab small {color:#a0a5af;font-size:10px;font-weight:550;}
+    .folder-navigation {display:flex;align-items:center;gap:8px;margin:15px 0 10px;color:var(--muted);font-size:11px;}
+    .folder-back {border:0;background:none;padding:5px 8px 5px 0;color:var(--accent-dark);font-size:11px;font-weight:650;}
+    .folder-back:hover {color:var(--accent);}
+    .folder-navigation[hidden],.library-folder-grid[hidden] {display:none;}
+    .library-folder-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 18px;}
+    .library-folder-card {min-width:0;display:flex;align-items:center;gap:11px;padding:13px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:left;box-shadow:0 5px 16px rgba(29,35,48,.025);transition:border-color .15s,background .15s,transform .15s;}
+    .library-folder-card:hover {border-color:#d4cbf6;background:#fdfcff;transform:translateY(-1px);}
+    .library-folder-icon {width:38px;height:34px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--accent-soft);color:var(--accent);}
+    .library-folder-icon svg {width:21px;height:21px;}
+    .library-folder-info {min-width:0;flex:1;}
+    .library-folder-name {display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-size:11px;font-weight:650;}
+    .library-folder-count {display:block;margin-top:2px;color:var(--muted);font-size:10px;}
+    .library-toolbar { display:flex;gap:10px;align-items:center;margin:20px 0 14px; }
+    .add-folder-button {width:41px;height:41px;flex:none;border:1px solid var(--accent);border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;}
+    .add-folder-button:hover {background:var(--accent-dark);border-color:var(--accent-dark);}
+    .add-folder-button svg {width:18px;height:18px;}
+    .folder-dialog {width:min(420px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
+    .folder-dialog::backdrop {background:#22263170;backdrop-filter:blur(3px);}
+    .folder-dialog form {padding:22px;}
+    .folder-dialog h2 {font-size:16px;margin:0 0 5px;}
+    .folder-dialog p {font-size:11px;color:var(--muted);margin:0 0 17px;}
+    .folder-dialog .form-field {margin-bottom:16px;}
+    .folder-dialog-actions {display:flex;justify-content:flex-end;gap:8px;}
     .search-wrap {position:relative;flex:1;}
     .search-wrap svg {position:absolute;left:12px;top:11px;width:16px;color:#a0a5af;pointer-events:none;}
     .search-wrap input {padding-left:37px;height:41px;}
     .library-count {font-size:11px;color:var(--muted);white-space:nowrap;}
     .asset-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;}
+    .asset-grid[hidden] {display:none;}
     .asset-card {overflow:hidden;border:1px solid var(--line);border-radius:12px;background:white;box-shadow:0 8px 26px rgba(29,35,48,.035);}
-    .asset-card.selected {border-color:#a99af2;box-shadow:0 0 0 2px #7557e81a;}
+    .asset-card.is-selected {border-color:#9c88ef;box-shadow:0 0 0 2px #7557e826,0 8px 26px rgba(29,35,48,.06);}
     .asset-visual {position:relative;}
-    .asset-select {position:absolute;z-index:1;margin:9px;width:17px;height:17px;accent-color:var(--accent);cursor:pointer;}
+    .selection-check {position:absolute;z-index:2;top:9px;right:9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;display:none;place-items:center;background:#ffffffd9;color:transparent;box-shadow:0 2px 7px #17152230;font-size:15px;font-weight:700;line-height:1;}
+    .asset-grid.selection-mode .selection-check {display:grid;}
+    .asset-card.is-selected .selection-check {background:var(--accent);color:#fff;}
+    .selection-toolbar {position:sticky;bottom:12px;z-index:3;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0;padding:10px 12px;border:1px solid #ded7fb;border-radius:12px;background:#fffffff2;box-shadow:0 8px 24px #23203720;backdrop-filter:blur(12px);}
+    .selection-toolbar[hidden] {display:none;}
+    .selection-count {margin-right:auto;color:var(--ink);font-size:11px;font-weight:650;white-space:nowrap;}
+    .selection-toolbar select {width:auto;min-width:130px;height:34px;font-size:11px;}
+    .selection-toolbar button {height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#5e6470;font-size:11px;white-space:nowrap;}
+    .selection-toolbar .selection-delete {border-color:#f0d9dc;color:#b64c55;}
+    .asset-grid.selection-mode .asset-actions,.asset-grid.selection-mode .asset-folder-move {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
     .asset-thumb img {width:100%;height:100%;object-fit:cover;}
     .asset-body {padding:11px 12px 12px;}
     .asset-name {font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .asset-path {font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
+    .asset-folder-move {display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:10px;}
+    .asset-folder-move select {height:31px;min-width:0;flex:1;padding:0 26px 0 8px;font-size:10px;border-radius:7px;}
     .asset-actions {display:flex;justify-content:space-between;align-items:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
     .asset-type {font-size:9px;color:#7d8290;background:#f3f4f7;border-radius:5px;padding:3px 6px;text-transform:uppercase;}
     .asset-actions .copy-button {font-size:10px;padding:5px 8px;}
@@ -68,8 +108,6 @@
     .asset-actions .rename-button:hover {border-color:#c7bdf8;color:var(--accent);}
     .asset-actions .delete-button {font-size:10px;padding:5px 7px;border:1px solid #f0d9dc;border-radius:7px;background:white;color:#b64c55;}
     .asset-actions .delete-button:hover {background:#fff5f6;border-color:#e8b9bf;}
-    .danger-button {height:35px;border:1px solid #f0d9dc;border-radius:8px;padding:0 11px;background:#fff;color:#b64c55;font-size:11px;font-weight:650;white-space:nowrap;}
-    .danger-button:hover {background:#fff5f6;border-color:#e8b9bf;}
     .name-dialog {width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
     .name-dialog::backdrop {background:#22263170;backdrop-filter:blur(3px);}
     .name-dialog form {padding:22px;}
@@ -84,15 +122,6 @@
     .empty-state strong {display:block;color:#555b67;font-size:13px;margin-bottom:4px;}
     .library-message {display:none;margin-top:14px;padding:12px 14px;border:1px solid #f0dfbe;background:#fffaf0;color:#8c6a2b;border-radius:9px;font-size:11px;}
     .library-message.visible {display:block;}
-    .folder-toolbar {display:flex;gap:9px;align-items:center;margin:0 0 17px;padding:12px;background:#fff;border:1px solid var(--line);border-radius:11px;}
-    .folder-create {display:flex;gap:7px;min-width:280px;flex:1;}
-    .folder-create input {height:35px;font-size:11px;}
-    .small-primary {height:35px;border:0;border-radius:8px;padding:0 12px;background:var(--accent-soft);color:var(--accent-dark);font-size:11px;font-weight:650;white-space:nowrap;}
-    .small-primary:hover {background:#e9e3ff;}
-    .selection-tools {display:flex;align-items:center;gap:7px;margin-left:auto;}
-    .selection-tools select {height:35px;min-width:140px;font-size:11px;}
-    .selection-label {font-size:10px;color:var(--muted);white-space:nowrap;}
-    .library-note {margin:-8px 0 14px;color:#9297a2;font-size:10px;}
     .main-column { min-width:0; }
     .intro { margin:3px 0 24px; }
     .eyebrow { color:var(--accent); font-size:11px; font-weight:750; letter-spacing:.12em; text-transform:uppercase; display:flex; align-items:center; gap:8px; }
@@ -132,6 +161,7 @@
     .remove-file { border:0;background:none;color:#a5a9b2;font-size:17px;line-height:1;padding:4px; }
     .remove-file:hover { color:var(--red); }
     .upload-controls { margin-top:19px; display:grid; grid-template-columns:minmax(180px,1fr) auto; gap:14px; align-items:end; }
+    .auto-folder-note > span:last-child {display:block;color:var(--muted);font-size:11px;}
     .field-label { display:block;font-size:11px;color:#59606c;font-weight:650;margin:0 0 7px; }
     .select-wrap { position:relative; }
     .select-wrap:after { content:"⌄"; position:absolute;right:12px;top:8px;color:#7f8490;pointer-events:none; }
@@ -175,6 +205,10 @@
     .reveal svg {width:15px;}
     .settings-foot { border-top:1px solid var(--line); margin-top:15px; padding-top:12px; color:#9499a4;font-size:10px; display:flex;gap:7px;align-items:flex-start; }
     .settings-foot svg {width:13px;flex:none;color:#aaa0e8;}
+    .save-settings-button {width:100%;margin-top:16px;}
+    .connection-feedback {margin-top:9px;min-height:17px;color:var(--muted);font-size:10px;}
+    .connection-feedback.success {color:var(--green);}
+    .connection-feedback.error {color:var(--red);}
     .repo-card { padding:17px 18px; }
     .repo-label { color:var(--muted);font-size:10px;margin-bottom:9px; }
     .repo-line {display:flex;gap:10px;align-items:center;}
@@ -194,8 +228,67 @@
     .spinner {width:14px;height:14px;border:2px solid #ffffff70;border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;}
     @keyframes spin {to {transform:rotate(360deg)}}
     @media(max-width:900px) { .upload-card{padding:18px;} }
-    @media(max-width:720px) { .topbar{height:auto;min-height:62px;padding:10px 16px;flex-wrap:wrap;gap:8px;} .top-nav{order:3;width:100%;margin:0;gap:4px;} .nav-button{flex:1;padding:8px;font-size:11px;} .top-right .hint{display:none;} .layout,.layout.settings-mode,.layout.library-mode{display:flex;flex-direction:column;width:calc(100% - 32px);margin:26px auto 45px;} .main-column,.sidebar{width:100%;} .sidebar{grid-template-columns:1fr 1fr;} .settings-card{grid-row:span 2;} h1{font-size:25px;} .asset-grid{grid-template-columns:repeat(2,minmax(0,1fr));} .folder-toolbar{align-items:stretch;flex-direction:column;} .folder-create{min-width:0;} .selection-tools{margin:0;flex-wrap:wrap;} .selection-tools select{flex:1;} }
-    @media(max-width:520px) { .sidebar{grid-template-columns:1fr;} .settings-card{grid-row:auto;} .upload-controls{grid-template-columns:1fr;} .upload-controls .primary{width:100%;} .dropzone{min-height:200px;} .file-row{grid-template-columns:36px minmax(0,1fr) 23px;gap:9px;} .file-preview{width:36px;height:36px;} .file-status{display:none;} .asset-grid{grid-template-columns:1fr 1fr;gap:8px;} .asset-thumb{height:115px;} .library-toolbar{align-items:stretch;flex-direction:column;} .library-toolbar select{width:100%;} }
+    @media(max-width:720px) {
+      .topbar{height:auto;min-height:62px;padding:10px 14px;flex-wrap:wrap;gap:8px;}
+      .top-nav{order:3;width:100%;margin:0;gap:4px;}
+      .nav-button{flex:1;padding:8px 5px;font-size:11px;}
+      .top-right .hint{display:none;}
+      .layout,.layout.settings-mode,.layout.library-mode{display:flex;flex-direction:column;width:calc(100% - 28px);margin:20px auto 38px;gap:16px;}
+      .main-column,.sidebar,.library-view{width:100%;}
+      .sidebar{grid-template-columns:1fr 1fr;}
+      .settings-card{grid-row:span 2;}
+      h1{font-size:25px;}
+      .asset-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .library-view .intro{margin:0 0 16px;}
+      .library-view .intro p{font-size:12px;}
+      .library-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 41px;gap:8px;margin:0 0 12px;}
+      .search-wrap{min-width:0;}
+      .search-wrap input{min-width:0;font-size:13px;}
+      .library-count{grid-column:1/-1;text-align:right;font-size:10px;}
+      .base-category-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 12px;padding:5px;overflow:visible;}
+      .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
+      .base-category-tab small{font-size:9px;}
+      .asset-grid{gap:9px;}
+      .selection-toolbar{bottom:8px;gap:6px;padding:9px;}
+      .selection-count{width:100%;}
+      .selection-toolbar select{min-width:0;flex:1;}
+      .selection-toolbar button{padding:0 8px;font-size:10px;}
+      .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
+      .library-folder-card{padding:11px 9px;gap:8px;}
+      .library-folder-icon{width:34px;height:32px;}
+      .asset-thumb{height:clamp(105px,34vw,150px);}
+      .asset-body{padding:9px;}
+      .asset-folder-move{align-items:flex-start;flex-direction:column;gap:4px;}
+      .asset-folder-move select{width:100%;flex:auto;}
+      .asset-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+      .asset-type{grid-column:1/-1;width:max-content;}
+      .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:100%;min-height:32px;padding:6px 4px;font-size:10px;}
+      .empty-state{padding:38px 14px;font-size:12px;}
+    }
+    @media(max-width:520px) {
+      .sidebar{grid-template-columns:1fr;}
+      .settings-card{grid-row:auto;}
+      .upload-controls{grid-template-columns:1fr;}
+      .upload-controls .primary{width:100%;}
+      .dropzone{min-height:200px;}
+      .file-row{grid-template-columns:36px minmax(0,1fr) 23px;gap:9px;}
+      .file-preview{width:36px;height:36px;}
+      .file-status{display:none;}
+    }
+    @media(max-width:360px) {
+      .topbar{padding-right:10px;padding-left:10px;}
+      .brand{gap:8px;font-size:13px;}
+      .brand-mark{width:32px;height:32px;}
+      .connection{padding:7px 9px;font-size:10px;}
+      .layout,.layout.settings-mode,.layout.library-mode{width:calc(100% - 20px);}
+      .asset-grid{grid-template-columns:minmax(0,1fr);}
+      .library-folder-grid{grid-template-columns:minmax(0,1fr);}
+      .asset-thumb{height:180px;}
+      .asset-body{padding:11px;}
+      .asset-actions{grid-template-columns:repeat(3,minmax(0,1fr));}
+      .asset-type{grid-column:1/-1;}
+      .base-category-tab{font-size:9px;padding:8px 5px;}
+    }
   </style>
 </head>
 <body>
@@ -233,7 +326,7 @@
         </div>
         <div class="file-area" id="fileArea"><div class="file-area-head"><strong id="fileCount">已选择 0 个文件</strong><button type="button" id="clearFiles" class="text-button">清空列表</button></div><div class="file-list" id="fileList"></div></div>
         <div class="upload-controls">
-          <div><label class="field-label" for="folder">保存到目录</label><div class="select-wrap"><select id="folder"><option value="images">🖼　图片素材 / images</option><option value="fonts">Aa　字体素材 / fonts</option><option value="music">♫　音频素材 / music</option><option value="files">▤　其他文件 / files</option></select></div></div>
+          <div class="auto-folder-note"><span class="field-label">自动归档</span><span>图片 → images　·　字体 → fonts　·　音频 → music　·　文档 → docs　·　其他 → files</span></div>
           <button class="primary" id="uploadButton" type="button"><svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>开始上传</span></button>
         </div>
         <div class="notice"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6v5.1c0 4.7 3.2 8.2 7.5 9.9 4.3-1.7 7.5-5.2 7.5-9.9V6L12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M12 8v4m0 3h.01" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>上传会直接写入 GitHub 仓库；同目录存在同名文件时，GitHub 会要求先处理冲突。</span></div>
@@ -243,14 +336,27 @@
     </main>
 
     <section class="library-view" id="libraryView">
-      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。</p></div>
-      <div class="library-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="assetSearch" type="text" placeholder="搜索文件名或目录…" aria-label="搜索素材"></label><select id="categoryFilter" aria-label="按素材分类筛选"><option value="">全部分类</option></select><span class="library-count" id="assetCount">尚未加载</span></div>
-      <div class="folder-toolbar">
-        <div class="folder-create"><input id="newFolderName" type="text" placeholder="新建素材库文件夹，例如：项目A图片" aria-label="新文件夹名称"><button type="button" class="small-primary" id="createFolderButton">新建文件夹</button></div>
-        <div class="selection-tools"><span class="selection-label" id="selectionCount">已选 0 项</span><button type="button" class="copy-button" id="selectAllButton">全选</button><select id="categoryTarget" aria-label="选择素材库文件夹"><option value="">选择文件夹</option></select><button type="button" class="small-primary" id="categorizeButton">批量归类</button><button type="button" class="danger-button" id="deleteSelectedButton">删除所选</button></div>
+      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。手机端长按素材可多选。</p></div>
+      <div class="library-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="assetSearch" type="text" placeholder="搜索文件名或目录…" aria-label="搜索素材"></label><button class="add-folder-button" id="addFolderButton" type="button" aria-label="新建素材库文件夹" title="新建文件夹"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="library-count" id="assetCount">尚未加载</span></div>
+      <div class="base-category-tabs" id="baseCategoryTabs" role="tablist" aria-label="按素材类型浏览">
+        <button type="button" class="base-category-tab active" data-folder="" role="tab" aria-selected="true">全部 <small data-count="">0</small></button>
+        <button type="button" class="base-category-tab" data-folder="images" role="tab" aria-selected="false">🖼 图片 <small data-count="images">0</small></button>
+        <button type="button" class="base-category-tab" data-folder="fonts" role="tab" aria-selected="false">Aa 字体 <small data-count="fonts">0</small></button>
+        <button type="button" class="base-category-tab" data-folder="music" role="tab" aria-selected="false">♫ 音频 <small data-count="music">0</small></button>
+        <button type="button" class="base-category-tab" data-folder="docs" role="tab" aria-selected="false">▧ 文档 <small data-count="docs">0</small></button>
+        <button type="button" class="base-category-tab" data-folder="files" role="tab" aria-selected="false">▤ 其他 <small data-count="files">0</small></button>
       </div>
-      <p class="library-note">素材库文件夹仅保存在当前浏览器，用于整理和筛选；不会移动仓库文件，也不会改变素材链接。</p>
+      <div class="folder-navigation" id="folderNavigation" hidden><button type="button" class="folder-back" id="folderBackButton">‹ 全部文件夹</button><span>/</span><span id="folderCurrentName"></span></div>
+      <div class="library-folder-grid" id="libraryFolderGrid" aria-label="素材库文件夹"></div>
       <div class="library-message" id="libraryMessage"></div>
+      <div class="selection-toolbar" id="selectionToolbar" hidden>
+        <span class="selection-count" id="selectionCount">已选 0 项</span>
+        <button type="button" id="selectVisibleAssetsButton">全选当前列表</button>
+        <select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select>
+        <button type="button" id="moveSelectedAssetsButton">移动</button>
+        <button type="button" class="selection-delete" id="deleteSelectedAssetsButton">删除</button>
+        <button type="button" id="exitSelectionButton">完成</button>
+      </div>
       <div class="asset-grid" id="assetGrid"><div class="empty-state"><strong>连接仓库后查看素材</strong>素材库会读取当前 GitHub 仓库中的文件。</div></div>
     </section>
 
@@ -261,6 +367,8 @@
         <div class="form-field"><label for="repo">Repository 仓库</label><input id="repo" type="text" placeholder="例如：my-assets"></div>
         <div class="form-field"><label for="branch">Branch 分支</label><input id="branch" type="text" value="main" placeholder="main"></div>
         <div class="form-field"><label for="token">Personal Access Token</label><div class="input-with-action"><input id="token" type="password" placeholder="github_pat_••••••••••" autocomplete="current-password"><button class="reveal" id="toggleToken" type="button" aria-label="显示或隐藏 Token"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12s3.2-6 9-6 9 6 9 6-3.2 6-9 6-9-6-9-6Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></button></div></div>
+        <button class="primary save-settings-button" id="saveSettingsButton" type="button">保存设置并验证连接</button>
+        <div class="connection-feedback" id="connectionFeedback" role="status">保存后将检查 Token 是否能访问所选仓库分支。</div>
         <div class="settings-foot"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>设置信息仅保存在当前浏览器。Token 需要目标仓库的 Contents 读写权限。</span></div>
       </section>
       <section class="card repo-card"><div class="repo-label">当前目标仓库</div><div class="repo-line"><div class="repo-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4.5h7l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V6a1.5 1.5 0 0 1 1-1.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 4.5V9h4" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><div class="repo-info"><div class="repo-name" id="repoDisplay">尚未选择仓库</div><div class="repo-branch" id="branchDisplay">分支 —</div></div></div></section>
@@ -277,22 +385,44 @@
     <div class="name-dialog-actions"><button type="button" class="text-button" id="resetAssetName">恢复默认名称</button><span><button type="button" class="dialog-button" id="cancelNameEdit">取消</button><button type="submit" class="dialog-button primary" id="saveNameButton">保存名称</button></span></div>
   </form>
 </dialog>
+<dialog class="folder-dialog" id="folderDialog">
+  <form id="folderForm">
+    <h2>新建素材库文件夹</h2>
+    <p>文件夹分类会保存在仓库的 assets.json 中，不会移动仓库文件或改变素材链接。</p>
+    <div class="form-field"><label for="newFolderName">文件夹名称</label><input id="newFolderName" type="text" placeholder="例如：项目A图片" maxlength="80" required></div>
+    <div class="folder-dialog-actions"><button type="button" class="dialog-button" id="cancelFolderCreate">取消</button><button type="submit" class="dialog-button primary" id="createFolderButton">创建文件夹</button></div>
+  </form>
+</dialog>
 <script>
   const settingFields = ["token", "owner", "repo", "branch"];
   const fileInput = document.getElementById("file");
   const dropzone = document.getElementById("dropzone");
   const selectedFiles = [];
-  const uploadNames = new WeakMap();
   const selectedAssets = new Set();
+  const uploadNames = new WeakMap();
   let activeNamingAsset = null;
   let assetDeleteInProgress = false;
+  let selectionMode = false;
+  let longPressTimer = null;
+  let longPressStart = null;
+  let suppressAssetClickUntil = 0;
+  let repositoryVerified = false;
   let toastTimer;
+
+  function clearLongPress() {
+    clearTimeout(longPressTimer);
+    longPressTimer = null;
+    longPressStart = null;
+  }
 
   settingFields.forEach((id) => {
     const input = document.getElementById(id);
     input.value = localStorage.getItem(id) || (id === "branch" ? "main" : "");
     input.addEventListener("input", () => {
-      localStorage.setItem(id, input.value.trim());
+      repositoryVerified = false;
+      const feedback = document.getElementById("connectionFeedback");
+      feedback.className = "connection-feedback";
+      feedback.textContent = "设置已修改，请保存并重新验证连接。";
       updateRepositoryState();
     });
   });
@@ -305,8 +435,60 @@
     const configured = Boolean(owner && repo && document.getElementById("token").value.trim());
     document.getElementById("repoDisplay").textContent = owner && repo ? `${owner} / ${repo}` : "尚未选择仓库";
     document.getElementById("branchDisplay").textContent = `分支 ${branch}`;
-    document.getElementById("connectionText").textContent = configured ? "配置已就绪" : "尚未配置";
-    document.getElementById("connectionDot").classList.toggle("ready", configured);
+    document.getElementById("connectionText").textContent = repositoryVerified ? "连接正常" : configured ? "待验证" : "尚未配置";
+    document.getElementById("connectionDot").classList.toggle("ready", repositoryVerified);
+  }
+
+  async function saveSettingsAndVerify() {
+    const token = document.getElementById("token").value.trim();
+    const owner = document.getElementById("owner").value.trim();
+    const repo = document.getElementById("repo").value.trim();
+    const branchInput = document.getElementById("branch");
+    const branch = branchInput.value.trim() || "main";
+    const button = document.getElementById("saveSettingsButton");
+    const feedback = document.getElementById("connectionFeedback");
+    if (!token || !owner || !repo) {
+      feedback.className = "connection-feedback error";
+      feedback.textContent = "请填写 GitHub 用户名、仓库名和 Token。";
+      showToast("仓库设置尚未填写完整", true);
+      return;
+    }
+    branchInput.value = branch;
+    settingFields.forEach((id) => localStorage.setItem(id, document.getElementById(id).value.trim()));
+    repositoryVerified = false;
+    updateRepositoryState();
+    button.disabled = true;
+    button.textContent = "正在验证连接…";
+    feedback.className = "connection-feedback";
+    feedback.textContent = `正在检查 ${owner}/${repo} 的 ${branch} 分支…`;
+    try {
+      const endpoint = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/branches/${encodeURIComponent(branch)}`;
+      const response = await fetch(endpoint, {
+        headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        if (response.status === 401) throw new Error("Token 无效或已过期，请检查后重试。");
+        if (response.status === 403) throw new Error("Token 缺少仓库读取权限，或 GitHub API 暂时限制了请求。");
+        if (response.status === 404) throw new Error("仓库或分支不存在，或 Token 无权访问该仓库。");
+        throw new Error(data.message || `GitHub 返回错误 (${response.status})`);
+      }
+      repositoryVerified = true;
+      updateRepositoryState();
+      feedback.className = "connection-feedback success";
+      feedback.textContent = `连接成功：${owner}/${repo} · ${branch}`;
+      showToast("仓库连接验证成功");
+    } catch (error) {
+      repositoryVerified = false;
+      updateRepositoryState();
+      const detail = error instanceof TypeError ? "无法连接 GitHub API，请检查网络连接。" : error.message;
+      feedback.className = "connection-feedback error";
+      feedback.textContent = detail;
+      showToast("仓库连接验证失败", true);
+    } finally {
+      button.disabled = false;
+      button.textContent = "保存设置并验证连接";
+    }
   }
 
   document.getElementById("browseButton").addEventListener("click", () => fileInput.click());
@@ -320,24 +502,112 @@
     token.type = token.type === "password" ? "text" : "password";
   });
   document.getElementById("uploadButton").addEventListener("click", upload);
+  document.getElementById("saveSettingsButton").addEventListener("click", saveSettingsAndVerify);
   document.getElementById("uploadNav").addEventListener("click", () => setPage("upload"));
   document.getElementById("libraryNav").addEventListener("click", () => setPage("library"));
   document.getElementById("settingsNav").addEventListener("click", () => setPage("settings"));
   document.getElementById("assetSearch").addEventListener("input", renderAssets);
-  document.getElementById("categoryFilter").addEventListener("change", renderAssets);
-  document.getElementById("createFolderButton").addEventListener("click", createFolder);
-  document.getElementById("newFolderName").addEventListener("keydown", (event) => { if (event.key === "Enter") createFolder(); });
-  document.getElementById("categorizeButton").addEventListener("click", categorizeSelectedAssets);
-  document.getElementById("deleteSelectedButton").addEventListener("click", deleteSelectedAssets);
-  document.getElementById("selectAllButton").addEventListener("click", toggleSelectVisible);
-  document.getElementById("assetGrid").addEventListener("change", (event) => {
-    if (!event.target.matches(".asset-select")) return;
-    if (event.target.checked) selectedAssets.add(event.target.dataset.path);
-    else selectedAssets.delete(event.target.dataset.path);
-    event.target.closest(".asset-card").classList.toggle("selected", event.target.checked);
-    updateSelectionState();
+  document.getElementById("baseCategoryTabs").addEventListener("click", (event) => {
+    const tab = event.target.closest(".base-category-tab");
+    if (!tab) return;
+    baseFolderFilter = tab.dataset.folder || "";
+    selectedLibraryFolder = "";
+    selectedAssets.clear();
+    selectionMode = false;
+    document.querySelectorAll(".base-category-tab").forEach((item) => {
+      const active = item === tab;
+      item.classList.toggle("active", active);
+      item.setAttribute("aria-selected", String(active));
+    });
+    renderAssets();
+  });
+  document.getElementById("libraryFolderGrid").addEventListener("click", (event) => {
+    const folder = event.target.closest(".library-folder-card");
+    if (!folder) return;
+    selectedLibraryFolder = folder.dataset.category;
+    selectedAssets.clear();
+    selectionMode = false;
+    renderAssets();
+  });
+  document.getElementById("folderBackButton").addEventListener("click", () => {
+    selectedLibraryFolder = "";
+    selectedAssets.clear();
+    selectionMode = false;
+    renderAssets();
+  });
+  document.getElementById("selectVisibleAssetsButton").addEventListener("click", () => {
+    const visible = assetsMatchingCurrentFilters();
+    const allSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
+    visible.forEach((asset) => allSelected ? selectedAssets.delete(asset.path) : selectedAssets.add(asset.path));
+    renderAssets();
+  });
+  document.getElementById("moveSelectedAssetsButton").addEventListener("click", moveSelectedAssets);
+  document.getElementById("deleteSelectedAssetsButton").addEventListener("click", () => {
+    const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
+    if (!chosen.length) { showToast("请先选择素材", true); return; }
+    deleteAssets(chosen);
+  });
+  document.getElementById("exitSelectionButton").addEventListener("click", () => {
+    selectedAssets.clear();
+    selectionMode = false;
+    renderAssets();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && selectionMode) {
+      selectedAssets.clear();
+      selectionMode = false;
+      renderAssets();
+    }
+  });
+  document.getElementById("addFolderButton").addEventListener("click", () => {
+    document.getElementById("folderDialog").showModal();
+    document.getElementById("newFolderName").focus();
+  });
+  document.getElementById("cancelFolderCreate").addEventListener("click", () => document.getElementById("folderDialog").close());
+  document.getElementById("folderForm").addEventListener("submit", createFolder);
+  const assetGrid = document.getElementById("assetGrid");
+  assetGrid.addEventListener("pointerdown", (event) => {
+    if (event.pointerType !== "touch" || event.target.closest("button,select,input")) return;
+    const card = event.target.closest(".asset-card");
+    if (!card) return;
+    const path = card.dataset.path;
+    const startX = event.clientX;
+    const startY = event.clientY;
+    longPressStart = { x: startX, y: startY };
+    clearTimeout(longPressTimer);
+    longPressTimer = setTimeout(() => {
+      longPressTimer = null;
+      selectionMode = true;
+      selectedAssets.add(path);
+      suppressAssetClickUntil = Date.now() + 800;
+      if (navigator.vibrate) navigator.vibrate(24);
+      renderAssets();
+    }, 500);
+  });
+  assetGrid.addEventListener("pointermove", (event) => {
+    if (!longPressStart) return;
+    if (Math.hypot(event.clientX - longPressStart.x, event.clientY - longPressStart.y) > 12) clearLongPress();
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => assetGrid.addEventListener(eventName, clearLongPress));
+  assetGrid.addEventListener("contextmenu", (event) => {
+    if (event.target.closest(".asset-card")) event.preventDefault();
   });
   document.getElementById("assetGrid").addEventListener("click", (event) => {
+    if (Date.now() < suppressAssetClickUntil) {
+      event.preventDefault();
+      event.stopPropagation();
+      suppressAssetClickUntil = 0;
+      return;
+    }
+    const card = event.target.closest(".asset-card");
+    if (selectionMode && card) {
+      event.preventDefault();
+      const path = card.dataset.path;
+      if (selectedAssets.has(path)) selectedAssets.delete(path);
+      else selectedAssets.add(path);
+      renderAssets();
+      return;
+    }
     const button = event.target.closest(".rename-button");
     if (button) {
       activeNamingAsset = repositoryAssets.find((asset) => asset.path === button.dataset.path);
@@ -380,11 +650,14 @@
 
   let repositoryAssets = [];
   let assetsLoadedFor = "";
+  let baseFolderFilter = "";
+  let selectedLibraryFolder = "";
   let assetMetadata = { assets: [] };
   let customNames = {};
   const uncategorized = "未分类";
   let localCategories = loadLocalCategories();
   let assetCategoryMap = loadAssetCategoryMap();
+  let folderMetadataWriteQueue = Promise.resolve();
 
   function loadLocalCategories() {
     try { return [...new Set([uncategorized, ...JSON.parse(localStorage.getItem("assetCategories") || "[]")])]; }
@@ -399,6 +672,52 @@
   function saveLocalClassification() {
     localStorage.setItem("assetCategories", JSON.stringify(localCategories));
     localStorage.setItem("assetCategoryMap", JSON.stringify(assetCategoryMap));
+  }
+
+  function mergeRepositoryFolderMetadata(metadata, config) {
+    const folders = metadata.folders;
+    if (!folders || typeof folders !== "object") return;
+    const categories = Array.isArray(folders.categories) ? folders.categories : [];
+    localCategories = [...new Set([uncategorized, ...categories.filter((category) => typeof category === "string" && category && category !== uncategorized)])];
+    const prefix = `${config.owner}/${config.repo}@${config.branch}:`;
+    Object.keys(assetCategoryMap).filter((key) => key.startsWith(prefix)).forEach((key) => delete assetCategoryMap[key]);
+    if (folders.assignments && typeof folders.assignments === "object" && !Array.isArray(folders.assignments)) {
+      Object.entries(folders.assignments).forEach(([path, category]) => {
+        if (typeof path === "string" && typeof category === "string" && category && category !== uncategorized) {
+          assetCategoryMap[`${prefix}${path}`] = category;
+          if (!localCategories.includes(category)) localCategories.push(category);
+        }
+      });
+    }
+    saveLocalClassification();
+  }
+
+  function persistFolderMetadata() {
+    const operation = folderMetadataWriteQueue.catch(() => {}).then(saveFolderMetadataToRepository);
+    folderMetadataWriteQueue = operation;
+    return operation;
+  }
+
+  async function saveFolderMetadataToRepository() {
+    const token = document.getElementById("token").value.trim();
+    const owner = document.getElementById("owner").value.trim();
+    const repo = document.getElementById("repo").value.trim();
+    const branch = document.getElementById("branch").value.trim() || "main";
+    if (!token || !owner || !repo) throw new Error("请先在仓库设置中配置 GitHub");
+    const config = { token, owner, repo, branch };
+    const latest = await fetchAssetMetadata(config);
+    const prefix = `${owner}/${repo}@${branch}:`;
+    const assignments = {};
+    Object.entries(assetCategoryMap).forEach(([key, category]) => {
+      if (key.startsWith(prefix) && category && category !== uncategorized) {
+        assignments[key.slice(prefix.length)] = category;
+      }
+    });
+    latest.folders = {
+      categories: [...new Set(localCategories.filter((category) => category && category !== uncategorized))],
+      assignments
+    };
+    await writeAssetMetadata(latest, config, "update asset folders");
   }
 
   function assetCategoryKey(asset) {
@@ -425,6 +744,10 @@
       return;
     }
     const key = `${owner}/${repo}@${branch}`;
+    if (assetsLoadedFor && assetsLoadedFor !== key) {
+      selectedAssets.clear();
+      selectionMode = false;
+    }
     if (assetsLoadedFor === key && repositoryAssets.length) { renderAssets(); return; }
     grid.innerHTML = '<div class="empty-state"><strong>正在读取仓库…</strong>正在从 GitHub 获取文件列表。</div>';
     document.getElementById("assetCount").textContent = "加载中…";
@@ -441,10 +764,21 @@
       });
       assetMetadata = await fetchAssetMetadata({ token, owner, repo, branch });
       customNames = Object.fromEntries(assetMetadata.assets.filter((item) => item && item.path && item.name).map((item) => [item.path, item.name]));
-      selectedAssets.clear();
-      updateCategoryOptions();
+      const categoryPrefix = `${owner}/${repo}@${branch}:`;
+      const migrateLocalFolders = !assetMetadata.folders && (
+        localCategories.some((category) => category !== uncategorized) ||
+        Object.keys(assetCategoryMap).some((key) => key.startsWith(categoryPrefix))
+      );
+      mergeRepositoryFolderMetadata(assetMetadata, { owner, repo, branch });
       assetsLoadedFor = key;
       renderAssets();
+      if (migrateLocalFolders) {
+        try { await persistFolderMetadata(); }
+        catch (error) {
+          message.textContent = `旧版本地文件夹仍可使用，但写入仓库 assets.json 失败：${error.message}`;
+          message.classList.add("visible");
+        }
+      }
       if (data.truncated) {
         message.textContent = "仓库文件较多，GitHub 返回的列表可能不完整。";
         message.classList.add("visible");
@@ -559,23 +893,146 @@
     finally { saveButton.disabled = false; saveButton.textContent = "保存名称"; }
   }
 
-  function renderAssets() {
+  function assetsMatchingCurrentFilters() {
+    const assets = assetsMatchingTypeAndSearch();
+    return assets.filter((asset) => selectedLibraryFolder
+      ? categoryForAsset(asset) === selectedLibraryFolder
+      : categoryForAsset(asset) === uncategorized);
+  }
+
+  function assetsMatchingTypeAndSearch() {
     const query = document.getElementById("assetSearch").value.trim().toLowerCase();
-    const categoryFilter = document.getElementById("categoryFilter").value;
-    const matches = repositoryAssets.filter((asset) => (asset.path.toLowerCase().includes(query) || customNameForAsset(asset).toLowerCase().includes(query)) && (!categoryFilter || categoryForAsset(asset) === categoryFilter));
+    return repositoryAssets.filter((asset) => {
+      const matchesQuery = asset.path.toLowerCase().includes(query) || customNameForAsset(asset).toLowerCase().includes(query);
+      const matchesBaseFolder = !baseFolderFilter || asset.path.startsWith(`${baseFolderFilter}/`);
+      return matchesQuery && matchesBaseFolder;
+    });
+  }
+
+  function renderSelectionToolbar() {
+    const toolbar = document.getElementById("selectionToolbar");
+    const target = document.getElementById("bulkFolderTarget");
+    toolbar.hidden = !selectionMode;
+    document.getElementById("selectionCount").textContent = `已选 ${selectedAssets.size} 项`;
+    const visible = assetsMatchingCurrentFilters();
+    const allSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
+    document.getElementById("selectVisibleAssetsButton").textContent = allSelected ? "取消全选" : "全选当前列表";
+    const selectedTarget = target.value;
+    target.replaceChildren();
+    [...new Set([uncategorized, ...localCategories])].forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = `移入：${category}`;
+      target.append(option);
+    });
+    if ([...target.options].some((option) => option.value === selectedTarget)) target.value = selectedTarget;
+  }
+
+  async function moveSelectedAssets() {
+    const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
+    if (!chosen.length) { showToast("请先选择素材", true); return; }
+    const category = document.getElementById("bulkFolderTarget").value;
+    chosen.forEach((asset) => {
+      if (category === uncategorized) delete assetCategoryMap[assetCategoryKey(asset)];
+      else assetCategoryMap[assetCategoryKey(asset)] = category;
+    });
+    saveLocalClassification();
+    selectedAssets.clear();
+    selectionMode = false;
+    renderAssets();
+    try {
+      await persistFolderMetadata();
+      showToast(`已将 ${chosen.length} 个素材移入「${category}」，并保存到仓库 JSON`);
+    } catch (error) {
+      showToast(`分类已保存在本地，但仓库 JSON 保存失败：${error.message}`, true);
+    }
+  }
+
+  function renderLibraryFolders() {
+    const folderGrid = document.getElementById("libraryFolderGrid");
+    const navigation = document.getElementById("folderNavigation");
+    const currentName = document.getElementById("folderCurrentName");
+    const query = document.getElementById("assetSearch").value.trim().toLowerCase();
+    const baseAssets = assetsMatchingTypeAndSearch();
+    folderGrid.replaceChildren();
+    folderGrid.hidden = Boolean(selectedLibraryFolder);
+    navigation.hidden = !selectedLibraryFolder;
+    if (selectedLibraryFolder) {
+      currentName.textContent = selectedLibraryFolder;
+      return;
+    }
+    const categories = [...new Set(localCategories)].filter((category) => category !== uncategorized);
+    categories.forEach((category) => {
+      const count = baseAssets.filter((asset) => categoryForAsset(asset) === category).length;
+      if (query && !category.toLowerCase().includes(query) && count === 0) return;
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "library-folder-card";
+      button.dataset.category = category;
+      button.setAttribute("aria-label", `打开文件夹 ${category}，${count} 个素材`);
+      button.innerHTML = '<span class="library-folder-icon"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h4l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M3.8 10h16.4" stroke="currentColor" stroke-width="1.7"/></svg></span>';
+      const info = document.createElement("span");
+      info.className = "library-folder-info";
+      const name = document.createElement("span");
+      name.className = "library-folder-name";
+      name.textContent = category;
+      const itemCount = document.createElement("span");
+      itemCount.className = "library-folder-count";
+      itemCount.textContent = `${count} 个素材`;
+      info.append(name, itemCount);
+      button.append(info);
+      folderGrid.append(button);
+    });
+  }
+
+  function updateBaseCategoryTabs() {
+    const counts = {
+      "": repositoryAssets.length,
+      images: repositoryAssets.filter((asset) => asset.path.startsWith("images/")).length,
+      fonts: repositoryAssets.filter((asset) => asset.path.startsWith("fonts/")).length,
+      music: repositoryAssets.filter((asset) => asset.path.startsWith("music/")).length,
+      docs: repositoryAssets.filter((asset) => asset.path.startsWith("docs/")).length,
+      files: repositoryAssets.filter((asset) => asset.path.startsWith("files/")).length
+    };
+    document.querySelectorAll(".base-category-tab").forEach((tab) => {
+      const count = tab.querySelector("small[data-count]");
+      if (count) count.textContent = counts[tab.dataset.folder || ""] ?? 0;
+    });
+  }
+
+  function renderAssets() {
+    updateBaseCategoryTabs();
+    renderLibraryFolders();
+    renderSelectionToolbar();
+    const matches = assetsMatchingCurrentFilters();
     const grid = document.getElementById("assetGrid");
-    document.getElementById("assetCount").textContent = `${matches.length} / ${repositoryAssets.length} 个文件`;
+    grid.classList.toggle("selection-mode", selectionMode);
+    const baseCount = baseFolderFilter ? repositoryAssets.filter((asset) => asset.path.startsWith(`${baseFolderFilter}/`)).length : repositoryAssets.length;
+    grid.hidden = false;
+    const query = document.getElementById("assetSearch").value.trim().toLowerCase();
+    const baseAssets = assetsMatchingTypeAndSearch();
+    const visibleFolders = [...new Set(localCategories)].filter((category) => category !== uncategorized && (!query || category.toLowerCase().includes(query) || baseAssets.some((asset) => categoryForAsset(asset) === category)));
+    const unclassifiedCount = baseAssets.filter((asset) => categoryForAsset(asset) === uncategorized).length;
+    document.getElementById("assetCount").textContent = selectedLibraryFolder
+      ? `${matches.length} 个素材`
+      : `${visibleFolders.length} 个文件夹 · ${unclassifiedCount} 个未分类素材`;
     if (!matches.length) {
-      grid.innerHTML = `<div class="empty-state"><strong>${repositoryAssets.length ? "没有找到匹配的素材" : "仓库里还没有文件"}</strong>${repositoryAssets.length ? "试试其他名称或目录关键词。" : "上传文件后，它们会显示在这里。"}</div>`;
-      updateSelectionState();
+      const emptyTitle = selectedLibraryFolder
+        ? "这个文件夹里还没有素材"
+        : query ? "没有找到匹配的素材" : baseCount === 0 ? "仓库里还没有文件" : "没有未分类素材";
+      const emptyDescription = selectedLibraryFolder
+        ? "把素材归类到这个文件夹后，会显示在这里。"
+        : query ? "试试其他名称或路径关键词。" : baseCount === 0 ? "上传文件后，它们会显示在这里。" : "已归类素材可点击上方文件夹查看。";
+      grid.innerHTML = `<div class="empty-state"><strong>${emptyTitle}</strong>${emptyDescription}</div>`;
       return;
     }
     grid.innerHTML = "";
     matches.forEach((asset) => {
       const card = document.createElement("article"); card.className = "asset-card";
-      if (selectedAssets.has(asset.path)) card.classList.add("selected");
+      card.dataset.path = asset.path;
+      if (selectedAssets.has(asset.path)) card.classList.add("is-selected");
       const visual = document.createElement("div"); visual.className = "asset-visual";
-      const checkbox = document.createElement("input"); checkbox.type = "checkbox"; checkbox.className = "asset-select"; checkbox.checked = selectedAssets.has(asset.path); checkbox.dataset.path = asset.path; checkbox.setAttribute("aria-label", `选择 ${asset.path}`);
+      const selectionCheck = document.createElement("span"); selectionCheck.className = "selection-check"; selectionCheck.setAttribute("aria-hidden", "true"); selectionCheck.textContent = "✓";
       const thumb = document.createElement("a"); thumb.className = "asset-thumb"; thumb.href = asset.url; thumb.target = "_blank"; thumb.rel = "noopener"; thumb.title = "在新标签页打开素材";
       if (/\.(png|jpe?g|gif|webp|svg|avif)$/i.test(asset.name)) {
         const image = document.createElement("img"); image.src = asset.url; image.alt = asset.name; image.loading = "lazy";
@@ -586,84 +1043,51 @@
       const name = document.createElement("div"); name.className = "asset-name"; name.textContent = customNameForAsset(asset) || defaultDisplayName(asset.name); name.title = name.textContent;
       const path = document.createElement("div"); path.className = "asset-path"; path.textContent = `文件：${asset.name}`; path.title = asset.path;
       const location = document.createElement("div"); location.className = "asset-path"; location.textContent = `路径：${asset.path}`; location.title = asset.path;
-      const categoryLabel = document.createElement("div"); categoryLabel.className = "asset-path"; categoryLabel.textContent = `分类：${categoryForAsset(asset)}`;
+      const folderMove = document.createElement("label"); folderMove.className = "asset-folder-move"; folderMove.textContent = "文件夹";
+      const folderSelect = document.createElement("select"); folderSelect.setAttribute("aria-label", `将 ${asset.name} 放入文件夹`);
+      [...new Set([uncategorized, ...localCategories])].forEach((category) => {
+        const option = document.createElement("option"); option.value = category; option.textContent = category; folderSelect.append(option);
+      });
+      folderSelect.value = categoryForAsset(asset);
+      folderSelect.addEventListener("change", () => {
+        const category = folderSelect.value;
+        if (category === uncategorized) delete assetCategoryMap[assetCategoryKey(asset)];
+        else assetCategoryMap[assetCategoryKey(asset)] = category;
+        saveLocalClassification();
+        renderAssets();
+        persistFolderMetadata()
+          .then(() => showToast(`已将素材放入「${category}」，并保存到仓库 JSON`))
+          .catch((error) => showToast(`分类已保存在本地，但仓库 JSON 保存失败：${error.message}`, true));
+      });
+      folderMove.append(folderSelect);
       const actions = document.createElement("div"); actions.className = "asset-actions";
       const type = document.createElement("span"); type.className = "asset-type"; type.textContent = asset.name.includes(".") ? asset.name.split(".").pop() : "file";
       const copy = document.createElement("button"); copy.className = "copy-button"; copy.type = "button"; copy.textContent = "复制链接";
       copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(asset.url); copy.textContent = "已复制"; setTimeout(() => copy.textContent = "复制链接", 1400); } catch { showToast("无法访问剪贴板，请手动复制链接", true); } });
       const rename = document.createElement("button"); rename.className = "rename-button"; rename.type = "button"; rename.dataset.path = asset.path; rename.textContent = "编辑名称";
       const remove = document.createElement("button"); remove.className = "delete-button"; remove.type = "button"; remove.dataset.path = asset.path; remove.textContent = "删除";
-      actions.append(type, copy, rename, remove); body.append(name, path, location, categoryLabel, actions); visual.append(checkbox, thumb); card.append(visual, body); grid.append(card);
+      actions.append(type, copy, rename, remove); body.append(name, path, location, folderMove, actions); visual.append(selectionCheck, thumb); card.append(visual, body); grid.append(card);
     });
-    updateSelectionState();
   }
 
-  function updateCategoryOptions() {
-    const ordered = [...localCategories].sort((a, b) => a === uncategorized ? -1 : b === uncategorized ? 1 : a.localeCompare(b, "zh-CN"));
-    const filter = document.getElementById("categoryFilter");
-    const selectedFilter = filter.value;
-    filter.innerHTML = '<option value="">全部分类</option>';
-    ordered.forEach((category) => {
-      const option = document.createElement("option"); option.value = category; option.textContent = category; filter.append(option);
-    });
-    if (ordered.includes(selectedFilter)) filter.value = selectedFilter;
-    const target = document.getElementById("categoryTarget");
-    const selectedTarget = target.value;
-    target.innerHTML = '<option value="">选择分类</option>';
-    ordered.forEach((category) => {
-      const option = document.createElement("option"); option.value = category; option.textContent = category; target.append(option);
-    });
-    if (ordered.includes(selectedTarget)) target.value = selectedTarget;
-  }
-
-  function updateSelectionState() {
-    const count = selectedAssets.size;
-    document.getElementById("selectionCount").textContent = `已选 ${count} 项`;
-    const query = document.getElementById("assetSearch").value.trim().toLowerCase();
-    const category = document.getElementById("categoryFilter").value;
-    const visible = repositoryAssets.filter((asset) => (asset.path.toLowerCase().includes(query) || customNameForAsset(asset).toLowerCase().includes(query)) && (!category || categoryForAsset(asset) === category));
-    const allVisibleSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
-    document.getElementById("selectAllButton").textContent = allVisibleSelected ? "取消全选" : "全选";
-  }
-
-  function toggleSelectVisible() {
-    const query = document.getElementById("assetSearch").value.trim().toLowerCase();
-    const category = document.getElementById("categoryFilter").value;
-    const visible = repositoryAssets.filter((asset) => (asset.path.toLowerCase().includes(query) || customNameForAsset(asset).toLowerCase().includes(query)) && (!category || categoryForAsset(asset) === category));
-    const allSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
-    visible.forEach((asset) => allSelected ? selectedAssets.delete(asset.path) : selectedAssets.add(asset.path));
-    renderAssets();
-  }
-
-  function createFolder() {
+  async function createFolder(event) {
+    event.preventDefault();
     const input = document.getElementById("newFolderName");
     const category = input.value.trim();
     if (!category) { showToast("请输入文件夹名称", true); return; }
     if (localCategories.includes(category)) { showToast("这个文件夹已经存在", true); return; }
     localCategories.push(category);
     saveLocalClassification();
-    updateCategoryOptions();
-    document.getElementById("categoryTarget").value = category;
+    selectedLibraryFolder = "";
     input.value = "";
-    showToast(`已创建素材库文件夹：${category}`);
-  }
-
-  function categorizeSelectedAssets() {
-    const category = document.getElementById("categoryTarget").value;
-    const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
-    if (!chosen.length) { showToast("请先选择要归类的素材", true); return; }
-    if (!category) { showToast("请先选择目标文件夹", true); return; }
-    chosen.forEach((asset) => { assetCategoryMap[assetCategoryKey(asset)] = category; });
-    saveLocalClassification();
-    selectedAssets.clear();
+    document.getElementById("folderDialog").close();
     renderAssets();
-    showToast(`已将 ${chosen.length} 个素材归类到「${category}」`);
-  }
-
-  function deleteSelectedAssets() {
-    const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
-    if (!chosen.length) { showToast("请先选择要删除的素材", true); return; }
-    deleteAssets(chosen);
+    try {
+      await persistFolderMetadata();
+      showToast(`已创建文件夹「${category}」，并保存到仓库 JSON`);
+    } catch (error) {
+      showToast(`文件夹已在本地创建，但仓库 JSON 保存失败：${error.message}`, true);
+    }
   }
 
   async function deleteAssets(assets) {
@@ -678,8 +1102,6 @@
     if (!token || !owner || !repo) { showToast("请先在仓库设置中配置 GitHub", true); return; }
 
     assetDeleteInProgress = true;
-    const bulkButton = document.getElementById("deleteSelectedButton");
-    bulkButton.disabled = true;
     const failures = [];
     const deleted = [];
     for (const asset of assets) {
@@ -701,23 +1123,34 @@
 
     if (deleted.length) {
       try {
+        deleted.forEach((asset) => { delete assetCategoryMap[assetCategoryKey(asset)]; selectedAssets.delete(asset.path); });
+        if (!selectedAssets.size) selectionMode = false;
+        saveLocalClassification();
         const metadata = await fetchAssetMetadata({ token, owner, repo, branch });
         const removedPaths = new Set(deleted.map((asset) => asset.path));
+        const previousAssetCount = metadata.assets.length;
         const remainingRecords = metadata.assets.filter((record) => !removedPaths.has(record.path));
-        if (remainingRecords.length !== metadata.assets.length) {
-          metadata.assets = remainingRecords;
+        const previousFolders = JSON.stringify(metadata.folders || null);
+        metadata.assets = remainingRecords;
+        const prefix = `${owner}/${repo}@${branch}:`;
+        const assignments = {};
+        Object.entries(assetCategoryMap).forEach(([key, category]) => {
+          if (key.startsWith(prefix) && category && category !== uncategorized) assignments[key.slice(prefix.length)] = category;
+        });
+        metadata.folders = {
+          ...(metadata.folders && typeof metadata.folders === "object" ? metadata.folders : {}),
+          categories: [...new Set(localCategories.filter((category) => category && category !== uncategorized))],
+          assignments
+        };
+        if (remainingRecords.length !== previousAssetCount || previousFolders !== JSON.stringify(metadata.folders)) {
           await writeAssetMetadata(metadata, { token, owner, repo, branch }, `remove metadata for deleted assets`);
-          customNames = Object.fromEntries(metadata.assets.filter((item) => item && item.path && item.name).map((item) => [item.path, item.name]));
         }
-        deleted.forEach((asset) => { delete assetCategoryMap[assetCategoryKey(asset)]; selectedAssets.delete(asset.path); });
-        saveLocalClassification();
+        customNames = Object.fromEntries(metadata.assets.filter((item) => item && item.path && item.name).map((item) => [item.path, item.name]));
       } catch (error) { failures.push(`文件已删除，但 assets.json 清理失败：${error.message}`); }
       assetsLoadedFor = "";
       await loadAssets();
     }
-    selectedAssets.clear();
     assetDeleteInProgress = false;
-    bulkButton.disabled = false;
     if (failures.length) {
       showToast(`已删除 ${deleted.length} 个，${failures.length} 个未完成`, true);
       const message = document.getElementById("libraryMessage");
@@ -763,9 +1196,8 @@
       const name = document.createElement("div"); name.className = "file-name"; name.textContent = file.name;
       const meta = document.createElement("div"); meta.className = "file-meta";
       const storedName = uploadNames.get(file) || file.name;
-      meta.textContent = storedName === file.name
-        ? `${formatSize(file.size)} · ${file.type || "未知格式"}`
-        : `${formatSize(file.size)} · 上传后保存为 ${storedName}`;
+      const storedFolder = getUploadFolder(file);
+      meta.textContent = `${formatSize(file.size)} · ${file.type || "未知格式"} · 上传至 ${storedFolder}/${storedName}`;
       info.append(name, meta);
       const status = document.createElement("span"); status.className = "file-status"; status.textContent = "待上传";
       const remove = document.createElement("button"); remove.className = "remove-file"; remove.type = "button"; remove.setAttribute("aria-label", `移除 ${file.name}`); remove.textContent = "×";
@@ -778,6 +1210,16 @@
     if (bytes < 1024) return `${bytes} B`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  function getUploadFolder(file) {
+    const extension = file.name.split(".").pop().toLowerCase();
+    const type = (file.type || "").toLowerCase();
+    if (type.startsWith("image/") || ["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "ico", "tif", "tiff"].includes(extension)) return "images";
+    if (type.startsWith("font/") || ["ttf", "otf", "woff", "woff2", "eot"].includes(extension)) return "fonts";
+    if (type.startsWith("audio/") || ["mp3", "ogg", "wav", "flac", "m4a", "aac", "opus", "wma"].includes(extension)) return "music";
+    if (["pdf", "doc", "docx", "odt", "rtf", "txt", "md", "csv", "xls", "xlsx", "ods", "ppt", "pptx", "odp", "epub"].includes(extension)) return "docs";
+    return "files";
   }
 
   function makeUrlSafeFilename(originalName) {
@@ -819,7 +1261,6 @@
     const owner = document.getElementById("owner").value.trim();
     const repo = document.getElementById("repo").value.trim();
     const branch = document.getElementById("branch").value.trim() || "main";
-    const folder = document.getElementById("folder").value;
     if (!token || !owner || !repo) { showToast("请先填写完整的 GitHub 仓库设置", true); return; }
     if (!selectedFiles.length) { showToast("请先选择要上传的文件", true); return; }
 
@@ -835,6 +1276,7 @@
       try {
         const content = await fileToBase64(file);
         const storedName = uploadNames.get(file) || makeUrlSafeFilename(file.name);
+        const folder = getUploadFolder(file);
         const path = `${folder}/${storedName}`;
         const api = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path.split("/").map(encodeURIComponent).join("/")}`;
         const response = await fetch(api, {
