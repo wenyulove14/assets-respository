@@ -97,18 +97,22 @@
     .selection-check {position:absolute;z-index:2;top:9px;right:9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;display:none;place-items:center;background:#ffffffd9;color:transparent;box-shadow:0 2px 7px #17152230;font-size:15px;font-weight:700;line-height:1;}
     .asset-grid.selection-mode .selection-check {display:grid;}
     .asset-card.is-selected .selection-check {background:var(--accent);color:#fff;}
-    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(920px,calc(100vw - 32px));display:grid;grid-template-columns:auto auto minmax(155px,1fr) repeat(4,auto);align-items:center;gap:8px;margin:0;padding:11px 13px;border:1px solid #e5e0f7;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 14px 42px #28213c2b,0 2px 8px #28213c0d;backdrop-filter:blur(16px);}
+    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(980px,calc(100vw - 32px));display:flex;align-items:center;gap:9px;margin:0;padding:10px 12px;border:1px solid #e8e4f1;border-radius:17px;background:rgba(255,255,255,.97);box-shadow:0 16px 44px #28213c26,0 3px 10px #28213c0b;backdrop-filter:blur(18px);}
     .selection-toolbar[hidden] {display:none;}
-    .selection-count {display:flex;align-items:center;gap:7px;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
-    .selection-count:before {content:"✓";width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:13px;}
-    .selection-toolbar select {width:100%;min-width:0;height:36px;font-size:11px;border-color:#e5e1f1;background:#fff;}
-    .selection-toolbar button {height:36px;padding:0 11px;border:1px solid transparent;border-radius:9px;background:#f5f3fb;color:#5e5870;font-size:11px;font-weight:600;white-space:nowrap;transition:background .15s,color .15s,transform .15s;}
-    .selection-toolbar button:hover {background:#ece8fa;color:var(--accent-dark);}
-    .selection-toolbar #moveSelectedAssetsButton {background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
+    .selection-toolbar-top {display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;}
+    .selection-count {display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px;background:#f4f1fc;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
+    .selection-count:before {content:"✓";width:20px;height:20px;display:grid;place-items:center;border-radius:7px;background:#e9e3fb;color:var(--accent);font-size:12px;}
+    .selection-move-group {display:flex;align-items:center;gap:7px;flex:1;min-width:0;}
+    .selection-batch-actions {display:flex;align-items:center;gap:7px;flex:none;}
+    .selection-toolbar select {width:100%;min-width:0;height:39px;padding:0 32px 0 11px;border:1px solid #e8e5ee;border-radius:10px;background:#fff;font-size:11px;}
+    .selection-toolbar button {height:39px;padding:0 13px;border:1px solid #eae7f0;border-radius:10px;background:#fff;color:#5f6370;font-size:11px;font-weight:650;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .15s;}
+    .selection-toolbar button:hover {border-color:#d7cff0;background:#faf8ff;color:var(--accent-dark);}
+    .selection-toolbar #selectVisibleAssetsButton {background:#f7f6fa;border-color:#f0edf4;}
+    .selection-toolbar #moveSelectedAssetsButton {min-width:75px;border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
     .selection-toolbar #moveSelectedAssetsButton:hover {background:var(--accent-dark);}
-    .selection-toolbar .selection-delete {background:#fff5f5;color:#ad4851;}
-    .selection-toolbar .selection-delete:hover {background:#fde9eb;color:#993740;}
-    .selection-toolbar #exitSelectionButton {background:transparent;color:#7d8290;}
+    .selection-toolbar .selection-delete {border-color:#f2e1e2;background:#fff8f8;color:#ad4851;}
+    .selection-toolbar .selection-delete:hover {border-color:#efd0d3;background:#fde9eb;color:#993740;}
+    .selection-toolbar #exitSelectionButton {height:34px;padding:0 10px;border-color:transparent;background:transparent;color:#858997;font-size:10px;}
     .selection-active .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
     .asset-grid.selection-mode .asset-actions {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
@@ -315,12 +319,17 @@
       .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
-      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:10px;border-radius:15px;}
-      .selection-count{grid-column:span 2;}
-      .selection-toolbar #selectVisibleAssetsButton{grid-column:span 2;}
-      .selection-toolbar select{grid-column:span 2;height:35px;}
-      .selection-toolbar button{min-width:0;padding:0 7px;font-size:10px;}
-      .selection-active .toast{bottom:calc(126px + env(safe-area-inset-bottom));}
+      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:11px;border-radius:17px;}
+      .selection-toolbar-top{grid-column:1/-1;}
+      .selection-count{padding:6px 9px;font-size:11px;}
+      .selection-toolbar #selectVisibleAssetsButton{grid-column:1/-1;width:100%;}
+      .selection-move-group{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:7px;}
+      .selection-batch-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+      .selection-toolbar select{height:42px;font-size:12px;}
+      .selection-toolbar button{height:42px;min-width:0;padding:0 10px;font-size:11px;}
+      .selection-toolbar #moveSelectedAssetsButton{min-width:0;}
+      .selection-toolbar #exitSelectionButton{height:34px;}
+      .selection-active .toast{bottom:calc(220px + env(safe-area-inset-bottom));}
       .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
       .library-folder-card{padding:11px 9px;gap:8px;}
       .library-folder-icon{width:34px;height:32px;}
@@ -438,13 +447,10 @@
       <div class="library-folder-grid" id="libraryFolderGrid" aria-label="素材库文件夹"></div>
       <div class="library-message" id="libraryMessage"></div>
       <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="批量操作" hidden>
-        <span class="selection-count" id="selectionCount">已选 0 项</span>
+        <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><button type="button" id="exitSelectionButton">完成</button></div>
         <button type="button" id="selectVisibleAssetsButton">全选当前列表</button>
-        <select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select>
-        <button type="button" id="moveSelectedAssetsButton">移动</button>
-        <button type="button" id="copySelectedAssetsButton">批量复制</button>
-        <button type="button" class="selection-delete" id="deleteSelectedAssetsButton">删除</button>
-        <button type="button" id="exitSelectionButton">完成</button>
+        <div class="selection-move-group"><select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select><button type="button" id="moveSelectedAssetsButton">移动</button></div>
+        <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton">批量复制</button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton">删除</button></div>
       </div>
       <div class="asset-grid" id="assetGrid"><div class="empty-state"><strong>连接仓库后查看素材</strong>素材库会读取当前 GitHub 仓库中的文件。</div></div>
     </section>
