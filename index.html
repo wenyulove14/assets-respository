@@ -75,6 +75,16 @@
     .folder-dialog p {font-size:11px;color:var(--muted);margin:0 0 17px;}
     .folder-dialog .form-field {margin-bottom:16px;}
     .folder-dialog-actions {display:flex;justify-content:flex-end;gap:8px;}
+    .folder-manage-dialog {width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
+    .folder-manage-dialog::backdrop {background:#22263170;backdrop-filter:blur(3px);}
+    .folder-manage-dialog form {padding:22px;}
+    .folder-manage-dialog h2 {font-size:16px;margin:0 0 5px;}
+    .folder-manage-dialog p {font-size:11px;color:var(--muted);line-height:1.6;margin:0 0 17px;}
+    .folder-manage-dialog .form-field {margin-bottom:16px;}
+    .folder-manage-actions {display:flex;justify-content:space-between;gap:8px;align-items:center;}
+    .folder-manage-actions span {display:flex;gap:8px;}
+    .folder-remove-button {height:35px;padding:0 11px;border:0;border-radius:8px;background:#fff0f1;color:#a43e48;font-size:11px;}
+    .folder-remove-button:hover {background:#fde3e5;}
     .search-wrap {position:relative;flex:1;}
     .search-wrap svg {position:absolute;left:12px;top:11px;width:16px;color:#a0a5af;pointer-events:none;}
     .search-wrap input {padding-left:37px;height:41px;}
@@ -229,17 +239,23 @@
     .format-preset-row select,.format-preset-row input {height:35px;min-width:0;font-size:11px;}
     .format-preset-row button,.format-builder button {border:1px solid var(--line);border-radius:8px;background:#fff;color:#626875;font-size:10px;}
     .format-preset-row button {padding:0 10px;}
-    .format-token-palette {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
-    .format-token-palette button {padding:7px 10px;background:#faf9fd;}
-    .format-token-palette button:hover,.format-preset-row button:hover {border-color:#d5cbf4;color:var(--accent-dark);background:var(--accent-soft);}
-    .format-builder {display:flex;flex-wrap:wrap;gap:7px;min-height:52px;padding:9px;border:1px dashed #d9d5e4;border-radius:10px;background:#faf9fc;}
+    .format-token-palette {display:grid;gap:13px;margin-bottom:14px;}
+    .format-palette-group {display:grid;gap:7px;}
+    .format-palette-title {color:#8b8e9a;font-size:9px;font-weight:700;letter-spacing:.04em;}
+    .format-palette-items {display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:7px;}
+    .format-token-palette button {min-width:0;min-height:56px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:7px 9px;border:1px solid #ebe8f3;border-radius:10px;background:linear-gradient(145deg,#fff,#fbfaff);color:#646777;box-shadow:0 2px 6px #35265b08;text-align:left;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;}
+    .format-token-glyph {max-width:100%;overflow:hidden;color:var(--accent);font-size:16px;font-weight:700;line-height:1.1;white-space:nowrap;}
+    .format-token-label {overflow:hidden;max-width:100%;color:#7d8290;font-size:9px;text-overflow:ellipsis;white-space:nowrap;}
+    .format-token-palette button:hover {transform:translateY(-1px);border-color:#cfc4f3;background:linear-gradient(145deg,#fff,#f5f2ff);box-shadow:0 4px 10px #7557e817;}
+    .format-preset-row button:hover {border-color:#d5cbf4;color:var(--accent-dark);background:var(--accent-soft);}
+    .format-builder {display:flex;flex-wrap:wrap;align-items:center;gap:7px;min-height:58px;padding:10px;border:1px solid #ebe8f3;border-radius:12px;background:linear-gradient(145deg,#faf9fd,#f5f3fa);}
     .format-builder:empty::before {content:"点击上方卡片添加到格式";align-self:center;color:#a0a5af;font-size:10px;}
-    .format-token {display:inline-flex;align-items:center;gap:5px;padding:5px 6px 5px 9px;border:1px solid #e5e0f2!important;border-radius:8px!important;background:#fff!important;color:var(--accent-dark)!important;}
-    .format-token span {font-size:10px;}
+    .format-token {display:inline-flex;align-items:center;gap:7px;padding:6px 7px 6px 10px;border:1px solid #e4def3;border-radius:10px;background:#fff;color:var(--accent-dark);box-shadow:0 2px 6px #35265b0a;}
+    .format-token-label {font-size:10px;}
     .format-token small {display:flex;gap:2px;}
-    .format-token small button {width:18px;height:18px;padding:0;border:0;background:transparent;color:#818694;font-size:10px;}
-    .format-token small button:hover {color:var(--accent);}
-    .format-preview {margin-top:10px;padding:10px;border-radius:8px;background:#f5f5f8;color:#747a86;font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;}
+    .format-token small button {width:19px;height:19px;padding:0;border:0;border-radius:6px;background:#f5f3fb;color:#818694;font-size:10px;}
+    .format-token small button:hover {background:var(--accent-soft);color:var(--accent-dark);}
+    .format-preview {margin-top:10px;padding:11px 12px;border:1px solid #ebe8f3;border-radius:10px;background:#fff;color:#747a86;font:10px/1.7 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;}
     .format-status {min-height:15px;margin-top:7px;color:var(--muted);font-size:10px;}
     .side-title { display:flex;justify-content:space-between;align-items:center;margin-bottom:17px; }
     .side-title h2 {font-size:13px;margin:0;}
@@ -408,7 +424,7 @@
     </main>
 
     <section class="library-view" id="libraryView">
-      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。长按素材可多选。</p></div>
+      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。长按素材可多选，长按文件夹可重命名或删除。</p></div>
       <div class="library-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="assetSearch" type="text" placeholder="搜索文件名或目录…" aria-label="搜索素材"></label><button class="add-folder-button" id="addFolderButton" type="button" aria-label="新建素材库文件夹" title="新建文件夹"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="library-count" id="assetCount">尚未加载</span></div>
       <div class="base-category-tabs" id="baseCategoryTabs" role="tablist" aria-label="按素材类型浏览">
         <button type="button" class="base-category-tab active" data-folder="" role="tab" aria-selected="true">全部 <small data-count="">0</small></button>
@@ -448,9 +464,7 @@
         <div class="side-title"><h2>批量复制格式</h2><span class="settings-icon">Aa</span></div>
         <p class="format-help">添加内容卡片来拼接复制格式。名称优先使用网页中设置的自定义名称；未设置时使用文件名。</p>
         <div class="format-preset-row"><select id="formatPresetSelect" aria-label="选择复制格式预设"></select><input id="formatPresetName" type="text" maxlength="40" placeholder="预设名称" aria-label="预设名称"><button type="button" id="saveFormatPresetButton">保存</button><button type="button" id="deleteFormatPresetButton" aria-label="删除所选预设">删除</button></div>
-        <div class="format-token-palette" id="formatTokenPalette" aria-label="可添加的格式卡片">
-          <button type="button" data-token="name">名称</button><button type="button" data-token="url">链接</button><button type="button" data-token="newline">↵ 回车</button><button type="button" data-token="space">空格</button><button type="button" data-token="colon">:</button><button type="button" data-token="dash">-</button><button type="button" data-token="comma">,</button><button type="button" data-token="period">.</button><button type="button" data-token="leftParen">(</button><button type="button" data-token="rightParen">)</button>
-        </div>
+        <div class="format-token-palette" id="formatTokenPalette" aria-label="可添加的格式卡片"></div>
         <div class="format-builder" id="formatBuilder" aria-label="当前格式卡片"></div>
         <div class="format-preview" id="formatPreview"></div>
         <div class="format-status" id="formatStatus" role="status"></div>
@@ -477,6 +491,14 @@
     <div class="folder-dialog-actions"><button type="button" class="dialog-button" id="cancelFolderCreate">取消</button><button type="submit" class="dialog-button primary" id="createFolderButton">创建文件夹</button></div>
   </form>
 </dialog>
+<dialog class="folder-manage-dialog" id="folderManageDialog">
+  <form id="folderManageForm">
+    <h2>管理文件夹</h2>
+    <p>重命名或删除素材库分类。删除只会将其中素材改为未分类，不会删除仓库文件或更改素材链接。</p>
+    <div class="form-field"><label for="managedFolderName">文件夹名称</label><input id="managedFolderName" type="text" maxlength="80" required></div>
+    <div class="folder-manage-actions"><button type="button" class="folder-remove-button" id="deleteManagedFolderButton">删除文件夹</button><span><button type="button" class="dialog-button" id="cancelFolderManage">取消</button><button type="submit" class="dialog-button primary">保存名称</button></span></div>
+  </form>
+</dialog>
 <dialog class="preview-dialog" id="assetPreviewDialog" aria-labelledby="previewTitle">
   <div class="preview-window">
     <header class="preview-header"><div class="preview-heading"><h2 id="previewTitle"></h2><div class="preview-meta" id="previewMeta"></div></div><button type="button" class="preview-close" id="closeAssetPreview" aria-label="关闭预览">×</button></header>
@@ -493,6 +515,9 @@
   const uploadNames = new WeakMap();
   let activeNamingAsset = null;
   let activePreviewAsset = null;
+  let activeManagedFolder = "";
+  let folderLongPressTimer = null;
+  let folderClickSuppressedUntil = 0;
   let assetDeleteInProgress = false;
   let selectionMode = false;
   let longPressTimer = null;
@@ -500,7 +525,18 @@
   let suppressAssetClickUntil = 0;
   let repositoryVerified = false;
   let toastTimer;
-  const formatTokenLabels = { name: "名称", url: "链接", newline: "↵ 回车", space: "空格", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" };
+  const formatTokenGroups = [
+    { title: "内容", items: [["name", "Aa", "名称"], ["url", "↗", "链接"], ["newline", "↵", "回车"], ["space", "␠", "空格"]] },
+    { title: "英文标点", items: [["colon", ":", "冒号"], ["dash", "-", "连字符"], ["comma", ",", "逗号"], ["period", ".", "句号"], ["enQuestion", "?", "问号"], ["enExclamation", "!", "感叹号"], ["enSemicolon", ";", "分号"], ["leftParen", "(", "左圆括号"], ["rightParen", ")", "右圆括号"], ["enLeftBracket", "[", "左方括号"], ["enRightBracket", "]", "右方括号"], ["enDoubleQuote", "\"", "双引号"], ["enSingleQuote", "'", "单引号"], ["enSlash", "/", "斜线"], ["enBackslash", "\\", "反斜线"], ["enUnderscore", "_", "下划线"], ["enAt", "@", "@"], ["enHash", "#", "井号"]] },
+    { title: "中文标点", items: [["zhColon", "：", "冒号"], ["zhDash", "——", "破折号"], ["zhComma", "，", "逗号"], ["zhListComma", "、", "顿号"], ["zhPeriod", "。", "句号"], ["zhQuestion", "？", "问号"], ["zhExclamation", "！", "感叹号"], ["zhSemicolon", "；", "分号"], ["zhLeftParen", "（", "左圆括号"], ["zhRightParen", "）", "右圆括号"], ["zhLeftBracket", "【", "左方括号"], ["zhRightBracket", "】", "右方括号"], ["zhLeftTitle", "《", "书名号"], ["zhRightTitle", "》", "书名号"], ["zhLeftCorner", "「", "左直角引号"], ["zhRightCorner", "」", "右直角引号"], ["zhLeftDoubleQuote", "“", "左双引号"], ["zhRightDoubleQuote", "”", "右双引号"], ["zhLeftSingleQuote", "‘", "左单引号"], ["zhRightSingleQuote", "’", "右单引号"]] },
+    { title: "其他符号", items: [["bullet", "·", "间隔点"], ["ellipsis", "...", "英文省略号"], ["zhEllipsis", "……", "中文省略号"], ["ampersand", "&", "和号"], ["plus", "+", "加号"], ["equals", "=", "等号"], ["percent", "%", "百分号"], ["asterisk", "*", "星号"], ["pipe", "|", "竖线"], ["tilde", "~", "波浪号"]] }
+  ];
+  const formatTokenLabels = Object.fromEntries(formatTokenGroups.flatMap((group) => group.items.map(([token, , label]) => [token, label])));
+  const formatTokenValues = Object.fromEntries(formatTokenGroups.flatMap((group) => group.items.map(([token, glyph]) => [token, glyph])));
+  formatTokenValues.name = "示例素材名称";
+  formatTokenValues.url = "https://example.com/asset.png";
+  formatTokenValues.newline = "\n";
+  formatTokenValues.space = " ";
   let formatPresets = loadFormatPresets();
   let activeFormatPresetId = formatPresets[0]?.id || "";
   let formatTokens = [...(formatPresets[0]?.tokens || ["url"])];
@@ -629,6 +665,9 @@
     renderAssets();
   });
   document.getElementById("libraryFolderGrid").addEventListener("click", (event) => {
+    if (Date.now() < folderClickSuppressedUntil) {
+      event.preventDefault(); event.stopPropagation(); folderClickSuppressedUntil = 0; return;
+    }
     const folder = event.target.closest(".library-folder-card");
     if (!folder) return;
     selectedLibraryFolder = folder.dataset.category;
@@ -636,6 +675,31 @@
     selectionMode = false;
     renderAssets();
   });
+  const libraryFolderGrid = document.getElementById("libraryFolderGrid");
+  libraryFolderGrid.addEventListener("pointerdown", (event) => {
+    const folder = event.target.closest(".library-folder-card");
+    if (!folder || event.button !== 0) return;
+    clearTimeout(folderLongPressTimer);
+    const category = folder.dataset.category;
+    folderLongPressTimer = setTimeout(() => {
+      folderLongPressTimer = null;
+      folderClickSuppressedUntil = Date.now() + 1000;
+      activeManagedFolder = category;
+      const input = document.getElementById("managedFolderName");
+      input.value = category;
+      document.getElementById("folderManageDialog").showModal();
+      input.focus(); input.select();
+    }, 550);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((eventName) => libraryFolderGrid.addEventListener(eventName, () => {
+    clearTimeout(folderLongPressTimer); folderLongPressTimer = null;
+  }));
+  libraryFolderGrid.addEventListener("contextmenu", (event) => {
+    if (event.target.closest(".library-folder-card")) event.preventDefault();
+  });
+  document.getElementById("folderManageForm").addEventListener("submit", renameManagedFolder);
+  document.getElementById("cancelFolderManage").addEventListener("click", () => document.getElementById("folderManageDialog").close());
+  document.getElementById("deleteManagedFolderButton").addEventListener("click", deleteManagedFolder);
   document.getElementById("folderBackButton").addEventListener("click", () => {
     selectedLibraryFolder = "";
     selectedAssets.clear();
@@ -668,6 +732,7 @@
   document.getElementById("formatPresetSelect").addEventListener("change", loadSelectedFormatPreset);
   document.getElementById("saveFormatPresetButton").addEventListener("click", saveFormatPreset);
   document.getElementById("deleteFormatPresetButton").addEventListener("click", deleteFormatPreset);
+  renderFormatPalette();
   renderFormatPresets();
   renderFormatBuilder();
   document.getElementById("moveSelectedAssetsButton").addEventListener("click", moveSelectedAssets);
@@ -1165,6 +1230,23 @@
     document.getElementById("deleteFormatPresetButton").disabled = !current;
   }
 
+  function renderFormatPalette() {
+    const palette = document.getElementById("formatTokenPalette");
+    palette.replaceChildren();
+    formatTokenGroups.forEach((group) => {
+      const section = document.createElement("section"); section.className = "format-palette-group";
+      const heading = document.createElement("div"); heading.className = "format-palette-title"; heading.textContent = group.title;
+      const items = document.createElement("div"); items.className = "format-palette-items";
+      group.items.forEach(([token, glyph, label]) => {
+        const button = document.createElement("button"); button.type = "button"; button.dataset.token = token; button.title = label;
+        const symbol = document.createElement("span"); symbol.className = "format-token-glyph"; symbol.textContent = glyph;
+        const text = document.createElement("span"); text.className = "format-token-label"; text.textContent = label;
+        button.append(symbol, text); items.append(button);
+      });
+      section.append(heading, items); palette.append(section);
+    });
+  }
+
   function loadSelectedFormatPreset() {
     activeFormatPresetId = document.getElementById("formatPresetSelect").value;
     const preset = formatPresets.find((item) => item.id === activeFormatPresetId);
@@ -1178,14 +1260,14 @@
     builder.replaceChildren();
     formatTokens.forEach((token, index) => {
       const chip = document.createElement("div"); chip.className = "format-token";
-      const label = document.createElement("span"); label.textContent = formatTokenLabels[token] || token;
+      const label = document.createElement("span"); label.className = "format-token-label"; label.textContent = formatTokenLabels[token] || token;
       const controls = document.createElement("small");
       [["left", "←", "左移"], ["right", "→", "右移"], ["remove", "×", "移除"]].forEach(([action, glyph, title]) => {
         const button = document.createElement("button"); button.type = "button"; button.dataset.action = action; button.dataset.tokenIndex = String(index); button.title = title; button.setAttribute("aria-label", `${title} ${label.textContent}`); button.textContent = glyph; controls.append(button);
       });
       chip.append(label, controls); builder.append(chip);
     });
-    const preview = formatTokens.map((token) => ({ name: "三日月宗近立绘", url: "https://example.com/character.png", newline: "\n", space: " ", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" }[token] || "")).join("");
+    const preview = formatTokens.map((token) => formatTokenValues[token] || "").join("");
     document.getElementById("formatPreview").textContent = preview || "预览会显示在这里";
   }
 
@@ -1218,11 +1300,10 @@
   async function copySelectedAssetsWithFormat() {
     const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
     if (!chosen.length) { showToast("请先选择素材", true); return; }
-    const values = { newline: "\n", space: " ", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" };
     const formatted = chosen.map((asset) => formatTokens.map((token) => {
       if (token === "name") return customNameForAsset(asset) || asset.name;
       if (token === "url") return asset.url;
-      return values[token] || "";
+      return formatTokenValues[token] || "";
     }).join("")).join("\n");
     try { await navigator.clipboard.writeText(formatted); showToast(`已按「${formatPresets.find((item) => item.id === activeFormatPresetId)?.name || "当前格式"}」复制 ${chosen.length} 项`); }
     catch { showToast("复制失败，请检查浏览器剪贴板权限", true); }
@@ -1371,6 +1452,49 @@
     } catch (error) {
       showToast(`文件夹已在本地创建，但仓库 JSON 保存失败：${error.message}`, true);
     }
+  }
+
+  function currentFolderMetadataPrefix() {
+    const owner = document.getElementById("owner").value.trim();
+    const repo = document.getElementById("repo").value.trim();
+    const branch = document.getElementById("branch").value.trim() || "main";
+    return `${owner}/${repo}@${branch}:`;
+  }
+
+  async function renameManagedFolder(event) {
+    event.preventDefault();
+    const nextName = document.getElementById("managedFolderName").value.trim();
+    if (!activeManagedFolder || !nextName) { showToast("请输入文件夹名称", true); return; }
+    if (nextName !== activeManagedFolder && localCategories.includes(nextName)) { showToast("这个文件夹名称已经存在", true); return; }
+    const previousName = activeManagedFolder;
+    if (nextName === previousName) { document.getElementById("folderManageDialog").close(); return; }
+    localCategories = localCategories.map((category) => category === previousName ? nextName : category);
+    const prefix = currentFolderMetadataPrefix();
+    Object.entries(assetCategoryMap).forEach(([key, category]) => {
+      if (key.startsWith(prefix) && category === previousName) assetCategoryMap[key] = nextName;
+    });
+    activeManagedFolder = nextName;
+    saveLocalClassification(); renderAssets();
+    document.getElementById("folderManageDialog").close();
+    try { await persistFolderMetadata(); showToast(`文件夹已重命名为「${nextName}」，并保存到仓库 JSON`); }
+    catch (error) { showToast(`已在本地重命名，但仓库 JSON 保存失败：${error.message}`, true); }
+  }
+
+  async function deleteManagedFolder() {
+    if (!activeManagedFolder) return;
+    const category = activeManagedFolder;
+    if (!window.confirm(`确定删除文件夹「${category}」吗？\n\n文件夹里的素材会变为未分类，仓库文件不会删除。`)) return;
+    localCategories = localCategories.filter((item) => item !== category);
+    const prefix = currentFolderMetadataPrefix();
+    Object.entries(assetCategoryMap).forEach(([key, assignedCategory]) => {
+      if (key.startsWith(prefix) && assignedCategory === category) delete assetCategoryMap[key];
+    });
+    activeManagedFolder = "";
+    selectedLibraryFolder = "";
+    saveLocalClassification(); renderAssets();
+    document.getElementById("folderManageDialog").close();
+    try { await persistFolderMetadata(); showToast(`文件夹「${category}」已删除，素材已改为未分类`); }
+    catch (error) { showToast(`已在本地删除分类，但仓库 JSON 保存失败：${error.message}`, true); }
   }
 
   async function deleteAssets(assets) {
