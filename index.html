@@ -100,14 +100,12 @@
     .selection-toolbar .selection-delete:hover {background:#fde9eb;color:#993740;}
     .selection-toolbar #exitSelectionButton {background:transparent;color:#7d8290;}
     .selection-active .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
-    .asset-grid.selection-mode .asset-actions,.asset-grid.selection-mode .asset-folder-move {visibility:hidden;}
+    .asset-grid.selection-mode .asset-actions {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
     .asset-thumb img {width:100%;height:100%;object-fit:cover;}
     .asset-body {padding:11px 12px 12px;}
     .asset-name {font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .asset-path {font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
-    .asset-folder-move {display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--muted);font-size:10px;}
-    .asset-folder-move select {height:31px;min-width:0;flex:1;padding:0 26px 0 8px;font-size:10px;border-radius:7px;}
     .asset-actions {display:flex;justify-content:space-between;align-items:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
     .asset-type {font-size:9px;color:#7d8290;background:#f3f4f7;border-radius:5px;padding:3px 6px;text-transform:uppercase;}
     .asset-actions .copy-button {font-size:10px;padding:5px 8px;}
@@ -115,6 +113,10 @@
     .asset-actions .rename-button:hover {border-color:#c7bdf8;color:var(--accent);}
     .asset-actions .delete-button {font-size:10px;padding:5px 7px;border:1px solid #f0d9dc;border-radius:7px;background:white;color:#b64c55;}
     .asset-actions .delete-button:hover {background:#fff5f6;border-color:#e8b9bf;}
+    .asset-actions button {width:32px;height:32px;display:inline-grid;place-items:center;flex:none;padding:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:#747a86;}
+    .asset-actions button svg {width:15px;height:15px;}
+    .asset-actions .copy-button:hover,.asset-actions .rename-button:hover {background:var(--accent-soft);border-color:#d8cff7;color:var(--accent-dark);}
+    .asset-actions .delete-button {border-color:#f0d9dc;color:#b64c55;}
     .name-dialog {width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
     .name-dialog::backdrop {background:#22263170;backdrop-filter:blur(3px);}
     .name-dialog form {padding:22px;}
@@ -268,11 +270,9 @@
       .library-folder-icon{width:34px;height:32px;}
       .asset-thumb{height:clamp(105px,34vw,150px);}
       .asset-body{padding:9px;}
-      .asset-folder-move{align-items:flex-start;flex-direction:column;gap:4px;}
-      .asset-folder-move select{width:100%;flex:auto;}
-      .asset-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
+      .asset-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
       .asset-type{grid-column:1/-1;width:max-content;}
-      .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:100%;min-height:32px;padding:6px 4px;font-size:10px;}
+      .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:100%;height:34px;min-height:34px;}
       .empty-state{padding:38px 14px;font-size:12px;}
     }
     @media(max-width:520px) {
@@ -461,7 +461,7 @@
     document.getElementById("connectionDot").classList.toggle("ready", repositoryVerified);
   }
 
-  async function saveSettingsAndVerify() {
+  async function saveSettingsAndVerify({ notify = true } = {}) {
     const token = document.getElementById("token").value.trim();
     const owner = document.getElementById("owner").value.trim();
     const repo = document.getElementById("repo").value.trim();
@@ -472,7 +472,7 @@
     if (!token || !owner || !repo) {
       feedback.className = "connection-feedback error";
       feedback.textContent = "请填写 GitHub 用户名、仓库名和 Token。";
-      showToast("仓库设置尚未填写完整", true);
+      if (notify) showToast("仓库设置尚未填写完整", true);
       return;
     }
     branchInput.value = branch;
@@ -499,14 +499,14 @@
       updateRepositoryState();
       feedback.className = "connection-feedback success";
       feedback.textContent = `连接成功：${owner}/${repo} · ${branch}`;
-      showToast("仓库连接验证成功");
+      if (notify) showToast("仓库连接验证成功");
     } catch (error) {
       repositoryVerified = false;
       updateRepositoryState();
       const detail = error instanceof TypeError ? "无法连接 GitHub API，请检查网络连接。" : error.message;
       feedback.className = "connection-feedback error";
       feedback.textContent = detail;
-      showToast("仓库连接验证失败", true);
+      if (notify) showToast("仓库连接验证失败", true);
     } finally {
       button.disabled = false;
       button.textContent = "保存设置并验证连接";
@@ -525,6 +525,9 @@
   });
   document.getElementById("uploadButton").addEventListener("click", upload);
   document.getElementById("saveSettingsButton").addEventListener("click", saveSettingsAndVerify);
+  if (["token", "owner", "repo"].every((id) => Boolean(localStorage.getItem(id)?.trim()))) {
+    saveSettingsAndVerify({ notify: false });
+  }
   document.getElementById("uploadNav").addEventListener("click", () => setPage("upload"));
   document.getElementById("libraryNav").addEventListener("click", () => setPage("library"));
   document.getElementById("settingsNav").addEventListener("click", () => setPage("settings"));
@@ -1056,7 +1059,7 @@
       if (selectedAssets.has(asset.path)) card.classList.add("is-selected");
       const visual = document.createElement("div"); visual.className = "asset-visual";
       const selectionCheck = document.createElement("span"); selectionCheck.className = "selection-check"; selectionCheck.setAttribute("aria-hidden", "true"); selectionCheck.textContent = "✓";
-      const thumb = document.createElement("a"); thumb.className = "asset-thumb"; thumb.href = asset.url; thumb.target = "_blank"; thumb.rel = "noopener"; thumb.title = "在新标签页打开素材";
+      const thumb = document.createElement("div"); thumb.className = "asset-thumb"; thumb.setAttribute("aria-label", `素材预览：${asset.name}`);
       if (/\.(png|jpe?g|gif|webp|svg|avif)$/i.test(asset.name)) {
         const image = document.createElement("img"); image.src = asset.url; image.alt = asset.name; image.loading = "lazy";
         image.onerror = () => { thumb.textContent = "图片预览不可用"; };
@@ -1064,32 +1067,14 @@
       } else thumb.textContent = asset.name.split(".").pop().toUpperCase() || "FILE";
       const body = document.createElement("div"); body.className = "asset-body";
       const name = document.createElement("div"); name.className = "asset-name"; name.textContent = customNameForAsset(asset) || defaultDisplayName(asset.name); name.title = name.textContent;
-      const path = document.createElement("div"); path.className = "asset-path"; path.textContent = `文件：${asset.name}`; path.title = asset.path;
-      const location = document.createElement("div"); location.className = "asset-path"; location.textContent = `路径：${asset.path}`; location.title = asset.path;
-      const folderMove = document.createElement("label"); folderMove.className = "asset-folder-move"; folderMove.textContent = "文件夹";
-      const folderSelect = document.createElement("select"); folderSelect.setAttribute("aria-label", `将 ${asset.name} 放入文件夹`);
-      [...new Set([uncategorized, ...localCategories])].forEach((category) => {
-        const option = document.createElement("option"); option.value = category; option.textContent = category; folderSelect.append(option);
-      });
-      folderSelect.value = categoryForAsset(asset);
-      folderSelect.addEventListener("change", () => {
-        const category = folderSelect.value;
-        if (category === uncategorized) delete assetCategoryMap[assetCategoryKey(asset)];
-        else assetCategoryMap[assetCategoryKey(asset)] = category;
-        saveLocalClassification();
-        renderAssets();
-        persistFolderMetadata()
-          .then(() => showToast(`已将素材放入「${category}」，并保存到仓库 JSON`))
-          .catch((error) => showToast(`分类已保存在本地，但仓库 JSON 保存失败：${error.message}`, true));
-      });
-      folderMove.append(folderSelect);
       const actions = document.createElement("div"); actions.className = "asset-actions";
       const type = document.createElement("span"); type.className = "asset-type"; type.textContent = asset.name.includes(".") ? asset.name.split(".").pop() : "file";
-      const copy = document.createElement("button"); copy.className = "copy-button"; copy.type = "button"; copy.textContent = "复制链接";
-      copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(asset.url); copy.textContent = "已复制"; setTimeout(() => copy.textContent = "复制链接", 1400); } catch { showToast("无法访问剪贴板，请手动复制链接", true); } });
-      const rename = document.createElement("button"); rename.className = "rename-button"; rename.type = "button"; rename.dataset.path = asset.path; rename.textContent = "编辑名称";
-      const remove = document.createElement("button"); remove.className = "delete-button"; remove.type = "button"; remove.dataset.path = asset.path; remove.textContent = "删除";
-      actions.append(type, copy, rename, remove); body.append(name, path, location, folderMove, actions); visual.append(selectionCheck, thumb); card.append(visual, body); grid.append(card);
+      const copyIcon = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1" stroke="currentColor" stroke-width="1.7"/></svg>';
+      const copy = document.createElement("button"); copy.className = "copy-button"; copy.type = "button"; copy.innerHTML = copyIcon; copy.setAttribute("aria-label", "复制链接"); copy.title = "复制链接";
+      copy.addEventListener("click", async () => { try { await navigator.clipboard.writeText(asset.url); copy.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; copy.setAttribute("aria-label", "已复制链接"); copy.title = "已复制链接"; setTimeout(() => { copy.innerHTML = copyIcon; copy.setAttribute("aria-label", "复制链接"); copy.title = "复制链接"; }, 1400); } catch { showToast("无法访问剪贴板，请手动复制链接", true); } });
+      const rename = document.createElement("button"); rename.className = "rename-button"; rename.type = "button"; rename.dataset.path = asset.path; rename.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 5 5 5M4 20l4.2-.9L19 8.3a2.1 2.1 0 0 0-3-3L5.2 16.1 4 20Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'; rename.setAttribute("aria-label", "编辑名称"); rename.title = "编辑名称";
+      const remove = document.createElement("button"); remove.className = "delete-button"; remove.type = "button"; remove.dataset.path = asset.path; remove.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'; remove.setAttribute("aria-label", "删除素材"); remove.title = "删除素材";
+      actions.append(type, copy, rename, remove); body.append(name, actions); visual.append(selectionCheck, thumb); card.append(visual, body); grid.append(card);
     });
   }
 
