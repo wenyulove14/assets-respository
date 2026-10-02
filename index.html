@@ -106,17 +106,19 @@
     .asset-body {padding:11px 12px 12px;}
     .asset-name {font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .asset-path {font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
-    .asset-actions {display:flex;justify-content:space-between;align-items:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
+    .asset-actions {display:flex;justify-content:flex-end;align-items:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
     .asset-type {font-size:9px;color:#7d8290;background:#f3f4f7;border-radius:5px;padding:3px 6px;text-transform:uppercase;}
+    .asset-actions .asset-type {margin-right:auto;}
     .asset-actions .copy-button {font-size:10px;padding:5px 8px;}
     .asset-actions .rename-button {font-size:10px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:white;color:#5e6470;}
     .asset-actions .rename-button:hover {border-color:#c7bdf8;color:var(--accent);}
     .asset-actions .delete-button {font-size:10px;padding:5px 7px;border:1px solid #f0d9dc;border-radius:7px;background:white;color:#b64c55;}
     .asset-actions .delete-button:hover {background:#fff5f6;border-color:#e8b9bf;}
-    .asset-actions button {width:32px;height:32px;display:inline-grid;place-items:center;flex:none;padding:0;border:1px solid var(--line);border-radius:8px;background:#fff;color:#747a86;}
+    .asset-actions button {width:32px;height:32px;display:inline-grid;place-items:center;flex:none;padding:0;border:0;border-radius:8px;background:transparent;color:#747a86;}
     .asset-actions button svg {width:15px;height:15px;}
     .asset-actions .copy-button:hover,.asset-actions .rename-button:hover {background:var(--accent-soft);border-color:#d8cff7;color:var(--accent-dark);}
-    .asset-actions .delete-button {border-color:#f0d9dc;color:#b64c55;}
+    .asset-actions .delete-button {color:#b64c55;}
+    .asset-actions .delete-button:hover {background:#fff0f1;color:#a43e48;}
     .name-dialog {width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
     .name-dialog::backdrop {background:#22263170;backdrop-filter:blur(3px);}
     .name-dialog form {padding:22px;}
@@ -125,6 +127,25 @@
     .name-dialog .form-field {margin-bottom:16px;}
     .name-dialog-actions {display:flex;justify-content:space-between;gap:9px;align-items:center;}
     .name-dialog-actions span {display:flex;gap:8px;}
+    .preview-dialog {width:min(920px,calc(100% - 32px));max-width:none;max-height:min(88vh,900px);border:1px solid var(--line);border-radius:18px;padding:0;overflow:hidden;background:#fff;color:var(--ink);box-shadow:0 24px 80px #20242c45;}
+    .preview-dialog::backdrop {background:#1e202970;backdrop-filter:blur(4px);}
+    .preview-window {display:flex;flex-direction:column;max-height:min(88vh,900px);}
+    .preview-header {display:flex;align-items:center;gap:16px;padding:15px 18px;border-bottom:1px solid var(--line);}
+    .preview-heading {min-width:0;flex:1;}
+    .preview-heading h2 {margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px;}
+    .preview-meta {margin-top:3px;color:var(--muted);font-size:10px;}
+    .preview-close {width:34px;height:34px;flex:none;border:0;border-radius:9px;background:#f4f4f7;color:#676d79;font-size:19px;line-height:1;}
+    .preview-close:hover {background:var(--accent-soft);color:var(--accent-dark);}
+    .preview-content {min-height:180px;max-height:calc(88vh - 122px);overflow:auto;display:grid;place-items:center;padding:18px;background:#f6f7f9;}
+    .preview-image,.preview-video {display:block;max-width:100%;max-height:calc(88vh - 165px);object-fit:contain;border-radius:8px;}
+    .preview-audio {width:min(640px,100%);}
+    .preview-pdf {width:100%;height:min(72vh,720px);border:0;border-radius:8px;background:#fff;}
+    .preview-text {width:100%;max-height:calc(88vh - 180px);overflow:auto;margin:0;padding:16px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#343943;font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;}
+    .preview-message {max-width:440px;padding:22px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7;}
+    .preview-message strong {display:block;margin-bottom:6px;color:#555b67;font-size:14px;}
+    .preview-open-link {display:inline-flex;align-items:center;justify-content:center;min-height:36px;margin-top:14px;padding:0 13px;border-radius:9px;background:var(--accent-soft);color:var(--accent-dark);font-size:11px;font-weight:650;text-decoration:none;}
+    .preview-footer {display:flex;justify-content:flex-end;gap:8px;padding:11px 16px;border-top:1px solid var(--line);}
+    .preview-footer .dialog-button {display:inline-flex;align-items:center;justify-content:center;text-decoration:none;}
     .dialog-button {height:35px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:white;color:#5e6470;font-size:11px;}
     .dialog-button.primary {height:35px;border:0;background:var(--accent);color:white;}
     .empty-state {grid-column:1/-1;text-align:center;padding:58px 20px;border:1px dashed #dfe1e8;border-radius:13px;color:var(--muted);background:#fff;}
@@ -270,9 +291,8 @@
       .library-folder-icon{width:34px;height:32px;}
       .asset-thumb{height:clamp(105px,34vw,150px);}
       .asset-body{padding:9px;}
-      .asset-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
-      .asset-type{grid-column:1/-1;width:max-content;}
-      .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:100%;height:34px;min-height:34px;}
+      .asset-actions{display:flex;justify-content:flex-end;gap:4px;}
+      .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:30px;height:32px;min-height:32px;}
       .empty-state{padding:38px 14px;font-size:12px;}
     }
     @media(max-width:520px) {
@@ -296,6 +316,14 @@
       .url-line{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;}
       .url-line code{width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45;padding:8px;}
       .url-line .copy-button{width:100%;min-height:36px;}
+      .preview-dialog{width:calc(100% - 18px);max-height:90vh;border-radius:14px;}
+      .preview-window{max-height:90vh;}
+      .preview-header{padding:12px 13px;}
+      .preview-content{min-height:160px;max-height:calc(90vh - 112px);padding:10px;}
+      .preview-image,.preview-video{max-height:calc(90vh - 160px);}
+      .preview-pdf{height:70vh;}
+      .preview-text{max-height:calc(90vh - 155px);padding:11px;font-size:11px;}
+      .preview-footer{padding:9px 12px;}
     }
     @media(max-width:360px) {
       .topbar{padding-right:10px;padding-left:10px;}
@@ -415,6 +443,13 @@
     <div class="folder-dialog-actions"><button type="button" class="dialog-button" id="cancelFolderCreate">取消</button><button type="submit" class="dialog-button primary" id="createFolderButton">创建文件夹</button></div>
   </form>
 </dialog>
+<dialog class="preview-dialog" id="assetPreviewDialog" aria-labelledby="previewTitle">
+  <div class="preview-window">
+    <header class="preview-header"><div class="preview-heading"><h2 id="previewTitle"></h2><div class="preview-meta" id="previewMeta"></div></div><button type="button" class="preview-close" id="closeAssetPreview" aria-label="关闭预览">×</button></header>
+    <div class="preview-content" id="previewContent"></div>
+    <footer class="preview-footer"><button type="button" class="dialog-button" id="copyPreviewUrl">复制链接</button><a class="dialog-button primary" id="openPreviewSource" target="_blank" rel="noopener">打开原文件</a></footer>
+  </div>
+</dialog>
 <script>
   const settingFields = ["token", "owner", "repo", "branch"];
   const fileInput = document.getElementById("file");
@@ -423,6 +458,7 @@
   const selectedAssets = new Set();
   const uploadNames = new WeakMap();
   let activeNamingAsset = null;
+  let activePreviewAsset = null;
   let assetDeleteInProgress = false;
   let selectionMode = false;
   let longPressTimer = null;
@@ -644,9 +680,25 @@
       return;
     }
     const deleteButton = event.target.closest(".delete-button");
-    if (!deleteButton) return;
-    const asset = repositoryAssets.find((item) => item.path === deleteButton.dataset.path);
-    if (asset) deleteAssets([asset]);
+    if (deleteButton) {
+      const asset = repositoryAssets.find((item) => item.path === deleteButton.dataset.path);
+      if (asset) deleteAssets([asset]);
+      return;
+    }
+    if (event.target.closest("button, a, input, select")) return;
+    if (card) {
+      const asset = repositoryAssets.find((item) => item.path === card.dataset.path);
+      if (asset) openAssetPreview(asset);
+    }
+  });
+  document.getElementById("closeAssetPreview").addEventListener("click", () => document.getElementById("assetPreviewDialog").close());
+  document.getElementById("assetPreviewDialog").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) event.currentTarget.close();
+  });
+  document.getElementById("copyPreviewUrl").addEventListener("click", async () => {
+    if (!activePreviewAsset) return;
+    try { await navigator.clipboard.writeText(activePreviewAsset.url); showToast("素材链接已复制"); }
+    catch { showToast("复制失败，请检查浏览器权限", true); }
   });
   document.getElementById("nameForm").addEventListener("submit", saveAssetName);
   document.getElementById("cancelNameEdit").addEventListener("click", () => document.getElementById("nameDialog").close());
@@ -865,10 +917,85 @@
 
   function assetTypeForName(name) {
     const extension = name.split(".").pop().toLowerCase();
-    if (["png", "jpg", "jpeg", "webp", "gif", "svg", "avif"].includes(extension)) return "image";
-    if (["ttf", "otf", "woff", "woff2"].includes(extension)) return "font";
-    if (["mp3", "ogg", "wav", "flac", "m4a"].includes(extension)) return "audio";
+    if (["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "ico"].includes(extension)) return "image";
+    if (["ttf", "otf", "woff", "woff2", "eot"].includes(extension)) return "font";
+    if (["mp3", "ogg", "wav", "flac", "m4a", "aac", "opus", "wma"].includes(extension)) return "audio";
+    if (["mp4", "webm", "ogv", "mov", "m4v"].includes(extension)) return "video";
+    if (extension === "pdf") return "pdf";
+    if (["txt", "md", "csv", "json", "xml", "yaml", "yml", "log", "css", "js", "ts", "html"].includes(extension)) return "text";
     return "file";
+  }
+
+  function previewMessage(title, detail) {
+    const box = document.createElement("div"); box.className = "preview-message";
+    const heading = document.createElement("strong"); heading.textContent = title;
+    const text = document.createElement("span"); text.textContent = detail;
+    box.append(heading, text); return box;
+  }
+
+  async function openAssetPreview(asset) {
+    activePreviewAsset = asset;
+    const dialog = document.getElementById("assetPreviewDialog");
+    const content = document.getElementById("previewContent");
+    const title = customNameForAsset(asset) || defaultDisplayName(asset.name);
+    const extension = asset.name.includes(".") ? asset.name.split(".").pop().toUpperCase() : "文件";
+    document.getElementById("previewTitle").textContent = title;
+    document.getElementById("previewMeta").textContent = `${extension} · ${formatSize(asset.size)}`;
+    document.getElementById("openPreviewSource").href = asset.url;
+    content.replaceChildren();
+    if (!dialog.open) dialog.showModal();
+    const type = assetTypeForName(asset.name);
+    if (type === "image") {
+      const image = document.createElement("img"); image.className = "preview-image"; image.alt = title; image.src = asset.url;
+      image.addEventListener("error", () => content.replaceChildren(previewMessage("图片无法预览", "请检查仓库访问权限，或打开原文件查看。")), { once: true });
+      content.append(image); return;
+    }
+    if (type === "audio" || type === "video") {
+      const media = document.createElement(type); media.className = type === "audio" ? "preview-audio" : "preview-video";
+      media.controls = true; media.preload = "metadata"; if (type === "video") media.playsInline = true; media.src = asset.url;
+      media.addEventListener("error", () => content.replaceChildren(previewMessage("媒体无法播放", "浏览器可能不支持此格式，或仓库文件无法公开访问。")), { once: true });
+      content.append(media); return;
+    }
+    if (type === "pdf") {
+      const frame = document.createElement("iframe"); frame.className = "preview-pdf"; frame.title = "PDF 预览"; frame.src = asset.url; content.append(frame); return;
+    }
+    if (type === "text") {
+      content.append(previewMessage("正在加载预览", ""));
+      try {
+        const config = {
+          token: document.getElementById("token").value.trim(),
+          owner: document.getElementById("owner").value.trim(),
+          repo: document.getElementById("repo").value.trim(),
+          branch: document.getElementById("branch").value.trim() || "main"
+        };
+        const response = await fetch(contentsApiUrl(config.owner, config.repo, asset.path, config.branch), { headers: { Authorization: `Bearer ${config.token}`, Accept: "application/vnd.github+json" } });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.message || "读取失败");
+        let value = data.content || "";
+        if (data.encoding === "base64") {
+          const binary = atob(value.replace(/\s/g, ""));
+          value = new TextDecoder().decode(Uint8Array.from(binary, (char) => char.charCodeAt(0)));
+        }
+        if (activePreviewAsset !== asset) return;
+        const pre = document.createElement("pre"); pre.className = "preview-text"; pre.textContent = value;
+        content.replaceChildren(pre);
+      } catch (error) {
+        if (activePreviewAsset === asset) content.replaceChildren(previewMessage("文本无法预览", error.message || "读取文件失败，请打开原文件查看。"));
+      }
+      return;
+    }
+    if (type === "font" && "FontFace" in window) {
+      content.append(previewMessage("正在加载字体", ""));
+      try {
+        const font = new FontFace("AssetPreviewFont", `url("${asset.url}")`);
+        await font.load(); document.fonts.add(font);
+        if (activePreviewAsset !== asset) return;
+        const sample = document.createElement("div"); sample.style.cssText = 'font-family:"AssetPreviewFont",sans-serif;font-size:28px;text-align:center;padding:32px;line-height:1.8';
+        sample.textContent = "字体预览\nAa Bb 123"; content.replaceChildren(sample);
+      } catch { if (activePreviewAsset === asset) content.replaceChildren(previewMessage("字体无法预览", "请打开原文件下载或查看。")); }
+      return;
+    }
+    content.append(previewMessage("此格式暂不支持网页预览", "你仍可以打开原文件查看或下载。"));
   }
 
   async function saveAssetName(event) {
