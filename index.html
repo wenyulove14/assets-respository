@@ -87,12 +87,19 @@
     .selection-check {position:absolute;z-index:2;top:9px;right:9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;display:none;place-items:center;background:#ffffffd9;color:transparent;box-shadow:0 2px 7px #17152230;font-size:15px;font-weight:700;line-height:1;}
     .asset-grid.selection-mode .selection-check {display:grid;}
     .asset-card.is-selected .selection-check {background:var(--accent);color:#fff;}
-    .selection-toolbar {position:sticky;bottom:12px;z-index:3;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:12px 0;padding:10px 12px;border:1px solid #ded7fb;border-radius:12px;background:#fffffff2;box-shadow:0 8px 24px #23203720;backdrop-filter:blur(12px);}
+    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(840px,calc(100vw - 32px));display:grid;grid-template-columns:auto auto minmax(155px,1fr) auto auto auto;align-items:center;gap:8px;margin:0;padding:11px 13px;border:1px solid #e5e0f7;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 14px 42px #28213c2b,0 2px 8px #28213c0d;backdrop-filter:blur(16px);}
     .selection-toolbar[hidden] {display:none;}
-    .selection-count {margin-right:auto;color:var(--ink);font-size:11px;font-weight:650;white-space:nowrap;}
-    .selection-toolbar select {width:auto;min-width:130px;height:34px;font-size:11px;}
-    .selection-toolbar button {height:34px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#5e6470;font-size:11px;white-space:nowrap;}
-    .selection-toolbar .selection-delete {border-color:#f0d9dc;color:#b64c55;}
+    .selection-count {display:flex;align-items:center;gap:7px;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
+    .selection-count:before {content:"✓";width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:13px;}
+    .selection-toolbar select {width:100%;min-width:0;height:36px;font-size:11px;border-color:#e5e1f1;background:#fff;}
+    .selection-toolbar button {height:36px;padding:0 11px;border:1px solid transparent;border-radius:9px;background:#f5f3fb;color:#5e5870;font-size:11px;font-weight:600;white-space:nowrap;transition:background .15s,color .15s,transform .15s;}
+    .selection-toolbar button:hover {background:#ece8fa;color:var(--accent-dark);}
+    .selection-toolbar #moveSelectedAssetsButton {background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
+    .selection-toolbar #moveSelectedAssetsButton:hover {background:var(--accent-dark);}
+    .selection-toolbar .selection-delete {background:#fff5f5;color:#ad4851;}
+    .selection-toolbar .selection-delete:hover {background:#fde9eb;color:#993740;}
+    .selection-toolbar #exitSelectionButton {background:transparent;color:#7d8290;}
+    .selection-active .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
     .asset-grid.selection-mode .asset-actions,.asset-grid.selection-mode .asset-folder-move {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
     .asset-thumb img {width:100%;height:100%;object-fit:cover;}
@@ -181,9 +188,10 @@
     .result-count { font-size:10px;color:var(--green);background:var(--green-soft);padding:4px 8px;border-radius:20px; }
     .result-list { display:grid;gap:9px; }
     .result-item { background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 14px; }
-    .result-title { display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:650; }
+    .result-title { display:flex;justify-content:space-between;align-items:flex-start;gap:10px;min-width:0;font-size:12px;font-weight:650; }
+    .result-title > span {min-width:0;overflow-wrap:anywhere;}
     .result-title small { color:var(--green);font-size:10px;font-weight:600; }
-    .result-path { color:var(--muted);font-size:10px;margin:3px 0 8px; }
+    .result-path { color:var(--muted);font-size:10px;margin:3px 0 8px;overflow-wrap:anywhere;word-break:break-word; }
     .url-line { display:flex;gap:7px;align-items:center; }
     .url-line code { display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:#747987;font-size:10px;background:#f7f8fa;padding:7px 9px;border-radius:6px; }
     .copy-button { border:1px solid var(--line);border-radius:7px;background:white;color:#5e6470;font-size:10px;padding:6px 9px; }
@@ -249,10 +257,12 @@
       .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
-      .selection-toolbar{bottom:8px;gap:6px;padding:9px;}
-      .selection-count{width:100%;}
-      .selection-toolbar select{min-width:0;flex:1;}
-      .selection-toolbar button{padding:0 8px;font-size:10px;}
+      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:10px;border-radius:15px;}
+      .selection-count{grid-column:span 2;}
+      .selection-toolbar #selectVisibleAssetsButton{grid-column:span 3;}
+      .selection-toolbar select{grid-column:span 2;height:35px;}
+      .selection-toolbar button{min-width:0;padding:0 7px;font-size:10px;}
+      .selection-active .toast{bottom:calc(126px + env(safe-area-inset-bottom));}
       .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
       .library-folder-card{padding:11px 9px;gap:8px;}
       .library-folder-icon{width:34px;height:32px;}
@@ -274,6 +284,18 @@
       .file-row{grid-template-columns:36px minmax(0,1fr) 23px;gap:9px;}
       .file-preview{width:36px;height:36px;}
       .file-status{display:none;}
+      .results{margin-top:16px;}
+      .result-head{gap:8px;align-items:center;}
+      .result-head h2{font-size:13px;}
+      .result-count{font-size:9px;padding:4px 7px;white-space:nowrap;}
+      .result-list{gap:8px;}
+      .result-item{padding:10px;border-radius:10px;}
+      .result-title{gap:7px;font-size:11px;}
+      .result-title small{flex:none;font-size:9px;white-space:nowrap;}
+      .result-path{font-size:10px;line-height:1.45;}
+      .url-line{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;}
+      .url-line code{width:100%;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.45;padding:8px;}
+      .url-line .copy-button{width:100%;min-height:36px;}
     }
     @media(max-width:360px) {
       .topbar{padding-right:10px;padding-left:10px;}
@@ -336,7 +358,7 @@
     </main>
 
     <section class="library-view" id="libraryView">
-      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。手机端长按素材可多选。</p></div>
+      <div class="intro"><div class="eyebrow">ASSET LIBRARY</div><h1>已上传素材</h1><p>浏览素材仓库中的文件，搜索名称或路径，并快速复制链接。长按素材可多选。</p></div>
       <div class="library-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="assetSearch" type="text" placeholder="搜索文件名或目录…" aria-label="搜索素材"></label><button class="add-folder-button" id="addFolderButton" type="button" aria-label="新建素材库文件夹" title="新建文件夹"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><span class="library-count" id="assetCount">尚未加载</span></div>
       <div class="base-category-tabs" id="baseCategoryTabs" role="tablist" aria-label="按素材类型浏览">
         <button type="button" class="base-category-tab active" data-folder="" role="tab" aria-selected="true">全部 <small data-count="">0</small></button>
@@ -349,7 +371,7 @@
       <div class="folder-navigation" id="folderNavigation" hidden><button type="button" class="folder-back" id="folderBackButton">‹ 全部文件夹</button><span>/</span><span id="folderCurrentName"></span></div>
       <div class="library-folder-grid" id="libraryFolderGrid" aria-label="素材库文件夹"></div>
       <div class="library-message" id="libraryMessage"></div>
-      <div class="selection-toolbar" id="selectionToolbar" hidden>
+      <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="批量操作" hidden>
         <span class="selection-count" id="selectionCount">已选 0 项</span>
         <button type="button" id="selectVisibleAssetsButton">全选当前列表</button>
         <select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select>
@@ -567,7 +589,7 @@
   document.getElementById("folderForm").addEventListener("submit", createFolder);
   const assetGrid = document.getElementById("assetGrid");
   assetGrid.addEventListener("pointerdown", (event) => {
-    if (event.pointerType !== "touch" || event.target.closest("button,select,input")) return;
+    if (event.target.closest("button,select,input")) return;
     const card = event.target.closest(".asset-card");
     if (!card) return;
     const path = card.dataset.path;
@@ -1004,6 +1026,7 @@
     updateBaseCategoryTabs();
     renderLibraryFolders();
     renderSelectionToolbar();
+    document.body.classList.toggle("selection-active", selectionMode);
     const matches = assetsMatchingCurrentFilters();
     const grid = document.getElementById("assetGrid");
     grid.classList.toggle("selection-mode", selectionMode);
@@ -1328,4 +1351,3 @@
 </script>
 </body>
 </html>
-
