@@ -100,6 +100,7 @@
     .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(980px,calc(100vw - 32px));display:flex;align-items:center;gap:9px;margin:0;padding:9px 11px;border:1px solid #e8e4f1;border-radius:15px;background:rgba(255,255,255,.97);box-shadow:0 12px 36px #28213c20,0 2px 8px #28213c0a;backdrop-filter:blur(18px);}
     .selection-toolbar[hidden] {display:none;}
     .selection-toolbar-top {display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;}
+    .selection-toolbar-controls {display:flex;align-items:center;gap:5px;}
     .selection-count {display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:9px;background:#f4f1fc;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
     .selection-count:before {content:"✓";width:18px;height:18px;display:grid;place-items:center;border-radius:6px;background:#e9e3fb;color:var(--accent);font-size:11px;}
     .selection-move-group {display:flex;align-items:center;gap:7px;flex:1;min-width:0;}
@@ -321,21 +322,22 @@
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
       .selection-toolbar{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 38px 38px;gap:6px;padding:8px;border-radius:14px;}
-      .selection-toolbar-top{grid-column:1/-1;display:grid;grid-template-columns:auto 38px auto;justify-content:space-between;align-items:center;gap:6px;}
+      .selection-toolbar-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;}
       .selection-count{padding:5px 8px;font-size:10px;}
       .selection-count:before{width:17px;height:17px;}
       .selection-move-group,.selection-batch-actions{display:contents;}
       .selection-toolbar select{grid-column:1/3;height:37px;padding:0 24px 0 8px;font-size:10px;}
       .selection-toolbar button{width:38px;height:37px;min-width:0;padding:0;border-radius:9px;}
       .selection-toolbar button svg{width:16px;height:16px;}
-      .selection-toolbar #selectVisibleAssetsButton{grid-column:2;width:38px;justify-self:center;}
+      .selection-toolbar-controls{gap:4px;}
+      .selection-toolbar #selectVisibleAssetsButton{width:auto;height:28px;padding:0 9px;border-color:transparent;background:transparent;color:var(--accent-dark);font-size:10px;}
       .selection-toolbar #exitSelectionButton{justify-self:end;}
       .selection-toolbar #moveSelectedAssetsButton{grid-column:3;min-width:0;background:#f4f1fc;color:var(--accent-dark);box-shadow:none;border-color:#eee9f8;}
       .selection-toolbar #copySelectedAssetsButton{grid-column:4;}
       .selection-toolbar #deleteSelectedAssetsButton{grid-column:5;}
       .selection-toolbar .selection-delete{background:#fff8f8;}
       .selection-toolbar #exitSelectionButton{width:auto;height:28px;padding:0 8px;}
-      .selection-toolbar .selection-action-label{display:none;}
+      .selection-toolbar .selection-action-label{display:inline;}
       .selection-active .toast{bottom:calc(104px + env(safe-area-inset-bottom));}
       .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
       .library-folder-card{padding:11px 9px;gap:8px;}
@@ -454,7 +456,7 @@
       <div class="library-folder-grid" id="libraryFolderGrid" aria-label="素材库文件夹"></div>
       <div class="library-message" id="libraryMessage"></div>
       <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="批量操作" hidden>
-        <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><button type="button" id="selectVisibleAssetsButton" aria-label="全选当前列表" title="全选当前列表"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 2.5 2.5L16.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">全选当前列表</span></button><button type="button" id="exitSelectionButton">完成</button></div>
+        <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><div class="selection-toolbar-controls"><button type="button" id="selectVisibleAssetsButton" aria-label="多选" title="多选"><span class="selection-action-label">多选</span></button><button type="button" id="exitSelectionButton">完成</button></div></div>
         <div class="selection-move-group"><select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select><button type="button" id="moveSelectedAssetsButton" aria-label="移动所选素材" title="移动"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h6l2 2H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12v5m-2-2 2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">移动</span></button></div>
         <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton" aria-label="批量复制链接" title="批量复制"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.7"/></svg><span class="selection-action-label">批量复制</span></button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton" aria-label="删除所选素材" title="删除"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">删除</span></button></div>
       </div>
@@ -976,7 +978,7 @@
     try {
       const ref = branch.split("/").map(encodeURIComponent).join("/");
       const endpoint = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/git/trees/${ref}?recursive=1`;
-      const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } });
+      const response = await fetch(endpoint, { cache: "no-store", headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(data.message || `GitHub 返回错误 (${response.status})`);
       const fileEntries = (data.tree || []).filter((entry) => entry.type === "blob");
@@ -1012,6 +1014,11 @@
     }
   }
 
+  async function syncAssetLibrary() {
+    assetsLoadedFor = "";
+    await loadAssets();
+  }
+
   function defaultDisplayName(filename) {
     const dot = filename.lastIndexOf(".");
     return dot > 0 ? filename.slice(0, dot) : filename;
@@ -1026,6 +1033,7 @@
 
   async function fetchAssetMetadata(config) {
     const response = await fetch(contentsApiUrl(config.owner, config.repo, "assets.json", config.branch), {
+      cache: "no-store",
       headers: { Authorization: `Bearer ${config.token}`, Accept: "application/vnd.github+json" }
     });
     if (response.status === 404) return { assets: [] };
@@ -1214,9 +1222,9 @@
     const visible = assetsMatchingCurrentFilters();
     const allSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
     const selectVisibleButton = document.getElementById("selectVisibleAssetsButton");
-    const selectVisibleLabel = allSelected ? "取消全选" : "全选当前列表";
-    selectVisibleButton.setAttribute("aria-label", selectVisibleLabel);
-    selectVisibleButton.title = selectVisibleLabel;
+    const selectVisibleLabel = allSelected ? "取消" : "多选";
+    selectVisibleButton.setAttribute("aria-label", allSelected ? "取消当前列表的全选" : "全选当前列表素材");
+    selectVisibleButton.title = allSelected ? "取消当前列表的全选" : "全选当前列表素材";
     selectVisibleButton.querySelector(".selection-action-label").textContent = selectVisibleLabel;
     const selectedTarget = target.value;
     target.replaceChildren();
@@ -1570,8 +1578,7 @@
         }
         customNames = Object.fromEntries(metadata.assets.filter((item) => item && item.path && item.name).map((item) => [item.path, item.name]));
       } catch (error) { failures.push(`文件已删除，但 assets.json 清理失败：${error.message}`); }
-      assetsLoadedFor = "";
-      await loadAssets();
+      await syncAssetLibrary();
     }
     assetDeleteInProgress = false;
     if (failures.length) {
@@ -1721,6 +1728,7 @@
     button.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>开始上传</span>';
     renderResults(results);
     const successCount = results.filter((item) => item.url).length;
+    if (successCount) await syncAssetLibrary();
     showToast(successCount === results.length ? `已成功上传 ${successCount} 个文件` : `完成：成功 ${successCount} 个，失败 ${results.length - successCount} 个`, successCount !== results.length);
   }
 
