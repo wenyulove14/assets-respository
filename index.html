@@ -321,14 +321,15 @@
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
       .selection-toolbar{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 38px 38px;gap:6px;padding:8px;border-radius:14px;}
-      .selection-toolbar-top{grid-column:1/-1;}
+      .selection-toolbar-top{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 38px minmax(0,1fr);gap:6px;}
       .selection-count{padding:5px 8px;font-size:10px;}
       .selection-count:before{width:17px;height:17px;}
       .selection-move-group,.selection-batch-actions{display:contents;}
-      .selection-toolbar select{grid-column:2;height:37px;padding:0 24px 0 8px;font-size:10px;}
+      .selection-toolbar select{grid-column:1/3;height:37px;padding:0 24px 0 8px;font-size:10px;}
       .selection-toolbar button{width:38px;height:37px;min-width:0;padding:0;border-radius:9px;}
       .selection-toolbar button svg{width:16px;height:16px;}
-      .selection-toolbar #selectVisibleAssetsButton{grid-column:1;width:38px;}
+      .selection-toolbar #selectVisibleAssetsButton{grid-column:2;width:38px;justify-self:center;}
+      .selection-toolbar #exitSelectionButton{justify-self:end;}
       .selection-toolbar #moveSelectedAssetsButton{grid-column:3;min-width:0;background:#f4f1fc;color:var(--accent-dark);box-shadow:none;border-color:#eee9f8;}
       .selection-toolbar #copySelectedAssetsButton{grid-column:4;}
       .selection-toolbar #deleteSelectedAssetsButton{grid-column:5;}
@@ -453,8 +454,7 @@
       <div class="library-folder-grid" id="libraryFolderGrid" aria-label="素材库文件夹"></div>
       <div class="library-message" id="libraryMessage"></div>
       <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="批量操作" hidden>
-        <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><button type="button" id="exitSelectionButton">完成</button></div>
-        <button type="button" id="selectVisibleAssetsButton" aria-label="全选当前列表" title="全选当前列表"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 2.5 2.5L16.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">全选当前列表</span></button>
+        <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><button type="button" id="selectVisibleAssetsButton" aria-label="全选当前列表" title="全选当前列表"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 2.5 2.5L16.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">全选当前列表</span></button><button type="button" id="exitSelectionButton">完成</button></div>
         <div class="selection-move-group"><select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select><button type="button" id="moveSelectedAssetsButton" aria-label="移动所选素材" title="移动"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h6l2 2H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12v5m-2-2 2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">移动</span></button></div>
         <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton" aria-label="批量复制链接" title="批量复制"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.7"/></svg><span class="selection-action-label">批量复制</span></button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton" aria-label="删除所选素材" title="删除"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">删除</span></button></div>
       </div>
