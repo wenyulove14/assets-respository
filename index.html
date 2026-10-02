@@ -86,8 +86,8 @@
     .folder-remove-button {height:35px;padding:0 11px;border:0;border-radius:8px;background:#fff0f1;color:#a43e48;font-size:11px;}
     .folder-remove-button:hover {background:#fde3e5;}
     .search-wrap {position:relative;flex:1;}
-    .search-wrap svg {position:absolute;left:12px;top:11px;width:16px;color:#a0a5af;pointer-events:none;}
-    .search-wrap input {padding-left:37px;height:41px;}
+    .search-wrap svg {position:absolute;right:12px;top:11px;width:16px;color:#a0a5af;pointer-events:none;}
+    .search-wrap input {padding-right:37px;height:41px;}
     .library-count {font-size:11px;color:var(--muted);white-space:nowrap;}
     .asset-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;}
     .asset-grid[hidden] {display:none;}
@@ -97,22 +97,23 @@
     .selection-check {position:absolute;z-index:2;top:9px;right:9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;display:none;place-items:center;background:#ffffffd9;color:transparent;box-shadow:0 2px 7px #17152230;font-size:15px;font-weight:700;line-height:1;}
     .asset-grid.selection-mode .selection-check {display:grid;}
     .asset-card.is-selected .selection-check {background:var(--accent);color:#fff;}
-    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(980px,calc(100vw - 32px));display:flex;align-items:center;gap:9px;margin:0;padding:10px 12px;border:1px solid #e8e4f1;border-radius:17px;background:rgba(255,255,255,.97);box-shadow:0 16px 44px #28213c26,0 3px 10px #28213c0b;backdrop-filter:blur(18px);}
+    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(980px,calc(100vw - 32px));display:flex;align-items:center;gap:9px;margin:0;padding:9px 11px;border:1px solid #e8e4f1;border-radius:15px;background:rgba(255,255,255,.97);box-shadow:0 12px 36px #28213c20,0 2px 8px #28213c0a;backdrop-filter:blur(18px);}
     .selection-toolbar[hidden] {display:none;}
     .selection-toolbar-top {display:flex;align-items:center;justify-content:space-between;gap:10px;flex:none;}
-    .selection-count {display:flex;align-items:center;gap:7px;padding:7px 10px;border-radius:10px;background:#f4f1fc;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
-    .selection-count:before {content:"✓";width:20px;height:20px;display:grid;place-items:center;border-radius:7px;background:#e9e3fb;color:var(--accent);font-size:12px;}
+    .selection-count {display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:9px;background:#f4f1fc;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
+    .selection-count:before {content:"✓";width:18px;height:18px;display:grid;place-items:center;border-radius:6px;background:#e9e3fb;color:var(--accent);font-size:11px;}
     .selection-move-group {display:flex;align-items:center;gap:7px;flex:1;min-width:0;}
     .selection-batch-actions {display:flex;align-items:center;gap:7px;flex:none;}
-    .selection-toolbar select {width:100%;min-width:0;height:39px;padding:0 32px 0 11px;border:1px solid #e8e5ee;border-radius:10px;background:#fff;font-size:11px;}
-    .selection-toolbar button {height:39px;padding:0 13px;border:1px solid #eae7f0;border-radius:10px;background:#fff;color:#5f6370;font-size:11px;font-weight:650;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .15s;}
+    .selection-toolbar select {width:100%;min-width:0;height:36px;padding:0 28px 0 10px;border:1px solid #e8e5ee;border-radius:9px;background:#fff;font-size:11px;}
+    .selection-toolbar button {height:36px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #eae7f0;border-radius:9px;background:#fff;color:#5f6370;font-size:11px;font-weight:650;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .15s;}
+    .selection-toolbar button svg {width:15px;height:15px;flex:none;}
     .selection-toolbar button:hover {border-color:#d7cff0;background:#faf8ff;color:var(--accent-dark);}
     .selection-toolbar #selectVisibleAssetsButton {background:#f7f6fa;border-color:#f0edf4;}
     .selection-toolbar #moveSelectedAssetsButton {min-width:75px;border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
     .selection-toolbar #moveSelectedAssetsButton:hover {background:var(--accent-dark);}
     .selection-toolbar .selection-delete {border-color:#f2e1e2;background:#fff8f8;color:#ad4851;}
     .selection-toolbar .selection-delete:hover {border-color:#efd0d3;background:#fde9eb;color:#993740;}
-    .selection-toolbar #exitSelectionButton {height:34px;padding:0 10px;border-color:transparent;background:transparent;color:#858997;font-size:10px;}
+    .selection-toolbar #exitSelectionButton {height:32px;padding:0 9px;border-color:transparent;background:transparent;color:#858997;font-size:10px;}
     .selection-active .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
     .asset-grid.selection-mode .asset-actions {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
@@ -319,17 +320,22 @@
       .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
-      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:11px;border-radius:17px;}
+      .selection-toolbar{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 38px 38px;gap:6px;padding:8px;border-radius:14px;}
       .selection-toolbar-top{grid-column:1/-1;}
-      .selection-count{padding:6px 9px;font-size:11px;}
-      .selection-toolbar #selectVisibleAssetsButton{grid-column:1/-1;width:100%;}
-      .selection-move-group{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:7px;}
-      .selection-batch-actions{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:7px;}
-      .selection-toolbar select{height:42px;font-size:12px;}
-      .selection-toolbar button{height:42px;min-width:0;padding:0 10px;font-size:11px;}
-      .selection-toolbar #moveSelectedAssetsButton{min-width:0;}
-      .selection-toolbar #exitSelectionButton{height:34px;}
-      .selection-active .toast{bottom:calc(220px + env(safe-area-inset-bottom));}
+      .selection-count{padding:5px 8px;font-size:10px;}
+      .selection-count:before{width:17px;height:17px;}
+      .selection-move-group,.selection-batch-actions{display:contents;}
+      .selection-toolbar select{grid-column:2;height:37px;padding:0 24px 0 8px;font-size:10px;}
+      .selection-toolbar button{width:38px;height:37px;min-width:0;padding:0;border-radius:9px;}
+      .selection-toolbar button svg{width:16px;height:16px;}
+      .selection-toolbar #selectVisibleAssetsButton{grid-column:1;width:38px;}
+      .selection-toolbar #moveSelectedAssetsButton{grid-column:3;min-width:0;background:#f4f1fc;color:var(--accent-dark);box-shadow:none;border-color:#eee9f8;}
+      .selection-toolbar #copySelectedAssetsButton{grid-column:4;}
+      .selection-toolbar #deleteSelectedAssetsButton{grid-column:5;}
+      .selection-toolbar .selection-delete{background:#fff8f8;}
+      .selection-toolbar #exitSelectionButton{width:auto;height:28px;padding:0 8px;}
+      .selection-toolbar .selection-action-label{display:none;}
+      .selection-active .toast{bottom:calc(104px + env(safe-area-inset-bottom));}
       .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
       .library-folder-card{padding:11px 9px;gap:8px;}
       .library-folder-icon{width:34px;height:32px;}
@@ -448,16 +454,16 @@
       <div class="library-message" id="libraryMessage"></div>
       <div class="selection-toolbar" id="selectionToolbar" role="toolbar" aria-label="批量操作" hidden>
         <div class="selection-toolbar-top"><span class="selection-count" id="selectionCount">已选 0 项</span><button type="button" id="exitSelectionButton">完成</button></div>
-        <button type="button" id="selectVisibleAssetsButton">全选当前列表</button>
-        <div class="selection-move-group"><select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select><button type="button" id="moveSelectedAssetsButton">移动</button></div>
-        <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton">批量复制</button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton">删除</button></div>
+        <button type="button" id="selectVisibleAssetsButton" aria-label="全选当前列表" title="全选当前列表"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 2.5 2.5L16.5 9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">全选当前列表</span></button>
+        <div class="selection-move-group"><select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select><button type="button" id="moveSelectedAssetsButton" aria-label="移动所选素材" title="移动"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h6l2 2H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12v5m-2-2 2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">移动</span></button></div>
+        <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton" aria-label="批量复制链接" title="批量复制"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.7"/></svg><span class="selection-action-label">批量复制</span></button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton" aria-label="删除所选素材" title="删除"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">删除</span></button></div>
       </div>
       <div class="asset-grid" id="assetGrid"><div class="empty-state"><strong>连接仓库后查看素材</strong>素材库会读取当前 GitHub 仓库中的文件。</div></div>
     </section>
 
     <aside class="sidebar">
       <section class="card settings-card">
-        <div class="side-title"><h2>GitHub 仓库设置</h2><svg class="settings-icon" viewBox="0 0 24 24" fill="none"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z" stroke="currentColor" stroke-width="1.6"/><path d="m19.4 13.5 1.1.9-1.4 2.4-1.4-.5a7.9 7.9 0 0 1-1.5.9l-.3 1.5h-2.8l-.3-1.5a7.9 7.9 0 0 1-1.5-.9l-1.4.5-1.4-2.4 1.1-.9a7.7 7.7 0 0 1 0-1.8l-1.1-.9 1.4-2.4 1.4.5a7.9 7.9 0 0 1 1.5-.9l.3-1.5h2.8l.3 1.5a7.9 7.9 0 0 1 1.5.9l1.4-.5 1.4 2.4-1.1.9a7.7 7.7 0 0 1 0 1.8Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+        <div class="side-title"><h2>GitHub 仓库设置</h2><svg class="settings-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h8m4 0h4M4 12h3m4 0h9M4 18h10m4 0h2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="14" cy="6" r="2" fill="white" stroke="currentColor" stroke-width="1.7"/><circle cx="9" cy="12" r="2" fill="white" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="18" r="2" fill="white" stroke="currentColor" stroke-width="1.7"/></svg></div>
         <div class="form-field"><label for="owner">GitHub 用户名</label><input id="owner" type="text" placeholder="例如：octocat" autocomplete="username"></div>
         <div class="form-field"><label for="repo">Repository 仓库</label><input id="repo" type="text" placeholder="例如：my-assets"></div>
         <div class="form-field"><label for="branch">Branch 分支</label><input id="branch" type="text" value="main" placeholder="main"></div>
