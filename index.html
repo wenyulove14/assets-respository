@@ -87,7 +87,7 @@
     .selection-check {position:absolute;z-index:2;top:9px;right:9px;width:24px;height:24px;border:2px solid #fff;border-radius:50%;display:none;place-items:center;background:#ffffffd9;color:transparent;box-shadow:0 2px 7px #17152230;font-size:15px;font-weight:700;line-height:1;}
     .asset-grid.selection-mode .selection-check {display:grid;}
     .asset-card.is-selected .selection-check {background:var(--accent);color:#fff;}
-    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(840px,calc(100vw - 32px));display:grid;grid-template-columns:auto auto minmax(155px,1fr) auto auto auto;align-items:center;gap:8px;margin:0;padding:11px 13px;border:1px solid #e5e0f7;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 14px 42px #28213c2b,0 2px 8px #28213c0d;backdrop-filter:blur(16px);}
+    .selection-toolbar {position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:9;width:min(920px,calc(100vw - 32px));display:grid;grid-template-columns:auto auto minmax(155px,1fr) repeat(4,auto);align-items:center;gap:8px;margin:0;padding:11px 13px;border:1px solid #e5e0f7;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 14px 42px #28213c2b,0 2px 8px #28213c0d;backdrop-filter:blur(16px);}
     .selection-toolbar[hidden] {display:none;}
     .selection-count {display:flex;align-items:center;gap:7px;color:var(--accent-dark);font-size:11px;font-weight:700;white-space:nowrap;}
     .selection-count:before {content:"✓";width:23px;height:23px;display:grid;place-items:center;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:13px;}
@@ -106,17 +106,17 @@
     .asset-body {padding:11px 12px 12px;}
     .asset-name {font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
     .asset-path {font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;}
-    .asset-actions {display:flex;justify-content:flex-end;align-items:center;gap:5px;flex-wrap:wrap;margin-top:10px;}
+    .asset-actions {display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;}
     .asset-type {font-size:9px;color:#7d8290;background:#f3f4f7;border-radius:5px;padding:3px 6px;text-transform:uppercase;}
     .asset-actions .asset-type {margin-right:auto;}
     .asset-actions .copy-button {font-size:10px;padding:5px 8px;}
-    .asset-actions .rename-button {font-size:10px;padding:5px 8px;border:1px solid var(--line);border-radius:7px;background:white;color:#5e6470;}
-    .asset-actions .rename-button:hover {border-color:#c7bdf8;color:var(--accent);}
-    .asset-actions .delete-button {font-size:10px;padding:5px 7px;border:1px solid #f0d9dc;border-radius:7px;background:white;color:#b64c55;}
-    .asset-actions .delete-button:hover {background:#fff5f6;border-color:#e8b9bf;}
+    .asset-actions .rename-button {font-size:10px;padding:5px 8px;border:0;border-radius:7px;background:transparent;color:#5e6470;}
+    .asset-actions .rename-button:hover {color:var(--accent);}
+    .asset-actions .delete-button {font-size:10px;padding:5px 7px;border:0;border-radius:7px;background:transparent;color:#b64c55;}
+    .asset-actions .delete-button:hover {background:#fff5f6;}
     .asset-actions button {width:32px;height:32px;display:inline-grid;place-items:center;flex:none;padding:0;border:0;border-radius:8px;background:transparent;color:#747a86;}
     .asset-actions button svg {width:15px;height:15px;}
-    .asset-actions .copy-button:hover,.asset-actions .rename-button:hover {background:var(--accent-soft);border-color:#d8cff7;color:var(--accent-dark);}
+    .asset-actions .copy-button:hover,.asset-actions .rename-button:hover {background:var(--accent-soft);color:var(--accent-dark);}
     .asset-actions .delete-button {color:#b64c55;}
     .asset-actions .delete-button:hover {background:#fff0f1;color:#a43e48;}
     .name-dialog {width:min(440px,calc(100% - 32px));border:1px solid var(--line);border-radius:16px;padding:0;box-shadow:0 24px 80px #20242c30;color:var(--ink);}
@@ -222,6 +222,25 @@
     .sidebar { display:none;gap:15px;padding-top:0; }
     .settings-mode .sidebar { display:grid; }
     .settings-card { padding:19px; }
+    .format-settings-card {padding:19px;}
+    .format-settings-card .side-title {margin-bottom:6px;}
+    .format-help {margin:0 0 14px;color:var(--muted);font-size:10px;line-height:1.6;}
+    .format-preset-row {display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:7px;margin-bottom:12px;}
+    .format-preset-row select,.format-preset-row input {height:35px;min-width:0;font-size:11px;}
+    .format-preset-row button,.format-builder button {border:1px solid var(--line);border-radius:8px;background:#fff;color:#626875;font-size:10px;}
+    .format-preset-row button {padding:0 10px;}
+    .format-token-palette {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px;}
+    .format-token-palette button {padding:7px 10px;background:#faf9fd;}
+    .format-token-palette button:hover,.format-preset-row button:hover {border-color:#d5cbf4;color:var(--accent-dark);background:var(--accent-soft);}
+    .format-builder {display:flex;flex-wrap:wrap;gap:7px;min-height:52px;padding:9px;border:1px dashed #d9d5e4;border-radius:10px;background:#faf9fc;}
+    .format-builder:empty::before {content:"点击上方卡片添加到格式";align-self:center;color:#a0a5af;font-size:10px;}
+    .format-token {display:inline-flex;align-items:center;gap:5px;padding:5px 6px 5px 9px;border:1px solid #e5e0f2!important;border-radius:8px!important;background:#fff!important;color:var(--accent-dark)!important;}
+    .format-token span {font-size:10px;}
+    .format-token small {display:flex;gap:2px;}
+    .format-token small button {width:18px;height:18px;padding:0;border:0;background:transparent;color:#818694;font-size:10px;}
+    .format-token small button:hover {color:var(--accent);}
+    .format-preview {margin-top:10px;padding:10px;border-radius:8px;background:#f5f5f8;color:#747a86;font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere;}
+    .format-status {min-height:15px;margin-top:7px;color:var(--muted);font-size:10px;}
     .side-title { display:flex;justify-content:space-between;align-items:center;margin-bottom:17px; }
     .side-title h2 {font-size:13px;margin:0;}
     .settings-icon { color:#9a9eaa;width:16px;height:16px; }
@@ -280,9 +299,9 @@
       .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
-      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;padding:10px;border-radius:15px;}
+      .selection-toolbar{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100vw - 20px);grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:10px;border-radius:15px;}
       .selection-count{grid-column:span 2;}
-      .selection-toolbar #selectVisibleAssetsButton{grid-column:span 3;}
+      .selection-toolbar #selectVisibleAssetsButton{grid-column:span 2;}
       .selection-toolbar select{grid-column:span 2;height:35px;}
       .selection-toolbar button{min-width:0;padding:0 7px;font-size:10px;}
       .selection-active .toast{bottom:calc(126px + env(safe-area-inset-bottom));}
@@ -291,13 +310,16 @@
       .library-folder-icon{width:34px;height:32px;}
       .asset-thumb{height:clamp(105px,34vw,150px);}
       .asset-body{padding:9px;}
-      .asset-actions{display:flex;justify-content:flex-end;gap:4px;}
+      .asset-actions{display:flex;justify-content:flex-end;gap:7px;}
       .asset-actions .copy-button,.asset-actions .rename-button,.asset-actions .delete-button{width:30px;height:32px;min-height:32px;}
       .empty-state{padding:38px 14px;font-size:12px;}
     }
     @media(max-width:520px) {
       .sidebar{grid-template-columns:1fr;}
       .settings-card{grid-row:auto;}
+      .format-settings-card{grid-column:1/-1;}
+      .format-preset-row {grid-template-columns:minmax(0,1fr) auto auto;}
+      .format-preset-row select {grid-column:1/-1;grid-row:1;}
       .upload-controls{grid-template-columns:1fr;}
       .upload-controls .primary{width:100%;}
       .dropzone{min-height:200px;}
@@ -349,9 +371,9 @@
       <div>素材仓库<small>GITHUB ASSET MANAGER</small></div>
     </div>
     <nav class="top-nav" aria-label="主导航">
-      <button type="button" class="nav-button active" id="uploadNav">上传素材</button>
-      <button type="button" class="nav-button" id="libraryNav">素材库</button>
-      <button type="button" class="nav-button" id="settingsNav">仓库设置</button>
+      <button type="button" class="nav-button active" id="uploadNav">上传</button>
+      <button type="button" class="nav-button" id="libraryNav">素材</button>
+      <button type="button" class="nav-button" id="settingsNav">设置</button>
     </nav>
     <div class="top-right"><span class="hint">你的素材，整齐归档</span><span class="connection"><i class="dot" id="connectionDot"></i><span id="connectionText">尚未配置</span></span></div>
   </header>
@@ -404,6 +426,7 @@
         <button type="button" id="selectVisibleAssetsButton">全选当前列表</button>
         <select id="bulkFolderTarget" aria-label="批量移动到文件夹"></select>
         <button type="button" id="moveSelectedAssetsButton">移动</button>
+        <button type="button" id="copySelectedAssetsButton">批量复制</button>
         <button type="button" class="selection-delete" id="deleteSelectedAssetsButton">删除</button>
         <button type="button" id="exitSelectionButton">完成</button>
       </div>
@@ -420,6 +443,17 @@
         <button class="primary save-settings-button" id="saveSettingsButton" type="button">保存设置并验证连接</button>
         <div class="connection-feedback" id="connectionFeedback" role="status">保存后将检查 Token 是否能访问所选仓库分支。</div>
         <div class="settings-foot"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>设置信息仅保存在当前浏览器。Token 需要目标仓库的 Contents 读写权限。</span></div>
+      </section>
+      <section class="card format-settings-card">
+        <div class="side-title"><h2>批量复制格式</h2><span class="settings-icon">Aa</span></div>
+        <p class="format-help">添加内容卡片来拼接复制格式。名称优先使用网页中设置的自定义名称；未设置时使用文件名。</p>
+        <div class="format-preset-row"><select id="formatPresetSelect" aria-label="选择复制格式预设"></select><input id="formatPresetName" type="text" maxlength="40" placeholder="预设名称" aria-label="预设名称"><button type="button" id="saveFormatPresetButton">保存</button><button type="button" id="deleteFormatPresetButton" aria-label="删除所选预设">删除</button></div>
+        <div class="format-token-palette" id="formatTokenPalette" aria-label="可添加的格式卡片">
+          <button type="button" data-token="name">名称</button><button type="button" data-token="url">链接</button><button type="button" data-token="newline">↵ 回车</button><button type="button" data-token="space">空格</button><button type="button" data-token="colon">:</button><button type="button" data-token="dash">-</button><button type="button" data-token="comma">,</button><button type="button" data-token="period">.</button><button type="button" data-token="leftParen">(</button><button type="button" data-token="rightParen">)</button>
+        </div>
+        <div class="format-builder" id="formatBuilder" aria-label="当前格式卡片"></div>
+        <div class="format-preview" id="formatPreview"></div>
+        <div class="format-status" id="formatStatus" role="status"></div>
       </section>
       <section class="card repo-card"><div class="repo-label">当前目标仓库</div><div class="repo-line"><div class="repo-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M7 4.5h7l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V6a1.5 1.5 0 0 1 1-1.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 4.5V9h4" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div><div class="repo-info"><div class="repo-name" id="repoDisplay">尚未选择仓库</div><div class="repo-branch" id="branchDisplay">分支 —</div></div></div></section>
       <section class="card tips-card"><div class="tip-heading"><svg viewBox="0 0 24 24" fill="none"><path d="M9 18h6m-5 3h4m-2-19a7 7 0 0 0-4.5 12.4c.8.7 1.2 1.5 1.3 2.6h6.4c.1-1.1.5-1.9 1.3-2.6A7 7 0 0 0 12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>小提示</div><p>建议为素材仓库创建专用的 Fine-grained Token，并只授予该仓库的 <code>Contents: Read and write</code> 权限。</p></section>
@@ -466,6 +500,18 @@
   let suppressAssetClickUntil = 0;
   let repositoryVerified = false;
   let toastTimer;
+  const formatTokenLabels = { name: "名称", url: "链接", newline: "↵ 回车", space: "空格", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" };
+  let formatPresets = loadFormatPresets();
+  let activeFormatPresetId = formatPresets[0]?.id || "";
+  let formatTokens = [...(formatPresets[0]?.tokens || ["url"])];
+
+  function loadFormatPresets() {
+    try {
+      const parsed = JSON.parse(localStorage.getItem("assetCopyFormatPresets") || "null");
+      if (Array.isArray(parsed) && parsed.length) return parsed.filter((preset) => preset && typeof preset.id === "string" && typeof preset.name === "string" && Array.isArray(preset.tokens));
+    } catch {}
+    return [{ id: "links-only", name: "仅链接", tokens: ["url"] }];
+  }
 
   function clearLongPress() {
     clearTimeout(longPressTimer);
@@ -602,6 +648,28 @@
     visible.forEach((asset) => allSelected ? selectedAssets.delete(asset.path) : selectedAssets.add(asset.path));
     renderAssets();
   });
+  document.getElementById("copySelectedAssetsButton").addEventListener("click", copySelectedAssetsWithFormat);
+  document.getElementById("formatTokenPalette").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-token]");
+    if (!button) return;
+    formatTokens.push(button.dataset.token);
+    renderFormatBuilder();
+  });
+  document.getElementById("formatBuilder").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-token-index]");
+    if (!button) return;
+    const index = Number(button.dataset.tokenIndex);
+    const action = button.dataset.action;
+    if (action === "remove") formatTokens.splice(index, 1);
+    if (action === "left" && index > 0) [formatTokens[index - 1], formatTokens[index]] = [formatTokens[index], formatTokens[index - 1]];
+    if (action === "right" && index < formatTokens.length - 1) [formatTokens[index + 1], formatTokens[index]] = [formatTokens[index], formatTokens[index + 1]];
+    renderFormatBuilder();
+  });
+  document.getElementById("formatPresetSelect").addEventListener("change", loadSelectedFormatPreset);
+  document.getElementById("saveFormatPresetButton").addEventListener("click", saveFormatPreset);
+  document.getElementById("deleteFormatPresetButton").addEventListener("click", deleteFormatPreset);
+  renderFormatPresets();
+  renderFormatBuilder();
   document.getElementById("moveSelectedAssetsButton").addEventListener("click", moveSelectedAssets);
   document.getElementById("deleteSelectedAssetsButton").addEventListener("click", () => {
     const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
@@ -1078,6 +1146,86 @@
       target.append(option);
     });
     if ([...target.options].some((option) => option.value === selectedTarget)) target.value = selectedTarget;
+  }
+
+  function persistFormatPresets() {
+    localStorage.setItem("assetCopyFormatPresets", JSON.stringify(formatPresets));
+  }
+
+  function renderFormatPresets() {
+    const select = document.getElementById("formatPresetSelect");
+    select.replaceChildren();
+    formatPresets.forEach((preset) => {
+      const option = document.createElement("option"); option.value = preset.id; option.textContent = preset.name; select.append(option);
+    });
+    if (activeFormatPresetId && formatPresets.some((preset) => preset.id === activeFormatPresetId)) select.value = activeFormatPresetId;
+    else if (formatPresets[0]) { activeFormatPresetId = formatPresets[0].id; select.value = activeFormatPresetId; }
+    const current = formatPresets.find((preset) => preset.id === activeFormatPresetId);
+    document.getElementById("formatPresetName").value = current?.name || "";
+    document.getElementById("deleteFormatPresetButton").disabled = !current;
+  }
+
+  function loadSelectedFormatPreset() {
+    activeFormatPresetId = document.getElementById("formatPresetSelect").value;
+    const preset = formatPresets.find((item) => item.id === activeFormatPresetId);
+    formatTokens = [...(preset?.tokens || [])];
+    renderFormatPresets();
+    renderFormatBuilder();
+  }
+
+  function renderFormatBuilder() {
+    const builder = document.getElementById("formatBuilder");
+    builder.replaceChildren();
+    formatTokens.forEach((token, index) => {
+      const chip = document.createElement("div"); chip.className = "format-token";
+      const label = document.createElement("span"); label.textContent = formatTokenLabels[token] || token;
+      const controls = document.createElement("small");
+      [["left", "←", "左移"], ["right", "→", "右移"], ["remove", "×", "移除"]].forEach(([action, glyph, title]) => {
+        const button = document.createElement("button"); button.type = "button"; button.dataset.action = action; button.dataset.tokenIndex = String(index); button.title = title; button.setAttribute("aria-label", `${title} ${label.textContent}`); button.textContent = glyph; controls.append(button);
+      });
+      chip.append(label, controls); builder.append(chip);
+    });
+    const preview = formatTokens.map((token) => ({ name: "三日月宗近立绘", url: "https://example.com/character.png", newline: "\n", space: " ", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" }[token] || "")).join("");
+    document.getElementById("formatPreview").textContent = preview || "预览会显示在这里";
+  }
+
+  function saveFormatPreset() {
+    const name = document.getElementById("formatPresetName").value.trim();
+    if (!name) { showToast("请给预设填写名称", true); return; }
+    let preset = formatPresets.find((item) => item.id === activeFormatPresetId && item.name === name);
+    if (!preset) {
+      preset = { id: `format-${Date.now()}`, name, tokens: [] };
+      formatPresets.push(preset);
+      activeFormatPresetId = preset.id;
+    }
+    preset.tokens = [...formatTokens];
+    try {
+      persistFormatPresets(); renderFormatPresets();
+      document.getElementById("formatStatus").textContent = `已保存预设「${name}」`; showToast("复制格式预设已保存");
+    } catch { showToast("保存失败，请检查浏览器存储空间", true); }
+  }
+
+  function deleteFormatPreset() {
+    if (!activeFormatPresetId) return;
+    formatPresets = formatPresets.filter((item) => item.id !== activeFormatPresetId);
+    activeFormatPresetId = formatPresets[0]?.id || "";
+    formatTokens = [...(formatPresets[0]?.tokens || [])];
+    try { persistFormatPresets(); } catch {}
+    renderFormatPresets(); renderFormatBuilder();
+    document.getElementById("formatStatus").textContent = "预设已删除";
+  }
+
+  async function copySelectedAssetsWithFormat() {
+    const chosen = repositoryAssets.filter((asset) => selectedAssets.has(asset.path));
+    if (!chosen.length) { showToast("请先选择素材", true); return; }
+    const values = { newline: "\n", space: " ", colon: ":", dash: "-", comma: ",", period: ".", leftParen: "(", rightParen: ")" };
+    const formatted = chosen.map((asset) => formatTokens.map((token) => {
+      if (token === "name") return customNameForAsset(asset) || asset.name;
+      if (token === "url") return asset.url;
+      return values[token] || "";
+    }).join("")).join("\n");
+    try { await navigator.clipboard.writeText(formatted); showToast(`已按「${formatPresets.find((item) => item.id === activeFormatPresetId)?.name || "当前格式"}」复制 ${chosen.length} 项`); }
+    catch { showToast("复制失败，请检查浏览器剪贴板权限", true); }
   }
 
   async function moveSelectedAssets() {
