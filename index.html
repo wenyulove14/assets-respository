@@ -321,7 +321,7 @@
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
       .selection-toolbar{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 38px 38px;gap:6px;padding:8px;border-radius:14px;}
-      .selection-toolbar-top{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 38px minmax(0,1fr);gap:6px;}
+      .selection-toolbar-top{grid-column:1/-1;display:grid;grid-template-columns:auto 38px auto;justify-content:space-between;align-items:center;gap:6px;}
       .selection-count{padding:5px 8px;font-size:10px;}
       .selection-count:before{width:17px;height:17px;}
       .selection-move-group,.selection-batch-actions{display:contents;}
@@ -1213,7 +1213,11 @@
     document.getElementById("selectionCount").textContent = `已选 ${selectedAssets.size} 项`;
     const visible = assetsMatchingCurrentFilters();
     const allSelected = visible.length > 0 && visible.every((asset) => selectedAssets.has(asset.path));
-    document.getElementById("selectVisibleAssetsButton").textContent = allSelected ? "取消全选" : "全选当前列表";
+    const selectVisibleButton = document.getElementById("selectVisibleAssetsButton");
+    const selectVisibleLabel = allSelected ? "取消全选" : "全选当前列表";
+    selectVisibleButton.setAttribute("aria-label", selectVisibleLabel);
+    selectVisibleButton.title = selectVisibleLabel;
+    selectVisibleButton.querySelector(".selection-action-label").textContent = selectVisibleLabel;
     const selectedTarget = target.value;
     target.replaceChildren();
     [...new Set([uncategorized, ...localCategories])].forEach((category) => {
