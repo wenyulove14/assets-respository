@@ -1560,7 +1560,14 @@
         }
         const response = await fetch(downloadUrl, { mode: "cors", credentials: "omit" });
         if (!response.ok) {
-          if (useImageProxy && response.status === 403) throw new Error("代理拒绝访问，请检查 Worker 白名单是否包含 image.uglycat.cc，以及访问密钥是否正确");
+          if (useImageProxy && response.status === 403) {
+            const upstreamStatus = response.headers.get("X-IB-Status");
+            if (upstreamStatus === "403") throw new Error("Worker 已接收请求，但 image.uglycat.cc 拒绝了 Worker 的下载请求（来源返回 403）");
+            const proxyMessage = (await response.clone().text().catch(() => "")).trim().toLowerCase();
+            if (proxyMessage === "host not allowed") throw new Error("Worker 当前部署的 ALLOW 白名单不包含 image.uglycat.cc");
+            if (proxyMessage === "forbidden") throw new Error("Worker 的 PROXY_KEY 与网页中保存的访问密钥不匹配");
+            throw new Error("Worker 返回 403，但响应未标明来源状态；请查看 Worker 执行日志中的响应正文");
+          }
           throw new Error(`${useImageProxy ? "代理" : "来源图床"}返回错误 (${response.status})`);
         }
         const blob = await response.blob();
