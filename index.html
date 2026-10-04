@@ -51,8 +51,39 @@
     .layout { width:min(900px, calc(100% - 56px)); margin:38px auto 70px; display:grid; grid-template-columns:minmax(0, 1fr); gap:24px; align-items:start; }
     .layout.settings-mode { width:min(760px, calc(100% - 56px)); grid-template-columns:minmax(0, 1fr); }
     .layout.library-mode { width:min(1100px, calc(100% - 56px)); }
+    .layout.converter-mode {width:min(900px,calc(100% - 56px));grid-template-columns:minmax(0,1fr);}
     .library-view { display:none; }
     .library-mode .library-view { display:block; }
+    .converter-view {display:none;}
+    .converter-view[hidden] {display:none;}
+    .converter-mode .converter-view {display:block;}
+    .converter-card {padding:22px;}
+    .converter-intro {margin:3px 0 20px;}
+    .converter-intro h1 {margin:8px 0 5px;font-size:27px;}
+    .converter-intro p {margin:0;color:var(--muted);font-size:12px;line-height:1.7;}
+    .converter-controls {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:13px;}
+    .converter-controls .form-field {margin:0;}
+    .converter-controls .form-field label {font-size:11px;}
+    .converter-controls select {height:40px;font-size:12px;}
+    .converter-input {width:100%;min-height:160px;resize:vertical;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none;}
+    .converter-input:focus {border-color:#a99af2;box-shadow:0 0 0 3px #7557e815;}
+    .converter-note {margin:9px 0 15px;color:var(--muted);font-size:10px;line-height:1.65;}
+    .converter-actions {display:flex;justify-content:space-between;align-items:center;gap:10px;}
+    .converter-actions span {display:flex;gap:8px;}
+    .converter-parse-button,.converter-upload-button {height:38px;padding:0 14px;border:0;border-radius:9px;font-size:11px;font-weight:650;}
+    .converter-parse-button {background:#f1eefb;color:var(--accent-dark);}
+    .converter-upload-button {background:var(--accent);color:#fff;box-shadow:0 4px 12px #7557e82b;}
+    .converter-upload-button:hover {background:var(--accent-dark);}
+    .converter-upload-button:disabled {opacity:.55;cursor:not-allowed;box-shadow:none;}
+    .converter-status {min-height:16px;margin-top:10px;color:var(--muted);font-size:10px;line-height:1.6;}
+    .conversion-queue {display:grid;gap:8px;margin-top:14px;}
+    .conversion-item {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;}
+    .conversion-item-info {min-width:0;}
+    .conversion-item-name {overflow:hidden;color:#464b57;font-size:11px;font-weight:650;text-overflow:ellipsis;white-space:nowrap;}
+    .conversion-item-url {overflow:hidden;margin-top:3px;color:#9398a3;font-size:9px;text-overflow:ellipsis;white-space:nowrap;}
+    .conversion-item-status {color:#8a8f9b;font-size:10px;white-space:nowrap;}
+    .conversion-item-status.success {color:var(--green);}
+    .conversion-item-status.error {color:var(--red);}
     .base-category-tabs {display:flex;gap:8px;margin:18px 0 0;padding:5px;background:#eceef2;border-radius:11px;overflow-x:auto;}
     .base-category-tab {flex:1;min-width:105px;border:0;border-radius:8px;background:transparent;color:#747a86;padding:9px 12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;white-space:nowrap;}
     .base-category-tab:hover {color:var(--accent-dark);}
@@ -311,8 +342,18 @@
       .top-nav{order:3;width:100%;margin:0;gap:4px;}
       .nav-button{flex:1;padding:8px 5px;font-size:11px;}
       .top-right .hint{display:none;}
-      .layout,.layout.settings-mode,.layout.library-mode{display:flex;flex-direction:column;width:calc(100% - 28px);margin:20px auto 38px;gap:16px;}
+      .layout,.layout.settings-mode,.layout.library-mode,.layout.converter-mode{display:flex;flex-direction:column;width:calc(100% - 28px);margin:20px auto 38px;gap:16px;}
       .main-column,.sidebar,.library-view{width:100%;}
+      .converter-view{width:100%;}
+      .converter-card{padding:16px;}
+      .converter-intro h1{font-size:24px;}
+      .converter-controls{grid-template-columns:minmax(0,1fr);gap:8px;}
+      .converter-controls .converter-parse-button{width:100%;}
+      .converter-input{min-height:135px;font-size:11px;}
+      .converter-actions{align-items:stretch;}
+      .converter-actions span{flex:1;}
+      .converter-actions span button{flex:1;padding:0 9px;}
+      .conversion-item{padding:10px;}
       .sidebar{grid-template-columns:1fr 1fr;}
       .settings-card{grid-row:span 2;}
       h1{font-size:25px;}
@@ -414,6 +455,7 @@
     <nav class="top-nav" aria-label="主导航">
       <button type="button" class="nav-button active" id="uploadNav">上传</button>
       <button type="button" class="nav-button" id="libraryNav">素材</button>
+      <button type="button" class="nav-button" id="converterNav">转换</button>
       <button type="button" class="nav-button" id="settingsNav">设置</button>
     </nav>
     <div class="top-right"><span class="hint">你的素材，整齐归档</span><span class="connection"><i class="dot" id="connectionDot"></i><span id="connectionText">尚未配置</span></span></div>
@@ -468,6 +510,18 @@
         <div class="selection-batch-actions"><button type="button" id="copySelectedAssetsButton" aria-label="批量复制链接" title="批量复制"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.7"/></svg><span class="selection-action-label">批量复制</span></button><button type="button" class="selection-delete" id="deleteSelectedAssetsButton" aria-label="删除所选素材" title="删除"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">删除</span></button></div>
       </div>
       <div class="asset-grid" id="assetGrid"><div class="empty-state"><strong>连接仓库后查看素材</strong>素材库会读取当前 GitHub 仓库中的文件。</div></div>
+    </section>
+
+    <section class="converter-view" id="converterView" hidden>
+      <div class="converter-intro"><div class="eyebrow">IMAGE HOST CONVERTER</div><h1>转换图床</h1><p>粘贴其他图床链接，下载后保存到当前 GitHub 仓库。使用名称格式预设时，会把解析出的自定义名称一并保存。</p></div>
+      <section class="card converter-card">
+        <div class="converter-controls"><div class="form-field"><label for="conversionFormatSelect">解析格式</label><select id="conversionFormatSelect" aria-label="选择粘贴内容的解析格式"></select></div><button type="button" class="converter-parse-button" id="parseConversionInput">解析内容</button></div>
+        <textarea class="converter-input" id="conversionInput" placeholder="粘贴链接，或粘贴按某个批量复制格式整理的内容。\n\n例如：\n角色立绘：https://old-host.example/image.png" aria-label="粘贴图床链接或格式化文本"></textarea>
+        <p class="converter-note">可直接粘贴多个链接，也可以选择设置中保存的复制格式来解析名称和链接。来源图床必须允许浏览器跨域读取（CORS），否则浏览器无法下载文件。</p>
+        <div class="converter-actions"><span><button type="button" class="text-button" id="clearConversionInput">清空</button></span><button type="button" class="converter-upload-button" id="startConversionButton" disabled>下载并上传</button></div>
+        <div class="converter-status" id="conversionStatus" role="status"></div>
+        <div class="conversion-queue" id="conversionQueue"></div>
+      </section>
     </section>
 
     <aside class="sidebar">
@@ -561,6 +615,8 @@
   let formatPresets = loadFormatPresets();
   let activeFormatPresetId = formatPresets[0]?.id || "";
   let formatTokens = [...(formatPresets[0]?.tokens || ["url"])];
+  let conversionItems = [];
+  let conversionInProgress = false;
 
   function loadFormatPresets() {
     try {
@@ -669,7 +725,27 @@
   }
   document.getElementById("uploadNav").addEventListener("click", () => setPage("upload"));
   document.getElementById("libraryNav").addEventListener("click", () => setPage("library"));
+  document.getElementById("converterNav").addEventListener("click", () => setPage("converter"));
   document.getElementById("settingsNav").addEventListener("click", () => setPage("settings"));
+  document.getElementById("parseConversionInput").addEventListener("click", parseConversionInput);
+  document.getElementById("clearConversionInput").addEventListener("click", () => {
+    document.getElementById("conversionInput").value = "";
+    conversionItems = [];
+    document.getElementById("conversionStatus").textContent = "";
+    renderConversionQueue();
+  });
+  document.getElementById("conversionFormatSelect").addEventListener("change", () => {
+    conversionItems = [];
+    document.getElementById("conversionStatus").textContent = "解析格式已更改，请重新解析。";
+    renderConversionQueue();
+  });
+  document.getElementById("conversionInput").addEventListener("input", () => {
+    if (conversionInProgress) return;
+    conversionItems = [];
+    document.getElementById("conversionStatus").textContent = "内容已更改，请重新解析。";
+    renderConversionQueue();
+  });
+  document.getElementById("startConversionButton").addEventListener("click", convertAndUploadRemoteImages);
   document.getElementById("assetSearch").addEventListener("input", renderAssets);
   document.getElementById("baseCategoryTabs").addEventListener("click", (event) => {
     const tab = event.target.closest(".base-category-tab");
@@ -755,6 +831,7 @@
   document.getElementById("deleteFormatPresetButton").addEventListener("click", deleteFormatPreset);
   renderFormatPalette();
   renderFormatPresets();
+  renderConversionFormats();
   renderFormatBuilder();
   document.getElementById("moveSelectedAssetsButton").addEventListener("click", moveSelectedAssets);
   document.getElementById("deleteSelectedAssetsButton").addEventListener("click", () => {
@@ -863,16 +940,21 @@
   function setPage(page) {
     const settingsPage = page === "settings";
     const libraryPage = page === "library";
+    const converterPage = page === "converter";
     document.querySelector(".settings-intro")?.remove();
     document.getElementById("workspace").classList.toggle("settings-mode", settingsPage);
     document.getElementById("workspace").classList.toggle("library-mode", libraryPage);
+    document.getElementById("workspace").classList.toggle("converter-mode", converterPage);
     document.getElementById("uploadNav").classList.toggle("active", page === "upload");
     document.getElementById("libraryNav").classList.toggle("active", libraryPage);
+    document.getElementById("converterNav").classList.toggle("active", converterPage);
     document.getElementById("settingsNav").classList.toggle("active", settingsPage);
-    document.querySelector(".main-column").hidden = settingsPage || libraryPage;
+    document.querySelector(".main-column").hidden = settingsPage || libraryPage || converterPage;
     document.getElementById("libraryView").hidden = !libraryPage;
+    document.getElementById("converterView").hidden = !converterPage;
     document.querySelector(".sidebar").setAttribute("aria-hidden", String(!settingsPage));
     document.querySelector(".sidebar").style.display = settingsPage ? "grid" : "none";
+    if (converterPage) renderConversionFormats();
     if (settingsPage) {
       document.querySelector(".sidebar").insertAdjacentHTML("afterbegin", '<div class="intro settings-intro"><div class="eyebrow">REPOSITORY</div><h1>仓库设置</h1><p>配置素材保存位置与访问凭据。</p></div>');
     }
@@ -1259,6 +1341,221 @@
     const current = formatPresets.find((preset) => preset.id === activeFormatPresetId);
     document.getElementById("formatPresetName").value = current?.name || "";
     document.getElementById("deleteFormatPresetButton").disabled = !current;
+    if (document.getElementById("conversionFormatSelect")) renderConversionFormats();
+  }
+
+  function renderConversionFormats() {
+    const select = document.getElementById("conversionFormatSelect");
+    if (!select) return;
+    const previous = select.value;
+    select.replaceChildren();
+    const automatic = document.createElement("option"); automatic.value = "auto"; automatic.textContent = "自动识别链接"; select.append(automatic);
+    formatPresets.forEach((preset) => {
+      const option = document.createElement("option"); option.value = preset.id; option.textContent = preset.name; select.append(option);
+    });
+    select.value = [...select.options].some((option) => option.value === previous) ? previous : "auto";
+  }
+
+  function escapeRegExp(value) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+
+  function normalizeConversionUrl(value) {
+    const candidate = String(value || "").trim().replace(/^[<([{]+/, "").replace(/[>\])},，。；;!?！？]+$/u, "");
+    try {
+      const url = new URL(candidate);
+      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+    } catch { return ""; }
+  }
+
+  function parseWithConversionFormat(text, tokens) {
+    if (!Array.isArray(tokens) || !tokens.includes("url")) return [];
+    let nameGroup = 0; let urlGroup = 0; let groupIndex = 0;
+    const parts = tokens.map((token) => {
+      if (token === "name") { groupIndex += 1; if (!nameGroup) nameGroup = groupIndex; return "([^\\r\\n]*?)"; }
+      if (token === "url") { groupIndex += 1; if (!urlGroup) urlGroup = groupIndex; return "(https?:\\/\\/[^\\s<>\\\"']+?)"; }
+      if (token === "newline") return "\\r?\\n";
+      if (token === "space") return "[ \\t]+";
+      return escapeRegExp(formatTokenValues[token] || "");
+    });
+    try {
+      const matcher = new RegExp(`(?:^|\\r?\\n)${parts.join("")}(?=\\r?\\n|$)`, "g");
+      const matches = [];
+      for (const match of text.matchAll(matcher)) {
+        const url = normalizeConversionUrl(match[urlGroup]);
+        if (!url) continue;
+        matches.push({ url, customName: nameGroup ? String(match[nameGroup] || "").trim() : "" });
+      }
+      return matches;
+    } catch { return []; }
+  }
+
+  function parseAutomaticConversionLinks(text) {
+    const parsed = [];
+    const markdown = /\[([^\]\r\n]+)\]\((https?:\/\/[^)\s]+)\)/g;
+    for (const match of text.matchAll(markdown)) {
+      const url = normalizeConversionUrl(match[2]);
+      if (url) parsed.push({ url, customName: match[1].trim() });
+    }
+    const links = /https?:\/\/[^\s<>"']+/g;
+    for (const match of text.matchAll(links)) {
+      const url = normalizeConversionUrl(match[0]);
+      if (!url) continue;
+      const lineStart = text.lastIndexOf("\n", match.index - 1) + 1;
+      const prefix = text.slice(lineStart, match.index).replace(/^\s*(?:[-*•]|\d+[.)])\s*/, "").replace(/[\s:：\-–—|,，]+$/u, "").trim();
+      if (!parsed.some((item) => item.url === url)) parsed.push({ url, customName: prefix && !prefix.includes("http") ? prefix : "" });
+    }
+    return parsed;
+  }
+
+  function parseConversionInput() {
+    const text = document.getElementById("conversionInput").value.trim();
+    const formatId = document.getElementById("conversionFormatSelect").value;
+    if (!text) { conversionItems = []; document.getElementById("conversionStatus").textContent = "请先粘贴图床链接或格式化文本。"; renderConversionQueue(); return; }
+    let matches = [];
+    if (formatId !== "auto") {
+      const preset = formatPresets.find((item) => item.id === formatId);
+      if (preset) matches = parseWithConversionFormat(text, preset.tokens);
+    } else {
+      const candidates = [...formatPresets].sort((a, b) => Number(b.tokens.includes("name")) - Number(a.tokens.includes("name")));
+      let best = [];
+      for (const preset of candidates) {
+        const parsed = parseWithConversionFormat(text, preset.tokens);
+        const score = parsed.length * 10 + parsed.filter((item) => item.customName).length * 100;
+        const bestScore = best.length * 10 + best.filter((item) => item.customName).length * 100;
+        if (score > bestScore) best = parsed;
+      }
+      matches = best.length ? best : parseAutomaticConversionLinks(text);
+    }
+    const automaticMatches = parseAutomaticConversionLinks(text);
+    if (!matches.length) matches = automaticMatches;
+    const automaticByUrl = new Map(automaticMatches.map((item) => [item.url, item]));
+    matches = matches.map((item) => ({ ...item, customName: item.customName || automaticByUrl.get(item.url)?.customName || "" }));
+    const seen = new Set();
+    conversionItems = matches.filter((item) => !seen.has(item.url) && seen.add(item.url)).map((item) => ({ ...item, status: "等待转换" }));
+    document.getElementById("conversionStatus").textContent = conversionItems.length
+      ? `已解析 ${conversionItems.length} 个链接${conversionItems.some((item) => item.customName) ? "，并识别到自定义名称" : ""}。`
+      : "没有识别到可用链接，请检查格式或选择对应的解析预设。";
+    renderConversionQueue();
+  }
+
+  function sourceFilenameFromUrl(url, contentType = "") {
+    let filename = "";
+    try { filename = decodeURIComponent(new URL(url).pathname.split("/").pop() || ""); } catch {}
+    const imageExtensions = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "tif", "tiff"]);
+    const extension = filename.includes(".") ? filename.split(".").pop().toLowerCase() : "";
+    if (imageExtensions.has(extension)) return filename;
+    const mimeExtension = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg", "image/avif": "avif", "image/bmp": "bmp", "image/tiff": "tif" }[contentType.split(";")[0].trim().toLowerCase()];
+    return mimeExtension ? `converted-image.${mimeExtension}` : filename || "远程图片";
+  }
+
+  function renderConversionQueue() {
+    const queue = document.getElementById("conversionQueue");
+    queue.replaceChildren();
+    conversionItems.forEach((item) => {
+      const row = document.createElement("div"); row.className = "conversion-item";
+      const info = document.createElement("div"); info.className = "conversion-item-info";
+      const name = document.createElement("div"); name.className = "conversion-item-name"; name.textContent = item.customName || sourceFilenameFromUrl(item.url); name.title = name.textContent;
+      const url = document.createElement("div"); url.className = "conversion-item-url"; url.textContent = item.url; url.title = item.url;
+      const status = document.createElement("div"); status.className = `conversion-item-status${item.error ? " error" : item.uploaded ? " success" : ""}`; status.textContent = item.error || item.status;
+      info.append(name, url); row.append(info, status); queue.append(row);
+    });
+    const button = document.getElementById("startConversionButton");
+    const pendingItems = conversionItems.filter((item) => !item.uploaded || item.nameSaveError);
+    button.disabled = conversionInProgress || pendingItems.length === 0;
+    button.textContent = conversionInProgress ? "正在转换…" : !pendingItems.length && conversionItems.length ? "已全部完成" : pendingItems.length < conversionItems.length ? `重试剩余 ${pendingItems.length} 项` : `下载并上传 ${pendingItems.length} 项`;
+    document.getElementById("conversionInput").disabled = conversionInProgress;
+    document.getElementById("conversionFormatSelect").disabled = conversionInProgress;
+    document.getElementById("parseConversionInput").disabled = conversionInProgress;
+    document.getElementById("clearConversionInput").disabled = conversionInProgress;
+  }
+
+  async function persistConvertedCustomNames(items, config) {
+    const namedItems = items.filter((item) => item.customName && item.uploadedAsset);
+    if (!namedItems.length) return;
+    const metadata = await fetchAssetMetadata(config);
+    namedItems.forEach((item) => {
+      const asset = item.uploadedAsset;
+      let record = metadata.assets.find((entry) => entry.path === asset.path);
+      if (!record) {
+        record = { id: asset.path, filename: asset.name, path: asset.path, folder: asset.path.slice(0, asset.path.lastIndexOf("/")), type: assetTypeForName(asset.name), tags: [], url: asset.url, created: new Date().toISOString().slice(0, 10) };
+        metadata.assets.push(record);
+      }
+      record.name = item.customName;
+    });
+    await writeAssetMetadata(metadata, config, "save converted asset names");
+    assetMetadata = metadata;
+  }
+
+  async function convertAndUploadRemoteImages() {
+    if (conversionInProgress || !conversionItems.length) return;
+    const config = {
+      token: document.getElementById("token").value.trim(),
+      owner: document.getElementById("owner").value.trim(),
+      repo: document.getElementById("repo").value.trim(),
+      branch: document.getElementById("branch").value.trim() || "main"
+    };
+    if (!config.token || !config.owner || !config.repo) { showToast("请先在仓库设置中配置 GitHub", true); return; }
+    conversionInProgress = true;
+    document.getElementById("conversionStatus").textContent = "正在从来源图床下载并上传到 GitHub…";
+    renderConversionQueue();
+    for (const item of conversionItems) {
+      if (item.uploaded) continue;
+      item.error = ""; item.status = "正在下载"; renderConversionQueue();
+      let stage = "download";
+      try {
+        if (new URL(item.url).protocol !== "https:") throw new Error("来源链接需要使用 HTTPS");
+        const response = await fetch(item.url, { mode: "cors", credentials: "omit" });
+        if (!response.ok) throw new Error(`来源图床返回错误 (${response.status})`);
+        const blob = await response.blob();
+        const contentType = (blob.type || response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+        const filename = sourceFilenameFromUrl(response.url || item.url, contentType);
+        const extension = filename.split(".").pop().toLowerCase();
+        const imageExtensions = ["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "tif", "tiff"];
+        if (contentType && !contentType.startsWith("image/") && contentType !== "application/octet-stream") throw new Error("链接返回的内容不是图片");
+        if (!contentType.startsWith("image/") && !imageExtensions.includes(extension)) throw new Error("无法确认链接返回的是图片");
+        if (!blob.size) throw new Error("下载到的图片为空");
+        const file = new File([blob], filename, { type: contentType.startsWith("image/") ? contentType : `image/${extension === "jpg" ? "jpeg" : extension}`, lastModified: Date.now() });
+        stage = "upload"; item.status = "正在上传"; renderConversionQueue();
+        const dot = file.name.lastIndexOf(".");
+        const sourceBase = dot > 0 ? file.name.slice(0, dot) : "converted-image";
+        const extensionSuffix = dot > 0 ? file.name.slice(dot) : ".png";
+        const uniqueSuffix = `${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${globalThis.crypto?.randomUUID ? crypto.randomUUID().slice(0, 8) : Math.random().toString(36).slice(2, 10)}`;
+        const storedName = makeUrlSafeFilename(`${sourceBase}-${uniqueSuffix}${extensionSuffix}`);
+        const folder = getUploadFolder(file);
+        const path = `${folder}/${storedName}`;
+        const endpoint = `https://api.github.com/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/contents/${path.split("/").map(encodeURIComponent).join("/")}`;
+        const uploadResponse = await fetch(endpoint, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
+          body: JSON.stringify({ message: `convert image host ${filename}`, content: await fileToBase64(file), branch: config.branch })
+        });
+        const result = await uploadResponse.json().catch(() => ({}));
+        if (!uploadResponse.ok) throw new Error(result.message || `GitHub 上传失败 (${uploadResponse.status})`);
+        const ref = config.branch.split("/").map(encodeURIComponent).join("/");
+        item.uploadedAsset = { path, name: storedName, size: file.size, url: `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${ref}/${path.split("/").map(encodeURIComponent).join("/")}` };
+        item.uploaded = true; item.status = "已上传";
+      } catch (error) {
+        item.error = error instanceof TypeError
+          ? stage === "download" ? "下载失败：来源图床可能不允许跨域读取（CORS）" : "上传失败：无法连接 GitHub API"
+          : error.message || "转换失败";
+        item.status = "转换失败";
+      }
+      renderConversionQueue();
+    }
+    const uploaded = conversionItems.filter((item) => item.uploadedAsset);
+    let nameSaveError = "";
+    try { await persistConvertedCustomNames(uploaded, config); }
+    catch (error) { nameSaveError = error.message || "自定义名称保存失败"; }
+    if (uploaded.length) await syncAssetLibrary();
+    uploaded.forEach((item) => {
+      item.status = item.customName && nameSaveError ? "已上传，名称未保存" : "转换完成";
+      if (item.customName && nameSaveError) { item.nameSaveError = nameSaveError; item.error = `名称保存失败：${nameSaveError}`; }
+      else { delete item.nameSaveError; item.error = ""; }
+    });
+    conversionInProgress = false;
+    const failed = conversionItems.filter((item) => !item.uploaded).length;
+    document.getElementById("conversionStatus").textContent = `${uploaded.length} 个已上传${failed ? `，${failed} 个失败` : ""}${nameSaveError ? `；自定义名称保存失败：${nameSaveError}` : ""}${uploaded.length ? "。素材库已同步。" : "。"}`;
+    renderConversionQueue();
+    showToast(failed || nameSaveError ? `转换完成：成功 ${uploaded.length} 个，失败 ${failed} 个` : `已转换并上传 ${uploaded.length} 个素材`, Boolean(failed || nameSaveError));
   }
 
   function renderFormatPalette() {
