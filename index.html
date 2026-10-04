@@ -315,14 +315,6 @@
     .settings-foot { border-top:1px solid var(--line); margin-top:15px; padding-top:12px; color:#9499a4;font-size:10px; display:flex;gap:7px;align-items:flex-start; }
     .settings-foot svg {width:13px;flex:none;color:#aaa0e8;}
     .save-settings-button {width:100%;margin-top:16px;}
-    .proxy-settings {margin-top:17px;padding-top:15px;border-top:1px solid var(--line);}
-    .proxy-settings-heading {display:flex;align-items:center;gap:7px;margin-bottom:12px;color:#414652;font-size:11px;font-weight:700;}
-    .proxy-settings-heading span {padding:2px 6px;border-radius:5px;background:#f1f2f5;color:#8b909b;font-size:9px;font-weight:550;}
-    .proxy-settings .form-field {margin-bottom:10px;}
-    .proxy-settings input {width:100%;}
-    .proxy-save-button {width:100%;height:34px;margin-top:2px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#5f6470;font-size:11px;font-weight:650;}
-    .proxy-save-button:hover {border-color:#d7cff0;background:#faf8ff;color:var(--accent-dark);}
-    .proxy-settings-status {margin-top:8px;color:var(--muted);font-size:10px;line-height:1.55;}
     .connection-feedback {margin-top:9px;min-height:17px;color:var(--muted);font-size:10px;}
     .connection-feedback.success {color:var(--green);}
     .connection-feedback.error {color:var(--red);}
@@ -525,7 +517,7 @@
       <section class="card converter-card">
         <div class="converter-controls"><div class="form-field"><label for="conversionFormatSelect">解析格式</label><select id="conversionFormatSelect" aria-label="选择粘贴内容的解析格式"></select></div><button type="button" class="converter-parse-button" id="parseConversionInput">解析内容</button></div>
         <textarea class="converter-input" id="conversionInput" placeholder="粘贴链接，或粘贴按某个批量复制格式整理的内容。\n\n例如：\n角色立绘：https://old-host.example/image.png" aria-label="粘贴图床链接或格式化文本"></textarea>
-        <p class="converter-note">可直接粘贴多个链接，也可以选择设置中保存的复制格式来解析名称和链接。image.uglycat.cc 会通过已配置的代理下载，其他来源需要允许跨域读取（CORS）。</p>
+        <p class="converter-note">可直接粘贴多个链接，也可以选择设置中保存的复制格式来解析名称和链接。来源图床需要允许浏览器跨域读取（CORS），否则浏览器无法下载文件。</p>
         <div class="converter-actions"><span><button type="button" class="text-button" id="clearConversionInput">清空</button></span><button type="button" class="converter-upload-button" id="startConversionButton" disabled>下载并上传</button></div>
         <div class="converter-status" id="conversionStatus" role="status"></div>
         <div class="conversion-queue" id="conversionQueue"></div>
@@ -541,13 +533,6 @@
         <div class="form-field"><label for="token">Personal Access Token</label><div class="input-with-action"><input id="token" type="password" placeholder="github_pat_••••••••••" autocomplete="current-password"><button class="reveal" id="toggleToken" type="button" aria-label="显示或隐藏 Token"><svg viewBox="0 0 24 24" fill="none"><path d="M3 12s3.2-6 9-6 9 6 9 6-3.2 6-9 6-9-6-9-6Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6"/></svg></button></div></div>
         <button class="primary save-settings-button" id="saveSettingsButton" type="button">保存设置并验证连接</button>
         <div class="connection-feedback" id="connectionFeedback" role="status">保存后将检查 Token 是否能访问所选仓库分支。</div>
-        <div class="proxy-settings">
-          <div class="proxy-settings-heading">跨域下载代理 <span>可选</span></div>
-          <div class="form-field"><label for="imageProxyUrlInput">Worker 地址</label><input id="imageProxyUrlInput" type="url" placeholder="https://your-worker.workers.dev/"></div>
-          <div class="form-field"><label for="imageProxyKeyInput">访问密钥</label><input id="imageProxyKeyInput" type="password" placeholder="如 Worker 配置了 PROXY_KEY" autocomplete="off"></div>
-          <button class="proxy-save-button" id="saveProxySettingsButton" type="button">保存代理设置</button>
-          <div class="proxy-settings-status" id="proxySettingsStatus" role="status">代理地址和密钥只保存在当前浏览器，不会写入网页仓库。</div>
-        </div>
         <div class="settings-foot"><svg viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><span>设置信息仅保存在当前浏览器。Token 需要目标仓库的 Contents 读写权限。</span></div>
       </section>
       <section class="card format-settings-card">
@@ -631,7 +616,6 @@
   let activeFormatPresetId = formatPresets[0]?.id || "";
   let formatTokens = [...(formatPresets[0]?.tokens || ["url"])];
   let conversionItems = [];
-  const imageProxyHosts = new Set(["image.uglycat.cc"]);
   let conversionInProgress = false;
 
   function loadFormatPresets() {
@@ -659,32 +643,10 @@
       updateRepositoryState();
     });
   });
-  document.getElementById("imageProxyUrlInput").value = localStorage.getItem("imageProxyUrl") || "";
-  document.getElementById("imageProxyKeyInput").value = localStorage.getItem("imageProxyKey") || "";
+  // Remove proxy credentials saved by earlier versions from this browser.
+  localStorage.removeItem("imageProxyUrl");
+  localStorage.removeItem("imageProxyKey");
   updateRepositoryState();
-
-  function saveImageProxySettings() {
-    const addressInput = document.getElementById("imageProxyUrlInput");
-    const address = addressInput.value.trim();
-    const key = document.getElementById("imageProxyKeyInput").value.trim();
-    const feedback = document.getElementById("proxySettingsStatus");
-    if (address) {
-      try {
-        const parsed = new URL(address);
-        if (parsed.protocol !== "https:") throw new Error();
-        if (parsed.search || parsed.hash) throw new Error();
-      } catch {
-        feedback.textContent = "请输入有效的 HTTPS Worker 地址，不要附加查询参数。";
-        feedback.style.color = "var(--red)";
-        return;
-      }
-    }
-    localStorage.setItem("imageProxyUrl", address);
-    localStorage.setItem("imageProxyKey", key);
-    feedback.textContent = address ? "代理设置已保存在当前浏览器。" : "代理配置已清除；需要代理的来源将无法下载。";
-    feedback.style.color = "var(--green)";
-    showToast("代理设置已保存");
-  }
 
   function updateRepositoryState() {
     const owner = document.getElementById("owner").value.trim();
@@ -761,7 +723,6 @@
   });
   document.getElementById("uploadButton").addEventListener("click", upload);
   document.getElementById("saveSettingsButton").addEventListener("click", saveSettingsAndVerify);
-  document.getElementById("saveProxySettingsButton").addEventListener("click", saveImageProxySettings);
   if (["token", "owner", "repo"].every((id) => Boolean(localStorage.getItem(id)?.trim()))) {
     saveSettingsAndVerify({ notify: false });
   }
@@ -1545,34 +1506,9 @@
       let stage = "download";
       try {
         if (new URL(item.url).protocol !== "https:") throw new Error("来源链接需要使用 HTTPS");
-        const sourceUrl = new URL(item.url);
-        const useImageProxy = imageProxyHosts.has(sourceUrl.hostname.toLowerCase());
-        let downloadUrl = item.url;
-        if (useImageProxy) {
-          const configuredProxyUrl = localStorage.getItem("imageProxyUrl")?.trim();
-          const configuredProxyKey = localStorage.getItem("imageProxyKey")?.trim();
-          if (!configuredProxyUrl) throw new Error("请先到设置中填写并保存跨域下载 Worker 地址");
-          const proxyUrl = new URL(configuredProxyUrl);
-          if (proxyUrl.protocol !== "https:") throw new Error("Worker 地址必须使用 HTTPS");
-          proxyUrl.searchParams.set("u", item.url);
-          if (configuredProxyKey) proxyUrl.searchParams.set("k", configuredProxyKey);
-          downloadUrl = proxyUrl.toString();
-        }
-        const response = await fetch(downloadUrl, {
-          mode: "cors",
-          credentials: "omit",
-          headers: useImageProxy ? { "X-IB-Referer": `${sourceUrl.origin}/` } : undefined
-        });
+        const response = await fetch(item.url, { mode: "cors", credentials: "omit" });
         if (!response.ok) {
-          if (useImageProxy && response.status === 403) {
-            const upstreamStatus = response.headers.get("X-IB-Status");
-            if (upstreamStatus === "403") throw new Error("Worker 已接收请求，但 image.uglycat.cc 拒绝了 Worker 的下载请求（来源返回 403）");
-            const proxyMessage = (await response.clone().text().catch(() => "")).trim().toLowerCase();
-            if (proxyMessage === "host not allowed") throw new Error("Worker 当前部署的 ALLOW 白名单不包含 image.uglycat.cc");
-            if (proxyMessage === "forbidden") throw new Error("Worker 的 PROXY_KEY 与网页中保存的访问密钥不匹配");
-            throw new Error("Worker 返回 403，但响应未标明来源状态；请查看 Worker 执行日志中的响应正文");
-          }
-          throw new Error(`${useImageProxy ? "代理" : "来源图床"}返回错误 (${response.status})`);
+          throw new Error(`来源图床返回错误 (${response.status})`);
         }
         const blob = await response.blob();
         const contentType = (blob.type || response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
