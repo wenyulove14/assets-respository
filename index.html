@@ -1558,7 +1558,11 @@
           if (configuredProxyKey) proxyUrl.searchParams.set("k", configuredProxyKey);
           downloadUrl = proxyUrl.toString();
         }
-        const response = await fetch(downloadUrl, { mode: "cors", credentials: "omit" });
+        const response = await fetch(downloadUrl, {
+          mode: "cors",
+          credentials: "omit",
+          headers: useImageProxy ? { "X-IB-Referer": `${sourceUrl.origin}/` } : undefined
+        });
         if (!response.ok) {
           if (useImageProxy && response.status === 403) {
             const upstreamStatus = response.headers.get("X-IB-Status");
