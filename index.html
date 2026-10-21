@@ -108,7 +108,7 @@
     .external-breadcrumb { display:flex;align-items:center;gap:8px;margin:15px 0 10px;color:var(--muted);font-size:11px; }
     .external-breadcrumb button { border:0;background:transparent;color:var(--accent-dark);padding:5px 8px 5px 0;font-weight:650; }
     .external-breadcrumb strong { color:var(--ink);font-weight:650; }
-    .external-list .external-card { min-width:0;cursor:pointer; }
+    .external-list .external-card { min-width:0;cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none; }
     .external-list .asset-thumb { position:relative; }
     .external-list .asset-thumb img { display:block; }
     .external-list .asset-body { min-height:73px; }
@@ -180,12 +180,12 @@
     .selection-toolbar button {height:36px;padding:0 11px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid #eae7f0;border-radius:9px;background:#fff;color:#5f6370;font-size:11px;font-weight:650;white-space:nowrap;transition:background .15s,border-color .15s,color .15s,transform .15s;}
     .selection-toolbar button svg {width:15px;height:15px;flex:none;}
     .selection-toolbar button:hover {border-color:#d7cff0;background:#faf8ff;color:var(--accent-dark);}
-    .selection-toolbar #selectVisibleAssetsButton {background:#f7f6fa;border-color:#f0edf4;}
-    .selection-toolbar #moveSelectedAssetsButton {min-width:75px;border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
-    .selection-toolbar #moveSelectedAssetsButton:hover {background:var(--accent-dark);}
+    .selection-toolbar #selectVisibleAssetsButton,.selection-toolbar #selectVisibleExternalButton {background:#f7f6fa;border-color:#f0edf4;}
+    .selection-toolbar #moveSelectedAssetsButton,.selection-toolbar #moveSelectedExternalButton {min-width:75px;border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 3px 9px #7557e82b;}
+    .selection-toolbar #moveSelectedAssetsButton:hover,.selection-toolbar #moveSelectedExternalButton:hover {background:var(--accent-dark);}
     .selection-toolbar .selection-delete {border-color:#f2e1e2;background:#fff8f8;color:#ad4851;}
     .selection-toolbar .selection-delete:hover {border-color:#efd0d3;background:#fde9eb;color:#993740;}
-    .selection-toolbar #exitSelectionButton {height:32px;padding:0 9px;border-color:transparent;background:transparent;color:#858997;font-size:10px;}
+    .selection-toolbar #exitSelectionButton,.selection-toolbar #exitExternalSelectionButton {height:32px;padding:0 9px;border-color:transparent;background:transparent;color:#858997;font-size:10px;}
     .selection-active .toast {bottom:calc(104px + env(safe-area-inset-bottom));}
     .asset-grid.selection-mode .asset-actions {visibility:hidden;}
     .asset-thumb {height:145px;background:#f7f7fa;display:grid;place-items:center;overflow:hidden;color:#9a9eaa;font-size:11px;}
@@ -405,15 +405,15 @@
       .selection-toolbar button{width:38px;height:37px;min-width:0;padding:0;border-radius:9px;}
       .selection-toolbar button svg{width:16px;height:16px;}
       .selection-toolbar-controls{gap:4px;}
-      .selection-toolbar #selectVisibleAssetsButton{width:auto;height:28px;padding:0 9px;border-color:transparent;background:transparent;color:var(--accent-dark);font-size:10px;}
-      .selection-toolbar #exitSelectionButton{justify-self:end;}
-      .selection-toolbar #moveSelectedAssetsButton{grid-column:3;min-width:0;background:#f4f1fc;color:var(--accent-dark);box-shadow:none;border-color:#eee9f8;}
-      .selection-toolbar #copySelectedAssetsButton{grid-column:4;}
-      .selection-toolbar #deleteSelectedAssetsButton{grid-column:5;}
+      .selection-toolbar #selectVisibleAssetsButton,.selection-toolbar #selectVisibleExternalButton{width:auto;height:28px;padding:0 9px;border-color:transparent;background:transparent;color:var(--accent-dark);font-size:10px;}
+      .selection-toolbar #exitSelectionButton,.selection-toolbar #exitExternalSelectionButton{justify-self:end;}
+      .selection-toolbar #moveSelectedAssetsButton,.selection-toolbar #moveSelectedExternalButton{grid-column:3;min-width:0;background:#f4f1fc;color:var(--accent-dark);box-shadow:none;border-color:#eee9f8;}
+      .selection-toolbar #copySelectedAssetsButton,.selection-toolbar #copySelectedExternalButton{grid-column:4;}
+      .selection-toolbar #deleteSelectedAssetsButton,.selection-toolbar #deleteSelectedExternalButton{grid-column:5;}
       .selection-toolbar .selection-delete{background:#fff8f8;}
-      .selection-toolbar #exitSelectionButton{width:auto;height:28px;padding:0 8px;}
+      .selection-toolbar #exitSelectionButton,.selection-toolbar #exitExternalSelectionButton{width:auto;height:28px;padding:0 8px;}
       .selection-toolbar .selection-action-label{display:none;}
-      .selection-toolbar #selectVisibleAssetsButton .selection-action-label{display:inline;}
+      .selection-toolbar #selectVisibleAssetsButton .selection-action-label,.selection-toolbar #selectVisibleExternalButton .selection-action-label{display:inline;}
       .selection-active .toast{bottom:calc(104px + env(safe-area-inset-bottom));}
       .library-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0;}
       .library-folder-card{padding:11px 9px;gap:8px;}
@@ -570,6 +570,11 @@
       <div class="library-toolbar external-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="externalSearch" type="text" placeholder="搜索名称或图床…" aria-label="搜索本地外链"></label><button class="add-folder-button" id="newExternalFolderButton" type="button" aria-label="新建外链文件夹" title="新建文件夹"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button type="button" class="external-add" id="addExternalLinksButton">导入链接</button><span class="library-count" id="externalCount">0 条</span></div>
       <div class="external-breadcrumb" id="externalBreadcrumb" hidden><button type="button" id="externalBackButton">全部文件夹</button><span>/</span><strong id="externalCurrentFolder"></strong></div>
       <div class="external-folder-grid" id="externalFolderGrid"></div>
+      <div class="selection-toolbar" id="externalSelectionToolbar" role="toolbar" aria-label="外链批量操作" hidden>
+        <div class="selection-toolbar-top"><span class="selection-count" id="externalSelectionCount">已选 0 项</span><div class="selection-toolbar-controls"><button type="button" id="selectVisibleExternalButton" aria-label="全选当前外链" title="全选当前外链"><span class="selection-action-label">多选</span></button><button type="button" id="exitExternalSelectionButton">完成</button></div></div>
+        <div class="selection-move-group"><select id="bulkExternalFolderTarget" aria-label="批量移动外链到文件夹"></select><button type="button" id="moveSelectedExternalButton" aria-label="移动所选外链" title="移动"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h6l2 2H20v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12v5m-2-2 2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">移动</span></button></div>
+        <div class="selection-batch-actions"><button type="button" id="copySelectedExternalButton" aria-label="批量复制外链" title="批量复制"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.7"/></svg><span class="selection-action-label">批量复制</span></button><button type="button" class="selection-delete" id="deleteSelectedExternalButton" aria-label="删除所选外链" title="删除"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="selection-action-label">删除</span></button></div>
+      </div>
       <div class="asset-grid external-list" id="externalList"></div>
     </section>
 
@@ -664,6 +669,11 @@
   let activeNamingAsset = null;
   let activePreviewAsset = null;
   let activeExternalLinkId = "";
+  const selectedExternalLinks = new Set();
+  let externalSelectionMode = false;
+  let externalLongPressTimer = null;
+  let externalLongPressStart = null;
+  let suppressExternalClickUntil = 0;
   let activeExternalFolderId = "";
   let editingExternalFolderId = "";
   let movingExternalLinkId = "";
@@ -729,6 +739,7 @@
     try {
       localStorage.setItem(externalLinksStorageKey, JSON.stringify(nextLinks));
       externalLinks = nextLinks;
+      for (const id of selectedExternalLinks) if (!nextLinks.some((item) => item.id === id)) selectedExternalLinks.delete(id);
       renderExternalLinks();
       return true;
     } catch {
@@ -862,20 +873,58 @@
   document.getElementById("importExternalLinksButton").addEventListener("click", importExternalLinks);
   document.getElementById("externalSearch").addEventListener("input", renderExternalLinks);
   document.getElementById("externalList").addEventListener("click", handleExternalAction);
+  const externalList = document.getElementById("externalList");
+  externalList.addEventListener("pointerdown", (event) => {
+    if (event.button !== 0 || event.target.closest("button,a,input,select")) return;
+    const card = event.target.closest(".external-card");
+    if (!card) return;
+    externalLongPressStart = { x: event.clientX, y: event.clientY };
+    clearTimeout(externalLongPressTimer);
+    externalLongPressTimer = setTimeout(() => {
+      externalLongPressTimer = null;
+      externalLongPressStart = null;
+      externalSelectionMode = true;
+      selectedExternalLinks.add(card.dataset.id);
+      suppressExternalClickUntil = Date.now() + 900;
+      if (navigator.vibrate) navigator.vibrate(24);
+      renderExternalLinks();
+    }, 500);
+  });
+  externalList.addEventListener("pointermove", (event) => {
+    if (externalLongPressStart && Math.hypot(event.clientX - externalLongPressStart.x, event.clientY - externalLongPressStart.y) > 12) clearExternalLongPress();
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((name) => externalList.addEventListener(name, clearExternalLongPress));
+  externalList.addEventListener("contextmenu", (event) => { if (event.target.closest(".external-card")) event.preventDefault(); });
   document.getElementById("externalList").addEventListener("keydown", (event) => {
     if (event.target.classList.contains("external-card") && ["Enter", " "].includes(event.key)) {
       event.preventDefault();
       const item = externalLinks.find((link) => link.id === event.target.dataset.id);
-      if (item) openExternalPreview(item);
+      if (item) {
+        if (externalSelectionMode) {
+          if (selectedExternalLinks.has(item.id)) selectedExternalLinks.delete(item.id);
+          else selectedExternalLinks.add(item.id);
+          renderExternalLinks();
+        } else openExternalPreview(item);
+      }
     }
   });
   document.getElementById("externalFolderGrid").addEventListener("click", handleExternalFolderAction);
   document.getElementById("newExternalFolderButton").addEventListener("click", () => openExternalFolderDialog());
-  document.getElementById("externalBackButton").addEventListener("click", () => { activeExternalFolderId = ""; renderExternalLinks(); });
+  document.getElementById("externalBackButton").addEventListener("click", () => { activeExternalFolderId = ""; clearExternalSelection(); });
   document.getElementById("externalFolderForm").addEventListener("submit", saveExternalFolder);
   document.getElementById("cancelExternalFolder").addEventListener("click", () => document.getElementById("externalFolderDialog").close());
   document.getElementById("deleteExternalFolderButton").addEventListener("click", deleteExternalFolder);
   document.getElementById("externalMoveForm").addEventListener("submit", moveExternalLink);
+  document.getElementById("selectVisibleExternalButton").addEventListener("click", () => {
+    const visible = externalVisibleLinks();
+    const allSelected = visible.length > 0 && visible.every((item) => selectedExternalLinks.has(item.id));
+    visible.forEach((item) => allSelected ? selectedExternalLinks.delete(item.id) : selectedExternalLinks.add(item.id));
+    renderExternalLinks();
+  });
+  document.getElementById("exitExternalSelectionButton").addEventListener("click", clearExternalSelection);
+  document.getElementById("moveSelectedExternalButton").addEventListener("click", moveSelectedExternalLinks);
+  document.getElementById("copySelectedExternalButton").addEventListener("click", copySelectedExternalLinks);
+  document.getElementById("deleteSelectedExternalButton").addEventListener("click", deleteSelectedExternalLinks);
   document.getElementById("cancelExternalMove").addEventListener("click", () => document.getElementById("externalMoveDialog").close());
   document.getElementById("externalNameForm").addEventListener("submit", saveExternalName);
   document.getElementById("cancelExternalName").addEventListener("click", () => document.getElementById("externalNameDialog").close());
@@ -988,6 +1037,7 @@
       selectionMode = false;
       renderAssets();
     }
+    if (event.key === "Escape" && externalSelectionMode) clearExternalSelection();
   });
   document.getElementById("addFolderButton").addEventListener("click", () => {
     document.getElementById("folderDialog").showModal();
@@ -1094,6 +1144,7 @@
     document.getElementById("libraryView").hidden = !libraryPage;
     document.getElementById("converterView").hidden = !converterPage;
     document.getElementById("externalView").hidden = !externalPage;
+    document.body.classList.toggle("selection-active", libraryPage ? selectionMode : externalPage ? externalSelectionMode : false);
     document.querySelector(".sidebar").setAttribute("aria-hidden", String(!settingsPage));
     document.querySelector(".sidebar").style.display = settingsPage ? "grid" : "none";
     if (settingsPage) {
@@ -1635,6 +1686,81 @@
     setPage("external");
   }
 
+  function clearExternalLongPress() {
+    clearTimeout(externalLongPressTimer);
+    externalLongPressTimer = null;
+    externalLongPressStart = null;
+  }
+
+  function clearExternalSelection() {
+    selectedExternalLinks.clear();
+    externalSelectionMode = false;
+    renderExternalLinks();
+  }
+
+  function externalVisibleLinks() {
+    const search = document.getElementById("externalSearch").value.trim().toLocaleLowerCase();
+    const currentFolder = externalFolders.find((folder) => folder.id === activeExternalFolderId);
+    return externalLinks.filter((item) => {
+      const host = new URL(item.url).hostname;
+      const folderName = externalFolders.find((folder) => folder.id === item.folderId)?.name || "";
+      if (search) return `${item.name} ${item.url} ${host} ${folderName}`.toLocaleLowerCase().includes(search);
+      return currentFolder ? item.folderId === currentFolder.id : !item.folderId || !externalFolders.some((folder) => folder.id === item.folderId);
+    });
+  }
+
+  function renderExternalSelectionToolbar(visible) {
+    const toolbar = document.getElementById("externalSelectionToolbar");
+    toolbar.hidden = !externalSelectionMode;
+    document.getElementById("externalSelectionCount").textContent = `已选 ${selectedExternalLinks.size} 项`;
+    const allSelected = visible.length > 0 && visible.every((item) => selectedExternalLinks.has(item.id));
+    const selectButton = document.getElementById("selectVisibleExternalButton");
+    selectButton.querySelector(".selection-action-label").textContent = allSelected ? "取消" : "多选";
+    selectButton.setAttribute("aria-label", allSelected ? "取消当前列表的全选" : "全选当前列表外链");
+    selectButton.title = selectButton.getAttribute("aria-label");
+    const target = document.getElementById("bulkExternalFolderTarget");
+    const previous = target.value;
+    target.replaceChildren();
+    for (const folder of [{ id: "", name: "未分类" }, ...externalFolders]) {
+      const option = document.createElement("option");
+      option.value = folder.id;
+      option.textContent = `移入：${folder.name}`;
+      target.append(option);
+    }
+    if ([...target.options].some((option) => option.value === previous)) target.value = previous;
+  }
+
+  async function copySelectedExternalLinks() {
+    const chosen = externalLinks.filter((item) => selectedExternalLinks.has(item.id));
+    if (!chosen.length) { showToast("请先选择外链", true); return; }
+    const formatted = chosen.map((item) => formatTokens.map((token) => {
+      if (token === "name") return item.name || nameFromLink(item.url);
+      if (token === "url") return item.url;
+      return formatTokenValues[token] || "";
+    }).join("")).join("\n");
+    try { await navigator.clipboard.writeText(formatted); showToast(`已复制 ${chosen.length} 条外链`); }
+    catch { showToast("复制失败，请检查浏览器剪贴板权限", true); }
+  }
+
+  function moveSelectedExternalLinks() {
+    if (!selectedExternalLinks.size) { showToast("请先选择外链", true); return; }
+    const folderId = document.getElementById("bulkExternalFolderTarget").value;
+    if (folderId && !externalFolders.some((folder) => folder.id === folderId)) return;
+    const count = selectedExternalLinks.size;
+    const next = externalLinks.map((item) => selectedExternalLinks.has(item.id) ? { ...item, folderId } : item);
+    if (saveExternalLinks(next)) { clearExternalSelection(); showToast(`已移动 ${count} 条外链`); }
+  }
+
+  function deleteSelectedExternalLinks() {
+    const count = selectedExternalLinks.size;
+    if (!count) { showToast("请先选择外链", true); return; }
+    if (!window.confirm(`从本地外链库删除选中的 ${count} 条链接？\n不会影响来源图床上的文件。`)) return;
+    if (saveExternalLinks(externalLinks.filter((item) => !selectedExternalLinks.has(item.id)))) {
+      clearExternalSelection();
+      showToast(`已删除 ${count} 条本地外链`);
+    }
+  }
+
   function renderExternalLinks() {
     const list = document.getElementById("externalList");
     const search = document.getElementById("externalSearch").value.trim().toLocaleLowerCase();
@@ -1674,16 +1800,14 @@
       card.append(open, menu);
       grid.append(card);
     });
-    const filtered = externalLinks.filter((item) => {
-      const host = new URL(item.url).hostname;
-      const folderName = externalFolders.find((folder) => folder.id === item.folderId)?.name || "";
-      if (search) return `${item.name} ${item.url} ${host} ${folderName}`.toLocaleLowerCase().includes(search);
-      return currentFolder ? item.folderId === currentFolder.id : !item.folderId || !externalFolders.some((folder) => folder.id === item.folderId);
-    });
+    const filtered = externalVisibleLinks();
+    renderExternalSelectionToolbar(filtered);
+    if (!document.getElementById("externalView").hidden) document.body.classList.toggle("selection-active", externalSelectionMode);
     document.getElementById("externalCount").textContent = currentFolder || search
       ? `${filtered.length} 条链接`
       : `${externalFolders.length} 个文件夹 · ${filtered.length} 个未分类链接`;
     list.replaceChildren();
+    list.classList.toggle("selection-mode", externalSelectionMode);
     if (!filtered.length) {
       const empty = document.createElement("div");
       empty.className = "empty-state";
@@ -1705,11 +1829,17 @@
       const card = document.createElement("article");
       card.className = "asset-card external-card";
       card.dataset.id = item.id;
+      card.classList.toggle("is-selected", selectedExternalLinks.has(item.id));
       card.tabIndex = 0;
       card.setAttribute("role", "button");
       card.setAttribute("aria-label", `预览外链 ${item.name || nameFromLink(item.url)}`);
+      card.setAttribute("aria-pressed", String(selectedExternalLinks.has(item.id)));
       const visual = document.createElement("div");
       visual.className = "asset-visual";
+      const selectionCheck = document.createElement("span");
+      selectionCheck.className = "selection-check";
+      selectionCheck.setAttribute("aria-hidden", "true");
+      selectionCheck.textContent = "✓";
       const thumb = document.createElement("div");
       thumb.className = "asset-thumb";
       const fileName = nameFromLink(item.url);
@@ -1724,7 +1854,7 @@
       } else {
         thumb.textContent = type === "file" ? "LINK" : fileName.includes(".") ? fileName.split(".").pop().toUpperCase() : type.toUpperCase();
       }
-      visual.append(thumb);
+      visual.append(selectionCheck, thumb);
       const body = document.createElement("div");
       body.className = "asset-body";
       const name = document.createElement("div");
@@ -1765,7 +1895,7 @@
     if (!folder) return;
     if (button.dataset.action === "open") {
       activeExternalFolderId = folder.id;
-      renderExternalLinks();
+      clearExternalSelection();
     } else {
       openExternalFolderDialog(folder.id);
     }
@@ -1838,11 +1968,24 @@
   }
 
   async function handleExternalAction(event) {
+    if (Date.now() < suppressExternalClickUntil) {
+      event.preventDefault();
+      event.stopPropagation();
+      suppressExternalClickUntil = 0;
+      return;
+    }
     const button = event.target.closest("button[data-action]");
     const card = event.target.closest(".external-card");
     if (!card) return;
     const item = externalLinks.find((link) => link.id === card.dataset.id);
     if (!item) return;
+    if (externalSelectionMode) {
+      event.preventDefault();
+      if (selectedExternalLinks.has(item.id)) selectedExternalLinks.delete(item.id);
+      else selectedExternalLinks.add(item.id);
+      renderExternalLinks();
+      return;
+    }
     if (!button) { openExternalPreview(item); return; }
     if (button.dataset.action === "move") {
       openExternalMoveDialog(item);
