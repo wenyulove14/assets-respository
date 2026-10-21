@@ -32,7 +32,7 @@
     :focus { outline: none; }
     :focus-visible { outline: 2px solid rgba(117,87,232,.62); outline-offset: 2px; }
     body { min-height:100vh;min-height:100dvh;margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.55 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
-    button, input, select { font: inherit; }
+    button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     .app { min-height:100vh;min-height:100dvh; }
     .topbar { height:calc(72px + env(safe-area-inset-top)); background: rgba(255,255,255,.88); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: env(safe-area-inset-top) max(28px, calc((100vw - 1260px)/2)) 0; position: sticky; top: 0; z-index: 5; backdrop-filter: blur(14px); }
@@ -51,39 +51,73 @@
     .layout { width:min(900px, calc(100% - 56px)); margin:38px auto 70px; display:grid; grid-template-columns:minmax(0, 1fr); gap:24px; align-items:start; }
     .layout.settings-mode { width:min(760px, calc(100% - 56px)); grid-template-columns:minmax(0, 1fr); }
     .layout.library-mode { width:min(1100px, calc(100% - 56px)); }
-    .layout.converter-mode {width:min(900px,calc(100% - 56px));grid-template-columns:minmax(0,1fr);}
+    .layout.converter-mode { width:min(900px, calc(100% - 56px)); }
+    .layout.external-mode { width:min(1100px, calc(100% - 56px)); }
     .library-view { display:none; }
     .library-mode .library-view { display:block; }
-    .converter-view {display:none;}
-    .converter-view[hidden] {display:none;}
-    .converter-mode .converter-view {display:block;}
-    .converter-card {padding:22px;}
-    .converter-intro {margin:3px 0 20px;}
-    .converter-intro h1 {margin:8px 0 5px;font-size:27px;}
-    .converter-intro p {margin:0;color:var(--muted);font-size:12px;line-height:1.7;}
-    .converter-controls {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:end;margin-bottom:13px;}
-    .converter-controls .form-field {margin:0;}
-    .converter-controls .form-field label {font-size:11px;}
-    .converter-controls select {height:40px;font-size:12px;}
-    .converter-input {width:100%;min-height:160px;resize:vertical;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none;}
-    .converter-input:focus {border-color:#a99af2;box-shadow:0 0 0 3px #7557e815;}
-    .converter-note {margin:9px 0 15px;color:var(--muted);font-size:10px;line-height:1.65;}
-    .converter-actions {display:flex;justify-content:space-between;align-items:center;gap:10px;}
-    .converter-actions span {display:flex;gap:8px;}
-    .converter-parse-button,.converter-upload-button {height:38px;padding:0 14px;border:0;border-radius:9px;font-size:11px;font-weight:650;}
-    .converter-parse-button {background:#f1eefb;color:var(--accent-dark);}
-    .converter-upload-button {background:var(--accent);color:#fff;box-shadow:0 4px 12px #7557e82b;}
-    .converter-upload-button:hover {background:var(--accent-dark);}
-    .converter-upload-button:disabled {opacity:.55;cursor:not-allowed;box-shadow:none;}
-    .converter-status {min-height:16px;margin-top:10px;color:var(--muted);font-size:10px;line-height:1.6;}
-    .conversion-queue {display:grid;gap:8px;margin-top:14px;}
-    .conversion-item {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;}
-    .conversion-item-info {min-width:0;}
-    .conversion-item-name {overflow:hidden;color:#464b57;font-size:11px;font-weight:650;text-overflow:ellipsis;white-space:nowrap;}
-    .conversion-item-url {overflow:hidden;margin-top:3px;color:#9398a3;font-size:9px;text-overflow:ellipsis;white-space:nowrap;}
-    .conversion-item-status {color:#8a8f9b;font-size:10px;white-space:nowrap;}
-    .conversion-item-status.success {color:var(--green);}
-    .conversion-item-status.error {color:var(--red);}
+    .converter-view { display:none;min-width:0; }
+    .converter-view[hidden] { display:none; }
+    .converter-mode .converter-view { display:block; }
+    .link-converter-intro { margin:3px 0 22px; }
+    .link-converter-intro p { margin:0;color:var(--muted);font-size:13px; }
+    .link-converter-card { padding:23px; }
+    .link-converter-head { display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px; }
+    .link-converter-head h2 { margin:0 0 3px;font-size:15px; }
+    .link-converter-head p { margin:0;color:var(--muted);font-size:11px; }
+    .link-converter-manage { border:0;background:transparent;color:var(--accent-dark);font-size:11px;font-weight:650;padding:3px 0;white-space:nowrap; }
+    .link-converter-manage:hover { color:var(--accent); }
+    .link-converter-formats { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;margin-bottom:16px; }
+    .link-converter-field { min-width:0; }
+    .link-converter-field label,.link-converter-label { display:block;margin-bottom:7px;color:#606673;font-size:11px;font-weight:650; }
+    .link-converter-field select { min-width:0; }
+    .link-converter-textarea { display:block;width:100%;min-height:172px;resize:vertical;padding:12px 13px;border:1px solid #e5e7ec;border-radius:10px;background:#fff;color:var(--ink);font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none;overflow-wrap:anywhere;transition:border-color .15s,box-shadow .15s; }
+    .link-converter-textarea:focus { border-color:#a99af2;box-shadow:0 0 0 3px #7557e815; }
+    .link-converter-textarea[readonly] { background:#fafafe;color:#444957; }
+    .link-converter-actions { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px; }
+    .link-converter-action-group { display:flex;align-items:center;gap:8px; }
+    .link-converter-import { min-height:36px;padding:0 12px;border:1px solid #ded8f2;border-radius:8px;background:#f7f4ff;color:var(--accent-dark);font-size:11px;font-weight:700; }
+    .link-converter-import:hover { background:#f0eaff;border-color:#c8bcf2; }
+    .link-converter-actions .primary { min-width:112px; }
+    .link-converter-actions .primary:active,.link-converter-copy:active { transform:scale(.97); }
+    .link-converter-result { margin-top:17px;padding-top:17px;border-top:1px solid var(--line); }
+    .link-converter-result-head { display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px; }
+    .link-converter-result-head .link-converter-label { margin:0; }
+    .link-converter-copy { min-height:32px;padding:0 11px;border:1px solid #ded8f2;border-radius:8px;background:#f7f4ff;color:var(--accent-dark);font-size:11px;font-weight:650;transition:transform .15s,border-color .15s,background .15s; }
+    .link-converter-copy:hover { border-color:#c8bcf2;background:#f0eaff; }
+    .link-converter-copy:disabled { opacity:.5;cursor:not-allowed; }
+    .link-converter-status { min-height:17px;margin-top:9px;color:var(--muted);font-size:11px;line-height:1.5; }
+    .link-converter-status.error { color:var(--red); }
+    .external-view { display:none;min-width:0; }
+    .external-view[hidden] { display:none; }
+    .external-mode .external-view { display:block; }
+    .external-toolbar .search-wrap { min-width:0; }
+    .external-toolbar .external-add { flex:none;height:41px;padding:0 14px;border:1px solid #ded8f2;border-radius:9px;background:#f7f4ff;color:var(--accent-dark);font-size:11px;font-weight:700; }
+    .external-toolbar .external-add:hover { background:#f0eaff; }
+    .external-folder-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0 18px; }
+    .external-folder-grid[hidden],.external-breadcrumb[hidden] { display:none; }
+    .external-folder-card { min-width:0;display:flex;align-items:center;padding-right:8px;border:1px solid var(--line);border-radius:11px;background:#fff;box-shadow:0 5px 16px rgba(29,35,48,.025); }
+    .external-folder-card:hover { border-color:#d4cbf6;background:#fdfcff; }
+    .external-folder-open { min-width:0;flex:1;display:flex;align-items:center;gap:11px;border:0;background:transparent;padding:13px;text-align:left; }
+    .external-folder-icon { width:38px;height:34px;flex:none;display:grid;place-items:center;border-radius:9px;background:var(--accent-soft);color:var(--accent); }
+    .external-folder-icon svg { width:21px;height:21px; }
+    .external-folder-details { min-width:0;flex:1; }
+    .external-folder-details strong { display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:650; }
+    .external-folder-details small { display:block;margin-top:2px;color:var(--muted);font-size:10px; }
+    .external-folder-menu { flex:none;border:0;background:transparent;color:#858995;font-size:18px;line-height:1;padding:6px;border-radius:6px; }
+    .external-folder-menu:hover { background:var(--accent-soft);color:var(--accent-dark); }
+    .external-breadcrumb { display:flex;align-items:center;gap:8px;margin:15px 0 10px;color:var(--muted);font-size:11px; }
+    .external-breadcrumb button { border:0;background:transparent;color:var(--accent-dark);padding:5px 8px 5px 0;font-weight:650; }
+    .external-breadcrumb strong { color:var(--ink);font-weight:650; }
+    .external-list .external-card { min-width:0;cursor:pointer; }
+    .external-list .asset-thumb { position:relative; }
+    .external-list .asset-thumb img { display:block; }
+    .external-list .asset-body { min-height:73px; }
+    .external-list .asset-name { display:block; }
+    .external-list .asset-actions { gap:8px; }
+    .external-list .asset-actions button { width:30px;height:30px; }
+    .external-list .external-delete { color:#b64c55; }
+    .external-list .external-delete:hover { background:#fff0f1;color:#a43e48; }
+    .external-import-link { display:inline-block;margin-top:12px;border:0;border-radius:8px;background:var(--accent-soft);color:var(--accent-dark);padding:8px 13px;font-size:11px;font-weight:700; }
     .base-category-tabs {display:flex;gap:8px;margin:18px 0 0;padding:5px;background:#eceef2;border-radius:11px;overflow-x:auto;}
     .base-category-tab {flex:1;min-width:105px;border:0;border-radius:8px;background:transparent;color:#747a86;padding:9px 12px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;font-weight:650;white-space:nowrap;}
     .base-category-tab:hover {color:var(--accent-dark);}
@@ -342,18 +376,10 @@
       .top-nav{order:3;width:100%;margin:0;gap:4px;}
       .nav-button{flex:1;padding:8px 5px;font-size:11px;}
       .top-right .hint{display:none;}
-      .layout,.layout.settings-mode,.layout.library-mode,.layout.converter-mode{display:flex;flex-direction:column;width:calc(100% - 28px);margin:20px auto 38px;gap:16px;}
-      .main-column,.sidebar,.library-view{width:100%;}
-      .converter-view{width:100%;}
-      .converter-card{padding:16px;}
-      .converter-intro h1{font-size:24px;}
-      .converter-controls{grid-template-columns:minmax(0,1fr);gap:8px;}
-      .converter-controls .converter-parse-button{width:100%;}
-      .converter-input{min-height:135px;font-size:11px;}
-      .converter-actions{align-items:stretch;}
-      .converter-actions span{flex:1;}
-      .converter-actions span button{flex:1;padding:0 9px;}
-      .conversion-item{padding:10px;}
+      .layout,.layout.settings-mode,.layout.library-mode,.layout.converter-mode,.layout.external-mode{display:flex;flex-direction:column;width:calc(100% - 28px);margin:20px auto 38px;gap:16px;}
+      .main-column,.sidebar,.library-view,.converter-view,.external-view{width:100%;}
+      .link-converter-card{padding:17px;}
+      .link-converter-intro p{font-size:12px;}
       .sidebar{grid-template-columns:1fr 1fr;}
       .settings-card{grid-row:span 2;}
       h1{font-size:25px;}
@@ -368,6 +394,8 @@
       .base-category-tab{min-width:0;padding:9px 7px;font-size:10px;gap:4px;}
       .base-category-tab small{font-size:9px;}
       .asset-grid{gap:9px;}
+      .external-list .asset-actions{gap:3px;}
+      .external-list .asset-actions button{width:27px;height:30px;}
       .selection-toolbar{bottom:max(9px,env(safe-area-inset-bottom));width:calc(100vw - 20px);display:grid;grid-template-columns:38px minmax(0,1fr) 38px 38px 38px;gap:6px;padding:8px;border-radius:14px;}
       .selection-toolbar-top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:8px;}
       .selection-count{padding:5px 8px;font-size:10px;}
@@ -397,6 +425,15 @@
       .empty-state{padding:38px 14px;font-size:12px;}
     }
     @media(max-width:520px) {
+      .external-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+      .external-toolbar{grid-template-columns:minmax(0,1fr) 41px;}
+      .external-toolbar .external-add{grid-column:1/-1;width:100%;}
+      .link-converter-actions{flex-wrap:wrap;}
+      .link-converter-actions .link-converter-action-group{width:100%;justify-content:flex-end;}
+      .link-converter-formats{grid-template-columns:minmax(0,1fr);gap:10px;}
+      .link-converter-head{align-items:flex-start;}
+      .link-converter-textarea{min-height:155px;font-size:11px;}
+      .link-converter-actions .primary{min-width:108px;}
       .sidebar{grid-template-columns:1fr;}
       .settings-card{grid-row:auto;}
       .format-settings-card{grid-column:1/-1;}
@@ -434,7 +471,7 @@
       .brand{gap:8px;font-size:13px;}
       .brand-mark{width:32px;height:32px;}
       .connection{padding:7px 9px;font-size:10px;}
-      .layout,.layout.settings-mode,.layout.library-mode{width:calc(100% - 20px);}
+      .layout,.layout.settings-mode,.layout.library-mode,.layout.converter-mode,.layout.external-mode{width:calc(100% - 20px);}
       .asset-grid{grid-template-columns:minmax(0,1fr);}
       .library-folder-grid{grid-template-columns:minmax(0,1fr);}
       .asset-thumb{height:180px;}
@@ -456,6 +493,7 @@
       <button type="button" class="nav-button active" id="uploadNav">上传</button>
       <button type="button" class="nav-button" id="converterNav">转换</button>
       <button type="button" class="nav-button" id="libraryNav">素材</button>
+      <button type="button" class="nav-button" id="externalNav">外链</button>
       <button type="button" class="nav-button" id="settingsNav">设置</button>
     </nav>
     <div class="top-right"><span class="hint">你的素材，整齐归档</span><span class="connection"><i class="dot" id="connectionDot"></i><span id="connectionText">尚未配置</span></span></div>
@@ -513,15 +551,26 @@
     </section>
 
     <section class="converter-view" id="converterView" hidden>
-      <div class="converter-intro"><div class="eyebrow">IMAGE HOST CONVERTER</div><h1>转换图床</h1><p>粘贴其他图床链接，下载后保存到当前 GitHub 仓库。使用名称格式预设时，会把解析出的自定义名称一并保存。</p></div>
-      <section class="card converter-card">
-        <div class="converter-controls"><div class="form-field"><label for="conversionFormatSelect">解析格式</label><select id="conversionFormatSelect" aria-label="选择粘贴内容的解析格式"></select></div><button type="button" class="converter-parse-button" id="parseConversionInput">解析内容</button></div>
-        <textarea class="converter-input" id="conversionInput" placeholder="粘贴链接，或粘贴按某个批量复制格式整理的内容。\n\n例如：\n角色立绘：https://old-host.example/image.png" aria-label="粘贴图床链接或格式化文本"></textarea>
-        <p class="converter-note">可直接粘贴多个链接，也可以选择设置中保存的复制格式来解析名称和链接。来源图床需要允许浏览器跨域读取（CORS），否则浏览器无法下载文件。</p>
-        <div class="converter-actions"><span><button type="button" class="text-button" id="clearConversionInput">清空</button></span><button type="button" class="converter-upload-button" id="startConversionButton" disabled>下载并上传</button></div>
-        <div class="converter-status" id="conversionStatus" role="status"></div>
-        <div class="conversion-queue" id="conversionQueue"></div>
+      <div class="link-converter-intro"><div class="eyebrow">LINK FORMAT CONVERTER</div><h1>链接格式转换</h1><p>粘贴一段复制内容，识别名称与链接。可以转换格式，也可以将其它图床的链接导入本地外链库。</p></div>
+      <section class="card link-converter-card">
+        <div class="link-converter-head"><div><h2>转换内容</h2><p>支持多条链接；转换只处理文字。</p></div><button type="button" class="link-converter-manage" id="openFormatSettings">管理格式</button></div>
+        <div class="link-converter-formats">
+          <div class="link-converter-field"><label for="conversionSourceFormat">输入格式</label><div class="select-wrap"><select id="conversionSourceFormat" aria-label="输入内容的格式"></select></div></div>
+          <div class="link-converter-field"><label for="conversionTargetFormat">输出格式</label><div class="select-wrap"><select id="conversionTargetFormat" aria-label="转换后的格式"></select></div></div>
+        </div>
+        <label class="link-converter-label" for="conversionInput">原始内容</label>
+        <textarea class="link-converter-textarea" id="conversionInput" placeholder="例如：&#10;角色立绘：https://example.com/character.png&#10;场景图：https://example.com/scene.png" spellcheck="false"></textarea>
+        <div class="link-converter-actions"><button type="button" class="text-button" id="clearConversionInput">清空</button><div class="link-converter-action-group"><button type="button" class="link-converter-import" id="importExternalLinksButton">导入外链库</button><button type="button" class="primary" id="convertLinksButton">转换格式</button></div></div>
+        <div class="link-converter-result"><div class="link-converter-result-head"><label class="link-converter-label" for="conversionOutput">转换结果</label><button type="button" class="link-converter-copy" id="copyConversionOutput" disabled>复制结果</button></div><textarea class="link-converter-textarea" id="conversionOutput" placeholder="转换结果会显示在这里" readonly spellcheck="false"></textarea><div class="link-converter-status" id="conversionStatus" role="status" aria-live="polite"></div></div>
       </section>
+    </section>
+
+    <section class="external-view" id="externalView" hidden>
+      <div class="intro"><div class="eyebrow">LOCAL LINK LIBRARY</div><h1>本地外链</h1><p>集中管理其它图床的链接。仅保存在当前浏览器，不会上传到 GitHub 仓库。</p></div>
+      <div class="library-toolbar external-toolbar"><label class="search-wrap"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.7"/><path d="m16 16 4.3 4.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><input id="externalSearch" type="text" placeholder="搜索名称或图床…" aria-label="搜索本地外链"></label><button class="add-folder-button" id="newExternalFolderButton" type="button" aria-label="新建外链文件夹" title="新建文件夹"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><button type="button" class="external-add" id="addExternalLinksButton">导入链接</button><span class="library-count" id="externalCount">0 条</span></div>
+      <div class="external-breadcrumb" id="externalBreadcrumb" hidden><button type="button" id="externalBackButton">全部文件夹</button><span>/</span><strong id="externalCurrentFolder"></strong></div>
+      <div class="external-folder-grid" id="externalFolderGrid"></div>
+      <div class="asset-grid external-list" id="externalList"></div>
     </section>
 
     <aside class="sidebar">
@@ -537,7 +586,7 @@
       </section>
       <section class="card format-settings-card">
         <div class="side-title"><h2>批量复制格式</h2><span class="settings-icon">Aa</span></div>
-        <p class="format-help">添加内容卡片来拼接复制格式。名称优先使用网页中设置的自定义名称；未设置时使用文件名。</p>
+        <p class="format-help">添加内容卡片来拼接复制格式，也可在链接转换中作为输入或输出格式。名称优先使用网页中设置的自定义名称；未设置时使用文件名。</p>
         <div class="format-preset-row"><select id="formatPresetSelect" aria-label="选择复制格式预设"></select><input id="formatPresetName" type="text" maxlength="40" placeholder="预设名称" aria-label="预设名称"><button type="button" id="saveFormatPresetButton">保存</button><button type="button" id="deleteFormatPresetButton" aria-label="删除所选预设">删除</button></div>
         <div class="format-token-palette" id="formatTokenPalette" aria-label="可添加的格式卡片"></div>
         <div class="format-builder" id="formatBuilder" aria-label="当前格式卡片"></div>
@@ -556,6 +605,30 @@
     <p>名称会保存到仓库的 assets.json；实际文件名和素材链接保持不变。</p>
     <div class="form-field"><label for="customAssetName">网页显示名称</label><input id="customAssetName" type="text" placeholder="例如：三日月宗近立绘" maxlength="120" required></div>
     <div class="name-dialog-actions"><button type="button" class="text-button" id="resetAssetName">恢复默认名称</button><span><button type="button" class="dialog-button" id="cancelNameEdit">取消</button><button type="submit" class="dialog-button primary" id="saveNameButton">保存名称</button></span></div>
+  </form>
+</dialog>
+<dialog class="name-dialog" id="externalNameDialog">
+  <form id="externalNameForm">
+    <h2>修改外链名称</h2>
+    <p>名称只保存在当前浏览器，不会修改来源图床的链接。</p>
+    <div class="form-field"><label for="externalNameInput">显示名称</label><input id="externalNameInput" type="text" maxlength="120" required></div>
+    <div class="name-dialog-actions"><span></span><span><button type="button" class="dialog-button" id="cancelExternalName">取消</button><button type="submit" class="dialog-button primary">保存名称</button></span></div>
+  </form>
+</dialog>
+<dialog class="folder-dialog" id="externalFolderDialog">
+  <form id="externalFolderForm">
+    <h2 id="externalFolderDialogTitle">新建文件夹</h2>
+    <p>文件夹和分类只保存在当前浏览器。</p>
+    <div class="form-field"><label for="externalFolderName">文件夹名称</label><input id="externalFolderName" type="text" maxlength="80" required></div>
+    <div class="folder-manage-actions"><button type="button" class="folder-remove-button" id="deleteExternalFolderButton" hidden>删除文件夹</button><span><button type="button" class="dialog-button" id="cancelExternalFolder">取消</button><button type="submit" class="dialog-button primary">保存</button></span></div>
+  </form>
+</dialog>
+<dialog class="folder-dialog" id="externalMoveDialog">
+  <form id="externalMoveForm">
+    <h2>移动外链</h2>
+    <p>只改变外链库的分类，不会修改链接或来源图床文件。</p>
+    <div class="form-field"><label for="externalMoveTarget">目标文件夹</label><div class="select-wrap"><select id="externalMoveTarget"></select></div></div>
+    <div class="folder-dialog-actions"><button type="button" class="dialog-button" id="cancelExternalMove">取消</button><button type="submit" class="dialog-button primary">移动</button></div>
   </form>
 </dialog>
 <dialog class="folder-dialog" id="folderDialog">
@@ -590,6 +663,10 @@
   const uploadNames = new WeakMap();
   let activeNamingAsset = null;
   let activePreviewAsset = null;
+  let activeExternalLinkId = "";
+  let activeExternalFolderId = "";
+  let editingExternalFolderId = "";
+  let movingExternalLinkId = "";
   let activeManagedFolder = "";
   let folderLongPressTimer = null;
   let folderClickSuppressedUntil = 0;
@@ -615,8 +692,50 @@
   let formatPresets = loadFormatPresets();
   let activeFormatPresetId = formatPresets[0]?.id || "";
   let formatTokens = [...(formatPresets[0]?.tokens || ["url"])];
-  let conversionItems = [];
-  let conversionInProgress = false;
+  const externalLinksStorageKey = "localExternalLinksV1";
+  const externalFoldersStorageKey = "localExternalFoldersV1";
+  let externalLinks = loadExternalLinks();
+  let externalFolders = loadExternalFolders();
+
+  function loadExternalLinks() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(externalLinksStorageKey) || "[]");
+      if (!Array.isArray(saved)) return [];
+      return saved.filter((item) => item && typeof item.id === "string" && validLink(item.url))
+        .map((item) => ({ id: item.id, url: validLink(item.url), name: String(item.name || "").slice(0, 120), folderId: typeof item.folderId === "string" ? item.folderId : "", createdAt: Number(item.createdAt) || Date.now() }));
+    } catch { return []; }
+  }
+
+  function loadExternalFolders() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(externalFoldersStorageKey) || "[]");
+      return Array.isArray(saved) ? saved.filter((folder) => folder && typeof folder.id === "string" && typeof folder.name === "string") : [];
+    } catch { return []; }
+  }
+
+  function saveExternalFolders(nextFolders) {
+    try {
+      localStorage.setItem(externalFoldersStorageKey, JSON.stringify(nextFolders));
+      externalFolders = nextFolders;
+      renderExternalLinks();
+      return true;
+    } catch {
+      showToast("文件夹保存失败，请检查浏览器存储空间", true);
+      return false;
+    }
+  }
+
+  function saveExternalLinks(nextLinks) {
+    try {
+      localStorage.setItem(externalLinksStorageKey, JSON.stringify(nextLinks));
+      externalLinks = nextLinks;
+      renderExternalLinks();
+      return true;
+    } catch {
+      showToast("本地保存失败，请检查浏览器存储空间", true);
+      return false;
+    }
+  }
 
   function loadFormatPresets() {
     try {
@@ -727,28 +846,45 @@
     saveSettingsAndVerify({ notify: false });
   }
   document.getElementById("uploadNav").addEventListener("click", () => setPage("upload"));
-  document.getElementById("libraryNav").addEventListener("click", () => setPage("library"));
   document.getElementById("converterNav").addEventListener("click", () => setPage("converter"));
+  document.getElementById("libraryNav").addEventListener("click", () => setPage("library"));
+  document.getElementById("externalNav").addEventListener("click", () => setPage("external"));
+  document.getElementById("addExternalLinksButton").addEventListener("click", () => setPage("converter"));
   document.getElementById("settingsNav").addEventListener("click", () => setPage("settings"));
-  document.getElementById("parseConversionInput").addEventListener("click", parseConversionInput);
+  document.getElementById("openFormatSettings").addEventListener("click", () => {
+    setPage("settings");
+    document.querySelector(".format-settings-card").scrollIntoView({ block: "start" });
+  });
+  document.getElementById("conversionInput").addEventListener("input", invalidateLinkConversion);
+  document.getElementById("conversionSourceFormat").addEventListener("change", invalidateLinkConversion);
+  document.getElementById("conversionTargetFormat").addEventListener("change", invalidateLinkConversion);
+  document.getElementById("convertLinksButton").addEventListener("click", convertLinkText);
+  document.getElementById("importExternalLinksButton").addEventListener("click", importExternalLinks);
+  document.getElementById("externalSearch").addEventListener("input", renderExternalLinks);
+  document.getElementById("externalList").addEventListener("click", handleExternalAction);
+  document.getElementById("externalList").addEventListener("keydown", (event) => {
+    if (event.target.classList.contains("external-card") && ["Enter", " "].includes(event.key)) {
+      event.preventDefault();
+      const item = externalLinks.find((link) => link.id === event.target.dataset.id);
+      if (item) openExternalPreview(item);
+    }
+  });
+  document.getElementById("externalFolderGrid").addEventListener("click", handleExternalFolderAction);
+  document.getElementById("newExternalFolderButton").addEventListener("click", () => openExternalFolderDialog());
+  document.getElementById("externalBackButton").addEventListener("click", () => { activeExternalFolderId = ""; renderExternalLinks(); });
+  document.getElementById("externalFolderForm").addEventListener("submit", saveExternalFolder);
+  document.getElementById("cancelExternalFolder").addEventListener("click", () => document.getElementById("externalFolderDialog").close());
+  document.getElementById("deleteExternalFolderButton").addEventListener("click", deleteExternalFolder);
+  document.getElementById("externalMoveForm").addEventListener("submit", moveExternalLink);
+  document.getElementById("cancelExternalMove").addEventListener("click", () => document.getElementById("externalMoveDialog").close());
+  document.getElementById("externalNameForm").addEventListener("submit", saveExternalName);
+  document.getElementById("cancelExternalName").addEventListener("click", () => document.getElementById("externalNameDialog").close());
+  document.getElementById("copyConversionOutput").addEventListener("click", copyConvertedText);
   document.getElementById("clearConversionInput").addEventListener("click", () => {
     document.getElementById("conversionInput").value = "";
-    conversionItems = [];
-    document.getElementById("conversionStatus").textContent = "";
-    renderConversionQueue();
+    invalidateLinkConversion();
+    document.getElementById("conversionInput").focus();
   });
-  document.getElementById("conversionFormatSelect").addEventListener("change", () => {
-    conversionItems = [];
-    document.getElementById("conversionStatus").textContent = "解析格式已更改，请重新解析。";
-    renderConversionQueue();
-  });
-  document.getElementById("conversionInput").addEventListener("input", () => {
-    if (conversionInProgress) return;
-    conversionItems = [];
-    document.getElementById("conversionStatus").textContent = "内容已更改，请重新解析。";
-    renderConversionQueue();
-  });
-  document.getElementById("startConversionButton").addEventListener("click", convertAndUploadRemoteImages);
   document.getElementById("assetSearch").addEventListener("input", renderAssets);
   document.getElementById("baseCategoryTabs").addEventListener("click", (event) => {
     const tab = event.target.closest(".base-category-tab");
@@ -834,7 +970,6 @@
   document.getElementById("deleteFormatPresetButton").addEventListener("click", deleteFormatPreset);
   renderFormatPalette();
   renderFormatPresets();
-  renderConversionFormats();
   renderFormatBuilder();
   document.getElementById("moveSelectedAssetsButton").addEventListener("click", moveSelectedAssets);
   document.getElementById("deleteSelectedAssetsButton").addEventListener("click", () => {
@@ -944,24 +1079,28 @@
     const settingsPage = page === "settings";
     const libraryPage = page === "library";
     const converterPage = page === "converter";
+    const externalPage = page === "external";
     document.querySelector(".settings-intro")?.remove();
     document.getElementById("workspace").classList.toggle("settings-mode", settingsPage);
     document.getElementById("workspace").classList.toggle("library-mode", libraryPage);
     document.getElementById("workspace").classList.toggle("converter-mode", converterPage);
+    document.getElementById("workspace").classList.toggle("external-mode", externalPage);
     document.getElementById("uploadNav").classList.toggle("active", page === "upload");
-    document.getElementById("libraryNav").classList.toggle("active", libraryPage);
     document.getElementById("converterNav").classList.toggle("active", converterPage);
+    document.getElementById("libraryNav").classList.toggle("active", libraryPage);
+    document.getElementById("externalNav").classList.toggle("active", externalPage);
     document.getElementById("settingsNav").classList.toggle("active", settingsPage);
-    document.querySelector(".main-column").hidden = settingsPage || libraryPage || converterPage;
+    document.querySelector(".main-column").hidden = settingsPage || libraryPage || converterPage || externalPage;
     document.getElementById("libraryView").hidden = !libraryPage;
     document.getElementById("converterView").hidden = !converterPage;
+    document.getElementById("externalView").hidden = !externalPage;
     document.querySelector(".sidebar").setAttribute("aria-hidden", String(!settingsPage));
     document.querySelector(".sidebar").style.display = settingsPage ? "grid" : "none";
-    if (converterPage) renderConversionFormats();
     if (settingsPage) {
       document.querySelector(".sidebar").insertAdjacentHTML("afterbegin", '<div class="intro settings-intro"><div class="eyebrow">REPOSITORY</div><h1>仓库设置</h1><p>配置素材保存位置与访问凭据。</p></div>');
     }
     if (libraryPage) loadAssets();
+    if (externalPage) renderExternalLinks();
   }
 
   let repositoryAssets = [];
@@ -1344,223 +1483,461 @@
     const current = formatPresets.find((preset) => preset.id === activeFormatPresetId);
     document.getElementById("formatPresetName").value = current?.name || "";
     document.getElementById("deleteFormatPresetButton").disabled = !current;
-    if (document.getElementById("conversionFormatSelect")) renderConversionFormats();
+    renderLinkFormatOptions();
   }
 
-  function renderConversionFormats() {
-    const select = document.getElementById("conversionFormatSelect");
-    if (!select) return;
-    const previous = select.value;
-    select.replaceChildren();
-    const automatic = document.createElement("option"); automatic.value = "auto"; automatic.textContent = "自动识别链接"; select.append(automatic);
+  function renderLinkFormatOptions() {
+    const source = document.getElementById("conversionSourceFormat");
+    const target = document.getElementById("conversionTargetFormat");
+    const previousSource = source.value || "auto";
+    const previousTarget = target.value;
+    source.replaceChildren();
+    target.replaceChildren();
+    const automatic = document.createElement("option");
+    automatic.value = "auto";
+    automatic.textContent = "自动识别";
+    source.append(automatic);
     formatPresets.forEach((preset) => {
-      const option = document.createElement("option"); option.value = preset.id; option.textContent = preset.name; select.append(option);
+      if (preset.tokens.includes("url")) {
+        const inputOption = document.createElement("option");
+        inputOption.value = preset.id;
+        inputOption.textContent = preset.name;
+        source.append(inputOption);
+      }
+      if (preset.tokens.length) {
+        const outputOption = document.createElement("option");
+        outputOption.value = preset.id;
+        outputOption.textContent = preset.name;
+        target.append(outputOption);
+      }
     });
-    select.value = [...select.options].some((option) => option.value === previous) ? previous : "auto";
+    source.value = [...source.options].some((option) => option.value === previousSource) ? previousSource : "auto";
+    const fallbackTarget = [...target.options].some((option) => option.value === activeFormatPresetId) ? activeFormatPresetId : target.options[0]?.value;
+    target.value = [...target.options].some((option) => option.value === previousTarget) ? previousTarget : fallbackTarget || "";
+    document.getElementById("convertLinksButton").disabled = !target.value;
+    invalidateLinkConversion();
   }
 
-  function escapeRegExp(value) { return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  function invalidateLinkConversion() {
+    const output = document.getElementById("conversionOutput");
+    const hadOutput = Boolean(output.value);
+    output.value = "";
+    document.getElementById("copyConversionOutput").disabled = true;
+    const status = document.getElementById("conversionStatus");
+    status.classList.remove("error");
+    status.textContent = hadOutput ? "内容或格式已变化，请重新转换。" : "";
+  }
 
-  function normalizeConversionUrl(value) {
-    const candidate = String(value || "").trim().replace(/^[<([{]+/, "").replace(/[>\])},，。；;!?！？]+$/u, "");
+  function escapeLinkFormatLiteral(value) {
+    return [...String(value)].map((char) => "\\^$.*+?()[]{}|".includes(char) ? "\\" + char : char).join("");
+  }
+
+  function validLink(value) {
+    const candidate = String(value || "").trim();
     try {
-      const url = new URL(candidate);
-      return ["http:", "https:"].includes(url.protocol) ? url.href : "";
+      const parsed = new URL(candidate);
+      return ["http:", "https:"].includes(parsed.protocol) ? candidate : "";
     } catch { return ""; }
   }
 
-  function parseWithConversionFormat(text, tokens) {
-    if (!Array.isArray(tokens) || !tokens.includes("url")) return [];
-    let nameGroup = 0; let urlGroup = 0; let groupIndex = 0;
+  function parseLinkPreset(text, preset) {
+    if (!preset?.tokens?.includes("url")) return [];
+    const tokens = [...preset.tokens];
+    while (["newline", "space"].includes(tokens[0])) tokens.shift();
+    while (["newline", "space"].includes(tokens.at(-1))) tokens.pop();
+    const captures = [];
     const parts = tokens.map((token) => {
-      if (token === "name") { groupIndex += 1; if (!nameGroup) nameGroup = groupIndex; return "([^\\r\\n]*?)"; }
-      if (token === "url") { groupIndex += 1; if (!urlGroup) urlGroup = groupIndex; return "(https?:\\/\\/[^\\s<>\\\"']+?)"; }
+      if (token === "name" || token === "url") {
+        captures.push(token);
+        return token === "name" ? "([^\\r\\n]*?)" : "(https?:\\/\\/[^\\s<>\"']+?)";
+      }
       if (token === "newline") return "\\r?\\n";
       if (token === "space") return "[ \\t]+";
-      return escapeRegExp(formatTokenValues[token] || "");
+      return escapeLinkFormatLiteral(formatTokenValues[token] || "");
     });
     try {
-      const matcher = new RegExp(`(?:^|\\r?\\n)${parts.join("")}(?=\\r?\\n|$)`, "g");
-      const matches = [];
-      for (const match of text.matchAll(matcher)) {
-        const url = normalizeConversionUrl(match[urlGroup]);
+      const pattern = new RegExp("(?:^|\\r?\\n)[ \\t]*" + parts.join("") + "[ \\t]*(?=\\r?\\n|$)", "g");
+      const records = [];
+      for (const match of text.matchAll(pattern)) {
+        const firstUrl = captures.findIndex((item) => item === "url");
+        const url = validLink(match[firstUrl + 1]);
         if (!url) continue;
-        matches.push({ url, customName: nameGroup ? String(match[nameGroup] || "").trim() : "" });
+        const firstName = captures.findIndex((item) => item === "name");
+        records.push({ url, name: firstName < 0 ? "" : String(match[firstName + 1] || "").trim() });
       }
-      return matches;
+      return records;
     } catch { return []; }
   }
 
-  function parseAutomaticConversionLinks(text) {
-    const parsed = [];
-    const markdown = /\[([^\]\r\n]+)\]\((https?:\/\/[^)\s]+)\)/g;
-    for (const match of text.matchAll(markdown)) {
-      const url = normalizeConversionUrl(match[2]);
-      if (url) parsed.push({ url, customName: match[1].trim() });
+  function parseLooseLinks(text) {
+    const records = [];
+    const markdown = /^\s*\[([^\]\r\n]+)\]\((https?:\/\/[^\s)]+)\)\s*$/u;
+    for (const line of text.split(/\r?\n/u)) {
+      const markdownMatch = line.match(markdown);
+      if (markdownMatch) {
+        const url = validLink(markdownMatch[2]);
+        if (url) records.push({ url, name: markdownMatch[1].trim() });
+        continue;
+      }
+      for (const match of line.matchAll(/https?:\/\/[^\s<>"']+/gu)) {
+        const url = validLink(match[0].replace(/[)\]}>，。；;!?！？]+$/u, ""));
+        if (!url) continue;
+        const prefix = line.slice(0, match.index).replace(/^\s*(?:[-*•]|\d+[.)])\s*/u, "").replace(/[\s:：\-–—|,，]+$/u, "").trim();
+        const suffix = line.slice(match.index + match[0].length).replace(/^[\s:：\-–—|,，]+/u, "").trim();
+        records.push({ url, name: prefix || suffix });
+      }
     }
-    const links = /https?:\/\/[^\s<>"']+/g;
-    for (const match of text.matchAll(links)) {
-      const url = normalizeConversionUrl(match[0]);
-      if (!url) continue;
-      const lineStart = text.lastIndexOf("\n", match.index - 1) + 1;
-      const prefix = text.slice(lineStart, match.index).replace(/^\s*(?:[-*•]|\d+[.)])\s*/, "").replace(/[\s:：\-–—|,，]+$/u, "").trim();
-      if (!parsed.some((item) => item.url === url)) parsed.push({ url, customName: prefix && !prefix.includes("http") ? prefix : "" });
-    }
-    return parsed;
+    return records;
   }
 
-  function parseConversionInput() {
-    const text = document.getElementById("conversionInput").value.trim();
-    const formatId = document.getElementById("conversionFormatSelect").value;
-    if (!text) { conversionItems = []; document.getElementById("conversionStatus").textContent = "请先粘贴图床链接或格式化文本。"; renderConversionQueue(); return; }
-    let matches = [];
-    if (formatId !== "auto") {
-      const preset = formatPresets.find((item) => item.id === formatId);
-      if (preset) matches = parseWithConversionFormat(text, preset.tokens);
+  function parseLinkText(text, sourceId) {
+    if (sourceId !== "auto") return parseLinkPreset(text, formatPresets.find((preset) => preset.id === sourceId));
+    let best = parseLooseLinks(text);
+    const score = (records) => records.length * 10 + records.filter((record) => record.name).length * 2;
+    for (const preset of formatPresets) {
+      const records = parseLinkPreset(text, preset);
+      if (score(records) > score(best)) best = records;
+    }
+    return best;
+  }
+
+  function nameFromLink(url) {
+    try {
+      const parsed = new URL(url);
+      const lastSegment = parsed.pathname.split("/").filter(Boolean).pop();
+      return lastSegment ? decodeURIComponent(lastSegment) : parsed.hostname;
+    } catch { return url; }
+  }
+
+  function importExternalLinks() {
+    const input = document.getElementById("conversionInput").value.trim();
+    if (!input) { showToast("请先粘贴其它图床的链接", true); return; }
+    const source = document.getElementById("conversionSourceFormat").value;
+    const records = parseLinkText(input, source);
+    if (!records.length) { showToast("未识别到链接，请检查输入格式", true); return; }
+    const existing = new Set(externalLinks.map((item) => item.url));
+    const additions = [];
+    for (const record of records) {
+      const url = validLink(record.url);
+      if (!url || existing.has(url)) continue;
+      existing.add(url);
+      additions.push({
+        id: typeof globalThis.crypto?.randomUUID === "function" ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+        url,
+        name: (record.name || nameFromLink(url)).trim().slice(0, 120),
+        folderId: "",
+        createdAt: Date.now()
+      });
+    }
+    if (!additions.length) { showToast("识别到的链接都已在本地外链库中"); return; }
+    if (!saveExternalLinks([...additions, ...externalLinks])) return;
+    showToast(`已保存 ${additions.length} 条外链到当前浏览器`);
+    setPage("external");
+  }
+
+  function renderExternalLinks() {
+    const list = document.getElementById("externalList");
+    const search = document.getElementById("externalSearch").value.trim().toLocaleLowerCase();
+    const currentFolder = externalFolders.find((folder) => folder.id === activeExternalFolderId);
+    if (activeExternalFolderId && !currentFolder) activeExternalFolderId = "";
+    const breadcrumb = document.getElementById("externalBreadcrumb");
+    breadcrumb.hidden = Boolean(search) || !currentFolder;
+    document.getElementById("externalCurrentFolder").textContent = currentFolder?.name || "";
+    const grid = document.getElementById("externalFolderGrid");
+    grid.hidden = Boolean(search) || Boolean(currentFolder) || !externalFolders.length;
+    grid.replaceChildren();
+    if (!grid.hidden) externalFolders.forEach((folder) => {
+      const card = document.createElement("div");
+      card.className = "external-folder-card";
+      card.dataset.id = folder.id;
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "external-folder-open";
+      open.dataset.action = "open";
+      const icon = document.createElement("span");
+      icon.className = "external-folder-icon";
+      icon.innerHTML = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 7.5A2 2 0 0 1 5.5 5.5h5l2 2h6A2 2 0 0 1 20.5 9.5v9a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2v-11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+      const details = document.createElement("span");
+      details.className = "external-folder-details";
+      const name = document.createElement("strong");
+      name.textContent = folder.name;
+      const count = document.createElement("small");
+      count.textContent = `${externalLinks.filter((item) => item.folderId === folder.id).length} 条链接`;
+      details.append(name, count);
+      open.append(icon, details);
+      const menu = document.createElement("button");
+      menu.type = "button";
+      menu.className = "external-folder-menu";
+      menu.dataset.action = "manage";
+      menu.setAttribute("aria-label", `管理文件夹 ${folder.name}`);
+      menu.textContent = "⋯";
+      card.append(open, menu);
+      grid.append(card);
+    });
+    const filtered = externalLinks.filter((item) => {
+      const host = new URL(item.url).hostname;
+      const folderName = externalFolders.find((folder) => folder.id === item.folderId)?.name || "";
+      if (search) return `${item.name} ${item.url} ${host} ${folderName}`.toLocaleLowerCase().includes(search);
+      return currentFolder ? item.folderId === currentFolder.id : !item.folderId || !externalFolders.some((folder) => folder.id === item.folderId);
+    });
+    document.getElementById("externalCount").textContent = currentFolder || search
+      ? `${filtered.length} 条链接`
+      : `${externalFolders.length} 个文件夹 · ${filtered.length} 个未分类链接`;
+    list.replaceChildren();
+    if (!filtered.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+      const heading = document.createElement("strong");
+      heading.textContent = search ? "没有找到匹配的外链" : currentFolder ? "这个文件夹还是空的" : externalLinks.length ? "没有未分类的外链" : "外链库还是空的";
+      empty.append(heading, document.createTextNode(search ? "试试其它名称或网址。" : currentFolder ? "可通过链接卡片上的“移动”将外链放到这里。" : externalLinks.length ? "已分类的外链可在上方文件夹中查看。" : "在“转换”页面粘贴其它图床的链接，选择输入格式后导入。"));
+      if (!externalLinks.length) {
+        const go = document.createElement("button");
+        go.type = "button";
+        go.className = "external-import-link";
+        go.textContent = "去导入外链";
+        go.addEventListener("click", () => setPage("converter"));
+        empty.append(document.createElement("br"), go);
+      }
+      list.append(empty);
+      return;
+    }
+    filtered.forEach((item) => {
+      const card = document.createElement("article");
+      card.className = "asset-card external-card";
+      card.dataset.id = item.id;
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-label", `预览外链 ${item.name || nameFromLink(item.url)}`);
+      const visual = document.createElement("div");
+      visual.className = "asset-visual";
+      const thumb = document.createElement("div");
+      thumb.className = "asset-thumb";
+      const fileName = nameFromLink(item.url);
+      const type = assetTypeForName(fileName);
+      if (type === "image") {
+        const image = document.createElement("img");
+        image.src = item.url;
+        image.alt = "";
+        image.loading = "lazy";
+        image.onerror = () => { thumb.textContent = "图片预览不可用"; };
+        thumb.append(image);
+      } else {
+        thumb.textContent = type === "file" ? "LINK" : fileName.includes(".") ? fileName.split(".").pop().toUpperCase() : type.toUpperCase();
+      }
+      visual.append(thumb);
+      const body = document.createElement("div");
+      body.className = "asset-body";
+      const name = document.createElement("div");
+      name.className = "asset-name";
+      name.textContent = item.name || nameFromLink(item.url);
+      name.title = name.textContent;
+      const host = document.createElement("div");
+      host.className = "asset-path";
+      const itemFolder = externalFolders.find((folder) => folder.id === item.folderId);
+      host.textContent = new URL(item.url).hostname + (search ? ` · ${itemFolder?.name || "未分类"}` : "");
+      const actions = document.createElement("div");
+      actions.className = "asset-actions";
+      const icons = {
+        move: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7.5h6l2 2h8v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-10Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 12v5m-2-2 2 2 2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        copy: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="8" y="8" width="11" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M16 8V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h1" stroke="currentColor" stroke-width="1.7"/></svg>',
+        rename: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 5 5 5M4 20l4.2-.9L19 8.3a2.1 2.1 0 0 0-3-3L5.2 16.1 4 20Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        delete: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7h15M9 7V4.8h6V7m2.5 0-.8 12h-9.4L6.5 7m3.2 3.2v5.2m4.6-5.2v5.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      };
+      for (const [action, label] of [["move", "移动到文件夹"], ["copy", "复制链接"], ["rename", "编辑名称"], ["delete", "删除外链"]]) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.action = action;
+        button.innerHTML = icons[action];
+        button.setAttribute("aria-label", label);
+        button.title = label;
+        if (action === "delete") button.className = "external-delete";
+        actions.append(button);
+      }
+      body.append(name, host, actions);
+      card.append(visual, body);
+      list.append(card);
+    });
+  }
+
+  function handleExternalFolderAction(event) {
+    const button = event.target.closest("button[data-action]");
+    const folder = externalFolders.find((item) => item.id === button?.closest(".external-folder-card")?.dataset.id);
+    if (!folder) return;
+    if (button.dataset.action === "open") {
+      activeExternalFolderId = folder.id;
+      renderExternalLinks();
     } else {
-      const candidates = [...formatPresets].sort((a, b) => Number(b.tokens.includes("name")) - Number(a.tokens.includes("name")));
-      let best = [];
-      for (const preset of candidates) {
-        const parsed = parseWithConversionFormat(text, preset.tokens);
-        const score = parsed.length * 10 + parsed.filter((item) => item.customName).length * 100;
-        const bestScore = best.length * 10 + best.filter((item) => item.customName).length * 100;
-        if (score > bestScore) best = parsed;
-      }
-      matches = best.length ? best : parseAutomaticConversionLinks(text);
+      openExternalFolderDialog(folder.id);
     }
-    const automaticMatches = parseAutomaticConversionLinks(text);
-    if (!matches.length) matches = automaticMatches;
-    const automaticByUrl = new Map(automaticMatches.map((item) => [item.url, item]));
-    matches = matches.map((item) => ({ ...item, customName: item.customName || automaticByUrl.get(item.url)?.customName || "" }));
-    const seen = new Set();
-    conversionItems = matches.filter((item) => !seen.has(item.url) && seen.add(item.url)).map((item) => ({ ...item, status: "等待转换" }));
-    document.getElementById("conversionStatus").textContent = conversionItems.length
-      ? `已解析 ${conversionItems.length} 个链接${conversionItems.some((item) => item.customName) ? "，并识别到自定义名称" : ""}。`
-      : "没有识别到可用链接，请检查格式或选择对应的解析预设。";
-    renderConversionQueue();
   }
 
-  function sourceFilenameFromUrl(url, contentType = "") {
-    let filename = "";
-    try { filename = decodeURIComponent(new URL(url).pathname.split("/").pop() || ""); } catch {}
-    const imageExtensions = new Set(["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "tif", "tiff"]);
-    const extension = filename.includes(".") ? filename.split(".").pop().toLowerCase() : "";
-    if (imageExtensions.has(extension)) return filename;
-    const mimeExtension = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/svg+xml": "svg", "image/avif": "avif", "image/bmp": "bmp", "image/tiff": "tif" }[contentType.split(";")[0].trim().toLowerCase()];
-    return mimeExtension ? `converted-image.${mimeExtension}` : filename || "远程图片";
+  function openExternalFolderDialog(folderId = "") {
+    const folder = externalFolders.find((item) => item.id === folderId);
+    editingExternalFolderId = folder?.id || "";
+    document.getElementById("externalFolderDialogTitle").textContent = folder ? "管理文件夹" : "新建文件夹";
+    document.getElementById("externalFolderName").value = folder?.name || "";
+    document.getElementById("deleteExternalFolderButton").hidden = !folder;
+    document.getElementById("externalFolderDialog").showModal();
   }
 
-  function renderConversionQueue() {
-    const queue = document.getElementById("conversionQueue");
-    queue.replaceChildren();
-    conversionItems.forEach((item) => {
-      const row = document.createElement("div"); row.className = "conversion-item";
-      const info = document.createElement("div"); info.className = "conversion-item-info";
-      const name = document.createElement("div"); name.className = "conversion-item-name"; name.textContent = item.customName || sourceFilenameFromUrl(item.url); name.title = name.textContent;
-      const url = document.createElement("div"); url.className = "conversion-item-url"; url.textContent = item.url; url.title = item.url;
-      const status = document.createElement("div"); status.className = `conversion-item-status${item.error ? " error" : item.uploaded ? " success" : ""}`; status.textContent = item.error || item.status;
-      info.append(name, url); row.append(info, status); queue.append(row);
-    });
-    const button = document.getElementById("startConversionButton");
-    const pendingItems = conversionItems.filter((item) => !item.uploaded || item.nameSaveError);
-    button.disabled = conversionInProgress || pendingItems.length === 0;
-    button.textContent = conversionInProgress ? "正在转换…" : !pendingItems.length && conversionItems.length ? "已全部完成" : pendingItems.length < conversionItems.length ? `重试剩余 ${pendingItems.length} 项` : `下载并上传 ${pendingItems.length} 项`;
-    document.getElementById("conversionInput").disabled = conversionInProgress;
-    document.getElementById("conversionFormatSelect").disabled = conversionInProgress;
-    document.getElementById("parseConversionInput").disabled = conversionInProgress;
-    document.getElementById("clearConversionInput").disabled = conversionInProgress;
-  }
-
-  async function persistConvertedCustomNames(items, config) {
-    const namedItems = items.filter((item) => item.customName && item.uploadedAsset);
-    if (!namedItems.length) return;
-    const metadata = await fetchAssetMetadata(config);
-    namedItems.forEach((item) => {
-      const asset = item.uploadedAsset;
-      let record = metadata.assets.find((entry) => entry.path === asset.path);
-      if (!record) {
-        record = { id: asset.path, filename: asset.name, path: asset.path, folder: asset.path.slice(0, asset.path.lastIndexOf("/")), type: assetTypeForName(asset.name), tags: [], url: asset.url, created: new Date().toISOString().slice(0, 10) };
-        metadata.assets.push(record);
-      }
-      record.name = item.customName;
-    });
-    await writeAssetMetadata(metadata, config, "save converted asset names");
-    assetMetadata = metadata;
-  }
-
-  async function convertAndUploadRemoteImages() {
-    if (conversionInProgress || !conversionItems.length) return;
-    const config = {
-      token: document.getElementById("token").value.trim(),
-      owner: document.getElementById("owner").value.trim(),
-      repo: document.getElementById("repo").value.trim(),
-      branch: document.getElementById("branch").value.trim() || "main"
-    };
-    if (!config.token || !config.owner || !config.repo) { showToast("请先在仓库设置中配置 GitHub", true); return; }
-    conversionInProgress = true;
-    document.getElementById("conversionStatus").textContent = "正在从来源图床下载并上传到 GitHub…";
-    renderConversionQueue();
-    for (const item of conversionItems) {
-      if (item.uploaded) continue;
-      item.error = ""; item.status = "正在下载"; renderConversionQueue();
-      let stage = "download";
-      try {
-        if (new URL(item.url).protocol !== "https:") throw new Error("来源链接需要使用 HTTPS");
-        const response = await fetch(item.url, { mode: "cors", credentials: "omit" });
-        if (!response.ok) {
-          throw new Error(`来源图床返回错误 (${response.status})`);
-        }
-        const blob = await response.blob();
-        const contentType = (blob.type || response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
-        const filename = sourceFilenameFromUrl(item.url, contentType);
-        const extension = filename.split(".").pop().toLowerCase();
-        const imageExtensions = ["png", "jpg", "jpeg", "webp", "gif", "svg", "avif", "bmp", "tif", "tiff"];
-        if (contentType && !contentType.startsWith("image/") && contentType !== "application/octet-stream") throw new Error("链接返回的内容不是图片");
-        if (!contentType.startsWith("image/") && !imageExtensions.includes(extension)) throw new Error("无法确认链接返回的是图片");
-        if (!blob.size) throw new Error("下载到的图片为空");
-        const file = new File([blob], filename, { type: contentType.startsWith("image/") ? contentType : `image/${extension === "jpg" ? "jpeg" : extension}`, lastModified: Date.now() });
-        stage = "upload"; item.status = "正在上传"; renderConversionQueue();
-        const dot = file.name.lastIndexOf(".");
-        const sourceBase = dot > 0 ? file.name.slice(0, dot) : "converted-image";
-        const extensionSuffix = dot > 0 ? file.name.slice(dot) : ".png";
-        const uniqueSuffix = `${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${globalThis.crypto?.randomUUID ? crypto.randomUUID().slice(0, 8) : Math.random().toString(36).slice(2, 10)}`;
-        const storedName = makeUrlSafeFilename(`${sourceBase}-${uniqueSuffix}${extensionSuffix}`);
-        const folder = getUploadFolder(file);
-        const path = `${folder}/${storedName}`;
-        const endpoint = `https://api.github.com/repos/${encodeURIComponent(config.owner)}/${encodeURIComponent(config.repo)}/contents/${path.split("/").map(encodeURIComponent).join("/")}`;
-        const uploadResponse = await fetch(endpoint, {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
-          body: JSON.stringify({ message: `convert image host ${filename}`, content: await fileToBase64(file), branch: config.branch })
-        });
-        const result = await uploadResponse.json().catch(() => ({}));
-        if (!uploadResponse.ok) throw new Error(result.message || `GitHub 上传失败 (${uploadResponse.status})`);
-        const ref = config.branch.split("/").map(encodeURIComponent).join("/");
-        item.uploadedAsset = { path, name: storedName, size: file.size, url: `https://raw.githubusercontent.com/${config.owner}/${config.repo}/${ref}/${path.split("/").map(encodeURIComponent).join("/")}` };
-        item.uploaded = true; item.status = "已上传";
-      } catch (error) {
-        item.error = error instanceof TypeError
-          ? stage === "download" ? "下载失败：来源图床可能不允许跨域读取（CORS）" : "上传失败：无法连接 GitHub API"
-          : error.message || "转换失败";
-        item.status = "转换失败";
-      }
-      renderConversionQueue();
+  function saveExternalFolder(event) {
+    event.preventDefault();
+    const name = document.getElementById("externalFolderName").value.trim();
+    if (!name) return;
+    if (externalFolders.some((folder) => folder.name.toLocaleLowerCase() === name.toLocaleLowerCase() && folder.id !== editingExternalFolderId)) {
+      showToast("已经有同名文件夹", true);
+      return;
     }
-    const uploaded = conversionItems.filter((item) => item.uploadedAsset);
-    let nameSaveError = "";
-    try { await persistConvertedCustomNames(uploaded, config); }
-    catch (error) { nameSaveError = error.message || "自定义名称保存失败"; }
-    if (uploaded.length) await syncAssetLibrary();
-    uploaded.forEach((item) => {
-      item.status = item.customName && nameSaveError ? "已上传，名称未保存" : "转换完成";
-      if (item.customName && nameSaveError) { item.nameSaveError = nameSaveError; item.error = `名称保存失败：${nameSaveError}`; }
-      else { delete item.nameSaveError; item.error = ""; }
-    });
-    conversionInProgress = false;
-    const failed = conversionItems.filter((item) => !item.uploaded).length;
-    document.getElementById("conversionStatus").textContent = `${uploaded.length} 个已上传${failed ? `，${failed} 个失败` : ""}${nameSaveError ? `；自定义名称保存失败：${nameSaveError}` : ""}${uploaded.length ? "。素材库已同步。" : "。"}`;
-    renderConversionQueue();
-    showToast(failed || nameSaveError ? `转换完成：成功 ${uploaded.length} 个，失败 ${failed} 个` : `已转换并上传 ${uploaded.length} 个素材`, Boolean(failed || nameSaveError));
+    const next = editingExternalFolderId
+      ? externalFolders.map((folder) => folder.id === editingExternalFolderId ? { ...folder, name } : folder)
+      : [...externalFolders, { id: typeof globalThis.crypto?.randomUUID === "function" ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`, name }];
+    if (saveExternalFolders(next)) {
+      document.getElementById("externalFolderDialog").close();
+      showToast(editingExternalFolderId ? "文件夹已重命名" : "文件夹已创建");
+      editingExternalFolderId = "";
+    }
+  }
+
+  function deleteExternalFolder() {
+    const folder = externalFolders.find((item) => item.id === editingExternalFolderId);
+    if (!folder) return;
+    if (!window.confirm(`删除本地文件夹「${folder.name}」？其中的外链会变成未分类，链接不会删除。`)) return;
+    const nextLinks = externalLinks.map((item) => item.folderId === folder.id ? { ...item, folderId: "" } : item);
+    if (!saveExternalLinks(nextLinks)) return;
+    if (!saveExternalFolders(externalFolders.filter((item) => item.id !== folder.id))) return;
+    if (activeExternalFolderId === folder.id) activeExternalFolderId = "";
+    document.getElementById("externalFolderDialog").close();
+    renderExternalLinks();
+    showToast("文件夹已删除，外链已移至未分类");
+  }
+
+  function openExternalMoveDialog(item) {
+    movingExternalLinkId = item.id;
+    const target = document.getElementById("externalMoveTarget");
+    target.replaceChildren();
+    for (const folder of [{ id: "", name: "未分类" }, ...externalFolders]) {
+      const option = document.createElement("option");
+      option.value = folder.id;
+      option.textContent = folder.name;
+      target.append(option);
+    }
+    target.value = item.folderId || "";
+    document.getElementById("externalMoveDialog").showModal();
+  }
+
+  function moveExternalLink(event) {
+    event.preventDefault();
+    const folderId = document.getElementById("externalMoveTarget").value;
+    if (folderId && !externalFolders.some((folder) => folder.id === folderId)) return;
+    const next = externalLinks.map((item) => item.id === movingExternalLinkId ? { ...item, folderId } : item);
+    if (saveExternalLinks(next)) {
+      document.getElementById("externalMoveDialog").close();
+      movingExternalLinkId = "";
+      showToast("外链已移动");
+    }
+  }
+
+  async function handleExternalAction(event) {
+    const button = event.target.closest("button[data-action]");
+    const card = event.target.closest(".external-card");
+    if (!card) return;
+    const item = externalLinks.find((link) => link.id === card.dataset.id);
+    if (!item) return;
+    if (!button) { openExternalPreview(item); return; }
+    if (button.dataset.action === "move") {
+      openExternalMoveDialog(item);
+    } else if (button.dataset.action === "copy") {
+      try { await navigator.clipboard.writeText(item.url); showToast("外链已复制"); }
+      catch { showToast("复制失败，请检查浏览器权限", true); }
+    } else if (button.dataset.action === "rename") {
+      activeExternalLinkId = item.id;
+      document.getElementById("externalNameInput").value = item.name || nameFromLink(item.url);
+      document.getElementById("externalNameDialog").showModal();
+    } else if (button.dataset.action === "delete") {
+      if (!window.confirm(`从本地外链库删除「${item.name || nameFromLink(item.url)}」？\n不会影响来源图床上的文件。`)) return;
+      if (saveExternalLinks(externalLinks.filter((link) => link.id !== item.id))) showToast("已从本地外链库删除");
+    }
+  }
+
+  function openExternalPreview(item) {
+    activePreviewAsset = { url: item.url };
+    const dialog = document.getElementById("assetPreviewDialog");
+    const content = document.getElementById("previewContent");
+    const fileName = nameFromLink(item.url);
+    const type = assetTypeForName(fileName);
+    document.getElementById("previewTitle").textContent = item.name || fileName;
+    document.getElementById("previewMeta").textContent = new URL(item.url).hostname;
+    document.getElementById("openPreviewSource").href = item.url;
+    content.replaceChildren();
+    if (!dialog.open) dialog.showModal();
+    if (type === "image") {
+      const image = document.createElement("img");
+      image.className = "preview-image";
+      image.alt = item.name || fileName;
+      image.src = item.url;
+      image.addEventListener("error", () => content.replaceChildren(previewMessage("图片无法预览", "来源图床可能限制了网页显示，可尝试打开原文件。")), { once: true });
+      content.append(image);
+    } else if (type === "audio" || type === "video") {
+      const media = document.createElement(type);
+      media.className = type === "audio" ? "preview-audio" : "preview-video";
+      media.controls = true;
+      media.preload = "metadata";
+      media.src = item.url;
+      if (type === "video") media.playsInline = true;
+      media.addEventListener("error", () => content.replaceChildren(previewMessage("媒体无法预览", "来源图床可能限制了网页播放，可尝试打开原文件。")), { once: true });
+      content.append(media);
+    } else if (type === "pdf") {
+      const frame = document.createElement("iframe");
+      frame.className = "preview-pdf";
+      frame.title = "PDF 预览";
+      frame.src = item.url;
+      content.append(frame);
+    } else {
+      content.append(previewMessage("此链接暂不支持网页预览", "可以复制链接，或打开来源图床查看。"));
+    }
+  }
+
+  function saveExternalName(event) {
+    event.preventDefault();
+    const name = document.getElementById("externalNameInput").value.trim();
+    if (!name || !activeExternalLinkId) return;
+    const next = externalLinks.map((item) => item.id === activeExternalLinkId ? { ...item, name } : item);
+    if (saveExternalLinks(next)) {
+      document.getElementById("externalNameDialog").close();
+      activeExternalLinkId = "";
+      showToast("外链名称已保存");
+    }
+  }
+
+  function convertLinkText() {
+    const input = document.getElementById("conversionInput").value.trim();
+    const output = document.getElementById("conversionOutput");
+    const status = document.getElementById("conversionStatus");
+    const target = formatPresets.find((preset) => preset.id === document.getElementById("conversionTargetFormat").value);
+    invalidateLinkConversion();
+    const fail = (message) => { status.textContent = message; status.classList.add("error"); };
+    if (!input) { fail("请先粘贴需要转换的内容。"); return; }
+    if (!target?.tokens?.length) { fail("请先在设置中创建输出格式预设。"); return; }
+    const records = parseLinkText(input, document.getElementById("conversionSourceFormat").value);
+    if (!records.length) { fail("没有识别到符合输入格式的链接，请更换输入格式或选择自动识别。"); return; }
+    output.value = records.map((record) => target.tokens.map((token) => {
+      if (token === "name") return record.name || nameFromLink(record.url);
+      if (token === "url") return record.url;
+      return formatTokenValues[token] || "";
+    }).join("")).join("\n");
+    document.getElementById("copyConversionOutput").disabled = false;
+    status.textContent = "已识别 " + records.length + " 条链接，转换为「" + target.name + "」格式。";
+  }
+
+  async function copyConvertedText() {
+    const output = document.getElementById("conversionOutput").value;
+    if (!output) return;
+    try {
+      await navigator.clipboard.writeText(output);
+      showToast("转换结果已复制");
+    } catch {
+      showToast("复制失败，请长按结果手动复制", true);
+    }
   }
 
   function renderFormatPalette() {
@@ -2081,3 +2458,4 @@
 </script>
 </body>
 </html>
+
