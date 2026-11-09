@@ -1362,7 +1362,11 @@
       body: JSON.stringify({ message, content: utf8ToBase64(JSON.stringify(metadata, null, 2) + "\n"), ...(sha ? { sha } : {}), branch: config.branch })
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(data.message || `保存 assets.json 失败 (${response.status})`);
+    if (!response.ok) {
+      const error = new Error(data.message || `保存 assets.json 失败 (${response.status})`);
+      error.status = response.status;
+      throw error;
+    }
     return data;
   }
 
@@ -2440,7 +2444,10 @@
 
   function addFiles(files) {
     for (const file of files) {
-      if (!selectedFiles.some((item) => item.name === file.name && item.size === file.size && item.lastModified === file.lastModified)) {
+      const existing = selectedFiles.find((item) => item.name === file.name && item.size === file.size && item.lastModified === file.lastModified);
+      if (existing) {
+        if (uploadDisplayNames.has(file)) uploadDisplayNames.set(existing, uploadDisplayNames.get(file));
+      } else {
         selectedFiles.push(file);
         uploadNames.set(file, makeUrlSafeFilename(file.name));
       }
@@ -2592,17 +2599,21 @@
         const storedName = uploadNames.get(file) || makeUrlSafeFilename(file.name);
         const folder = getUploadFolder(file);
         const path = `${folder}/${storedName}`;
+        const config = { token, owner, repo, branch };
+        const alreadyExists = uploadDisplayNames.has(file) && await importedImageAlreadyExists(file, path, config);
         const api = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/${path.split("/").map(encodeURIComponent).join("/")}`;
-        const response = await fetch(api, {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
-          body: JSON.stringify({ message: `upload ${file.name}`, content, branch })
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.message || `GitHub 返回错误 (${response.status})`);
+        if (!alreadyExists) {
+          const response = await fetch(api, {
+            method: "PUT",
+            headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json", Accept: "application/vnd.github+json" },
+            body: JSON.stringify({ message: `upload ${file.name}`, content, branch })
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(data.message || `GitHub 返回错误 (${response.status})`);
+        }
         const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch.split("/").map(encodeURIComponent).join("/")}/${path.split("/").map(encodeURIComponent).join("/")}`;
-        results.push({ file, path, url });
-        if (rowStatus) rowStatus.textContent = "上传成功";
+        results.push({ file, path, url, alreadyExists });
+        if (rowStatus) rowStatus.textContent = alreadyExists ? "待保存名称" : "上传成功";
       } catch (error) {
         if (rowStatus) rowStatus.textContent = "上传失败";
         results.push({ file, error: error.message });
@@ -2614,6 +2625,10 @@
       button.textContent = "正在保存素材名称…";
       try {
         await saveUploadedDisplayNames(namedUploads, { token, owner, repo, branch });
+        namedUploads.forEach((item) => {
+          const status = rows[selectedFiles.indexOf(item.file)]?.querySelector(".file-status");
+          if (status) status.textContent = "名称已保存";
+        });
       } catch (error) {
         nameSaveError = error.message || "保存失败";
         namedUploads.forEach((item) => { item.nameSaveError = nameSaveError; });
@@ -2623,12 +2638,33 @@
     button.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>开始上传</span>';
     renderResults(results);
     const successCount = results.filter((item) => item.url).length;
+    const existingCount = results.filter((item) => item.alreadyExists).length;
     if (successCount) await syncAssetLibrary();
     if (nameSaveError) showToast(`已上传 ${successCount} 个文件，但素材名称保存失败：${nameSaveError}`, true);
-    else showToast(successCount === results.length ? `已成功上传 ${successCount} 个文件` : `完成：成功 ${successCount} 个，失败 ${results.length - successCount} 个`, successCount !== results.length);
+    else showToast(existingCount ? `已处理 ${successCount} 张图片，含 ${existingCount} 张已有图片，名称已保存${successCount < results.length ? `；失败 ${results.length - successCount} 张` : ""}` : successCount === results.length ? `已成功上传 ${successCount} 个文件` : `完成：成功 ${successCount} 个，失败 ${results.length - successCount} 个`, successCount !== results.length);
+  }
+
+  async function importedImageAlreadyExists(file, path, config) {
+    const response = await fetch(contentsApiUrl(config.owner, config.repo, path, config.branch), {
+      cache: "no-store",
+      headers: { Authorization: `Bearer ${config.token}`, Accept: "application/vnd.github+json" }
+    });
+    if (response.status === 404) return false;
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || `核对已有图片失败 (${response.status})`);
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const header = new TextEncoder().encode(`blob ${bytes.length}\0`);
+    const payload = new Uint8Array(header.length + bytes.length);
+    payload.set(header);
+    payload.set(bytes, header.length);
+    const digest = await crypto.subtle.digest("SHA-1", payload);
+    const sha = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+    if (data.type !== "file" || data.sha !== sha) throw new Error("同名文件的图片内容不同，已跳过；请先修改名称再导入");
+    return true;
   }
 
   async function saveUploadedDisplayNames(items, config) {
+    for (let attempt = 0; attempt < 3; attempt++) {
     const latest = await fetchAssetMetadata(config);
     for (const item of items) {
       const name = uploadDisplayNames.get(item.file);
@@ -2648,7 +2684,13 @@
       }
       record.name = name;
     }
-    await writeAssetMetadata(latest, config, "Save names of images imported from JSON");
+    try {
+      await writeAssetMetadata(latest, config, "Save names of images imported from JSON");
+      return;
+    } catch (error) {
+      if (error.status !== 409 || attempt === 2) throw error;
+    }
+    }
   }
 
   function renderResults(items) {
@@ -2662,7 +2704,7 @@
       const card = document.createElement("article"); card.className = "result-item";
       const title = document.createElement("div"); title.className = "result-title";
       const fileName = document.createElement("span"); fileName.textContent = uploadDisplayNames.get(item.file) || item.file.name;
-      const badge = document.createElement("small"); badge.textContent = item.nameSaveError ? "图片已上传，名称未保存" : item.url ? "上传成功" : "上传失败"; if (!item.url || item.nameSaveError) badge.style.color = "var(--red)";
+      const badge = document.createElement("small"); badge.textContent = item.nameSaveError ? "名称未保存" : item.alreadyExists ? "已有图片，名称已保存" : item.url ? "上传成功" : "上传失败"; if (!item.url || item.nameSaveError) badge.style.color = "var(--red)";
       title.append(fileName, badge); card.append(title);
       const path = document.createElement("div"); path.className = "result-path"; path.textContent = item.url ? item.path : item.error; card.append(path);
       if (item.url) {
