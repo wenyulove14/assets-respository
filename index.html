@@ -675,6 +675,7 @@
   const selectedFiles = [];
   const selectedAssets = new Set();
   const uploadNames = new WeakMap();
+  const uploadDisplayNames = new WeakMap();
   let activeNamingAsset = null;
   let activePreviewAsset = null;
   let activeExternalLinkId = "";
@@ -2468,7 +2469,10 @@
           const binary = atob(match[2].replace(/\s/g, ""));
           const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
           const baseName = String(emoji.name || `image-${index + 1}`).trim().replace(/[\\/]/g, "_").replace(/\.(png|jpe?g|gif|webp|avif)$/i, "") || `image-${index + 1}`;
-          imported.push(new File([bytes], `${baseName}.${mimeExtensions[mime]}`, { type: mime, lastModified: index + 1 }));
+          const imageFile = new File([bytes], `${baseName}.${mimeExtensions[mime]}`, { type: mime, lastModified: index + 1 });
+          const displayName = String(emoji.name ?? "").trim();
+          if (displayName) uploadDisplayNames.set(imageFile, displayName);
+          imported.push(imageFile);
         } catch { skipped++; }
       }
       const previous = selectedFiles.length;
@@ -2503,7 +2507,7 @@
       } else preview.textContent = file.name.split(".").pop().toUpperCase().slice(0, 4);
       const info = document.createElement("div");
       info.className = "file-info";
-      const name = document.createElement("div"); name.className = "file-name"; name.textContent = file.name;
+      const name = document.createElement("div"); name.className = "file-name"; name.textContent = uploadDisplayNames.get(file) || file.name;
       const meta = document.createElement("div"); meta.className = "file-meta";
       const storedName = uploadNames.get(file) || file.name;
       const storedFolder = getUploadFolder(file);
@@ -2604,12 +2608,47 @@
         results.push({ file, error: error.message });
       }
     }
+    let nameSaveError = "";
+    const namedUploads = results.filter((item) => item.url && uploadDisplayNames.has(item.file));
+    if (namedUploads.length) {
+      button.textContent = "正在保存素材名称…";
+      try {
+        await saveUploadedDisplayNames(namedUploads, { token, owner, repo, branch });
+      } catch (error) {
+        nameSaveError = error.message || "保存失败";
+        namedUploads.forEach((item) => { item.nameSaveError = nameSaveError; });
+      }
+    }
     button.disabled = false;
     button.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14.5v3A2.5 2.5 0 0 0 7.5 20h9a2.5 2.5 0 0 0 2.5-2.5v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>开始上传</span>';
     renderResults(results);
     const successCount = results.filter((item) => item.url).length;
     if (successCount) await syncAssetLibrary();
-    showToast(successCount === results.length ? `已成功上传 ${successCount} 个文件` : `完成：成功 ${successCount} 个，失败 ${results.length - successCount} 个`, successCount !== results.length);
+    if (nameSaveError) showToast(`已上传 ${successCount} 个文件，但素材名称保存失败：${nameSaveError}`, true);
+    else showToast(successCount === results.length ? `已成功上传 ${successCount} 个文件` : `完成：成功 ${successCount} 个，失败 ${results.length - successCount} 个`, successCount !== results.length);
+  }
+
+  async function saveUploadedDisplayNames(items, config) {
+    const latest = await fetchAssetMetadata(config);
+    for (const item of items) {
+      const name = uploadDisplayNames.get(item.file);
+      let record = latest.assets.find((entry) => entry.path === item.path);
+      if (!record) {
+        record = {
+          id: item.path,
+          filename: item.path.split("/").pop(),
+          path: item.path,
+          folder: item.path.slice(0, item.path.lastIndexOf("/")),
+          type: assetTypeForName(item.file.name),
+          tags: [],
+          url: item.url,
+          created: new Date().toISOString().slice(0, 10)
+        };
+        latest.assets.push(record);
+      }
+      record.name = name;
+    }
+    await writeAssetMetadata(latest, config, "Save names of images imported from JSON");
   }
 
   function renderResults(items) {
@@ -2622,8 +2661,8 @@
     items.forEach((item) => {
       const card = document.createElement("article"); card.className = "result-item";
       const title = document.createElement("div"); title.className = "result-title";
-      const fileName = document.createElement("span"); fileName.textContent = item.file.name;
-      const badge = document.createElement("small"); badge.textContent = item.url ? "上传成功" : "上传失败"; if (!item.url) badge.style.color = "var(--red)";
+      const fileName = document.createElement("span"); fileName.textContent = uploadDisplayNames.get(item.file) || item.file.name;
+      const badge = document.createElement("small"); badge.textContent = item.nameSaveError ? "图片已上传，名称未保存" : item.url ? "上传成功" : "上传失败"; if (!item.url || item.nameSaveError) badge.style.color = "var(--red)";
       title.append(fileName, badge); card.append(title);
       const path = document.createElement("div"); path.className = "result-path"; path.textContent = item.url ? item.path : item.error; card.append(path);
       if (item.url) {
