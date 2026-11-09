@@ -524,7 +524,7 @@
           <div class="drop-foot">可一次选择多个文件 · 中文等特殊名称会自动生成安全文件名</div>
           <input class="file-input" id="file" type="file" multiple aria-label="选择要上传的文件">
         </div>
-        <div class="json-import-row"><button type="button" class="json-import-button" id="importEmojiJsonButton">导入 Base64 图片 JSON</button><span class="json-import-status" id="jsonImportStatus" role="status"></span></div>
+        <div class="json-import-row"><button type="button" class="json-import-button" id="importEmojiJsonButton">导入 Base64 图片 JSON</button><span class="json-import-status" id="jsonImportStatus" role="status">优先使用图片描述作为素材名称</span></div>
         <input id="emojiJsonFile" type="file" accept=".json,application/json" hidden aria-label="选择表情包 JSON 文件">
         <div class="file-area" id="fileArea"><div class="file-area-head"><strong id="fileCount">已选择 0 个文件</strong><button type="button" id="clearFiles" class="text-button">清空列表</button></div><div class="file-list" id="fileList"></div></div>
         <div class="upload-controls">
@@ -2477,7 +2477,7 @@
           const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
           const baseName = String(emoji.name || `image-${index + 1}`).trim().replace(/[\\/]/g, "_").replace(/\.(png|jpe?g|gif|webp|avif)$/i, "") || `image-${index + 1}`;
           const imageFile = new File([bytes], `${baseName}.${mimeExtensions[mime]}`, { type: mime, lastModified: index + 1 });
-          const displayName = String(emoji.name ?? "").trim();
+          const displayName = String(emoji.description ?? "").trim() || String(emoji.name ?? "").trim();
           if (displayName) uploadDisplayNames.set(imageFile, displayName);
           imported.push(imageFile);
         } catch { skipped++; }
