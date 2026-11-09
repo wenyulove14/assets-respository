@@ -261,6 +261,11 @@
     .browse { pointer-events:auto; border:0; background:none; padding:0; color:var(--accent); font-weight:650; }
     .file-input { position:absolute; inset:0; opacity:0; width:100%; height:100%; cursor:pointer; }
     .drop-foot { position:absolute; bottom:13px; color:#a0a5b0; font-size:10px; letter-spacing:.015em; }
+    .json-import-row {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:11px;}
+    .json-import-button {border:0;background:transparent;color:var(--accent-dark);font-size:11px;font-weight:650;padding:5px 2px;}
+    .json-import-button:hover {color:var(--accent);}
+    .json-import-button:disabled {opacity:.55;cursor:wait;}
+    .json-import-status {color:var(--muted);font-size:10px;text-align:right;}
     .file-area { margin-top:16px; display:none; }
     .file-area.visible { display:block; }
     .file-area-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
@@ -425,6 +430,8 @@
       .empty-state{padding:38px 14px;font-size:12px;}
     }
     @media(max-width:520px) {
+      .json-import-row{align-items:flex-start;flex-direction:column;gap:2px;}
+      .json-import-status{text-align:left;}
       .external-folder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
       .external-toolbar{grid-template-columns:minmax(0,1fr) 41px;}
       .external-toolbar .external-add{grid-column:1/-1;width:100%;}
@@ -517,6 +524,8 @@
           <div class="drop-foot">可一次选择多个文件 · 中文等特殊名称会自动生成安全文件名</div>
           <input class="file-input" id="file" type="file" multiple aria-label="选择要上传的文件">
         </div>
+        <div class="json-import-row"><button type="button" class="json-import-button" id="importEmojiJsonButton">导入 Base64 图片 JSON</button><span class="json-import-status" id="jsonImportStatus" role="status"></span></div>
+        <input id="emojiJsonFile" type="file" accept=".json,application/json" hidden aria-label="选择表情包 JSON 文件">
         <div class="file-area" id="fileArea"><div class="file-area-head"><strong id="fileCount">已选择 0 个文件</strong><button type="button" id="clearFiles" class="text-button">清空列表</button></div><div class="file-list" id="fileList"></div></div>
         <div class="upload-controls">
           <div class="auto-folder-note"><span class="field-label">自动归档</span><span>图片 → images　·　字体 → fonts　·　音频 → music　·　文档 → docs　·　其他 → files</span></div>
@@ -843,6 +852,12 @@
 
   document.getElementById("browseButton").addEventListener("click", () => fileInput.click());
   fileInput.addEventListener("change", () => addFiles(fileInput.files));
+  document.getElementById("importEmojiJsonButton").addEventListener("click", () => document.getElementById("emojiJsonFile").click());
+  document.getElementById("emojiJsonFile").addEventListener("change", async (event) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (file) await importEmojiJson(file);
+  });
   ["dragenter", "dragover"].forEach((eventName) => dropzone.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.classList.add("dragging"); }));
   ["dragleave", "drop"].forEach((eventName) => dropzone.addEventListener(eventName, (event) => { event.preventDefault(); dropzone.classList.remove("dragging"); }));
   dropzone.addEventListener("drop", (event) => addFiles(event.dataTransfer.files));
@@ -2431,6 +2446,42 @@
     }
     fileInput.value = "";
     renderFiles();
+  }
+
+  async function importEmojiJson(file) {
+    const button = document.getElementById("importEmojiJsonButton");
+    const status = document.getElementById("jsonImportStatus");
+    button.disabled = true;
+    status.textContent = "正在读取 JSON…";
+    try {
+      const data = JSON.parse(await file.text());
+      if (!Array.isArray(data.emojis)) throw new Error("找不到 emojis 图片列表");
+      const imported = [];
+      let skipped = 0;
+      const mimeExtensions = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp", "image/avif": "avif" };
+      for (let index = 0; index < data.emojis.length; index++) {
+        const emoji = data.emojis[index];
+        const match = typeof emoji?.url === "string" ? /^data:(image\/(?:png|jpeg|gif|webp|avif));base64,([\s\S]+)$/i.exec(emoji.url) : null;
+        const mime = match?.[1]?.toLowerCase();
+        if (!mime || !mimeExtensions[mime]) { skipped++; continue; }
+        try {
+          const binary = atob(match[2].replace(/\s/g, ""));
+          const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
+          const baseName = String(emoji.name || `image-${index + 1}`).trim().replace(/[\\/]/g, "_").replace(/\.(png|jpe?g|gif|webp|avif)$/i, "") || `image-${index + 1}`;
+          imported.push(new File([bytes], `${baseName}.${mimeExtensions[mime]}`, { type: mime, lastModified: index + 1 }));
+        } catch { skipped++; }
+      }
+      const previous = selectedFiles.length;
+      addFiles(imported);
+      const added = selectedFiles.length - previous;
+      status.textContent = `已加入 ${added} 张图片${skipped ? `，跳过 ${skipped} 项` : ""}`;
+      showToast(added ? `已加入 ${added} 张图片，点击“开始上传”即可上传` : "没有可导入的 Base64 图片", !added);
+    } catch (error) {
+      status.textContent = "导入失败";
+      showToast(`JSON 导入失败：${error.message}`, true);
+    } finally {
+      button.disabled = false;
+    }
   }
 
   function renderFiles() {
