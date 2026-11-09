@@ -1,4 +1,4 @@
-const CACHE_NAME = "asset-manager-pwa-shell-v2-json-names";
+const CACHE_NAME = "asset-manager-pwa-shell-v3-json-descriptions";
 const APP_SHELL_FILES = ["./", "./manifest.json", "./app-icon.svg"];
 
 self.addEventListener("install", (event) => {
